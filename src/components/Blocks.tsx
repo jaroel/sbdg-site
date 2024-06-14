@@ -1,7 +1,7 @@
 import { For } from "solid-js/web";
-import type { BlockTypes } from "~/blocks";
 import { EditPage, ViewPage } from "~/components/blocks/page";
 import ViewTextBlock from "~/components/blocks/text";
+import type { BlockTypes } from "./blocks/schemas";
 
 export function ViewBlocks(props: {
   blocks: BlockTypes[];
