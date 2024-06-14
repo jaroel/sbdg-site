@@ -1,7 +1,6 @@
 // import type { Insertable, Queryable, Selectable, Updatable } from "orchid-orm";
-import * as z from "zod";
-import { pageBlockSchema } from "~/components/blocks/schemas";
 import { BaseTable } from "../baseTable";
+import { contentObjectBlockSchema } from "../schemas";
 
 export class ContentObjectsTable extends BaseTable {
   readonly table = "contentObjects";
@@ -15,7 +14,7 @@ export class ContentObjectsTable extends BaseTable {
       onDelete: "CASCADE",
     }),
     ...t.timestamps(),
-    block: t.json(z.discriminatedUnion("type", [pageBlockSchema])),
+    block: t.json(contentObjectBlockSchema),
   }));
 
   relations = {
