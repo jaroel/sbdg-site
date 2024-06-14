@@ -17,17 +17,16 @@
     "autoprefixer": "^10.4.19",
     "dotenv": "^16.4.5",
     "imagetools-core": "^7.0.0",
-    "orchid-orm": "^1.28.11",
-    "orchid-orm-schema-to-zod": "^0.7.18",
+    "orchid-orm": "^1.28.14",
+    "orchid-orm-schema-to-zod": "^0.7.21",
     "postcss": "^8.4.38",
     "solid-js": "^1.8.17",
     "tailwindcss": "^3.4.4",
     "vinxi": "^0.3.11",
     "zod": "^3.23.8"
   },
-
   "devDependencies": {
-    "orchid-orm-test-factory": "^0.6.18",
+    "orchid-orm-test-factory": "^0.6.21",
     "vite-imagetools": "^7.0.2",
     "@types/bun": "latest"
   }
