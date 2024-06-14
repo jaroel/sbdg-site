@@ -11,7 +11,7 @@ export default function Route() {
     <ContentObjectRoute
       component={(item) => (
         <Show
-          when={item().object.parentId}
+          when={item().content.parentId}
           fallback={<ContentObjectEditRootView item={item} />}
         >
           <ContentObjectEditView item={item} />

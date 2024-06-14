@@ -22,8 +22,8 @@ const toFormData = (
   item: ContentObject,
 ): z.infer<typeof contentObjectEditRootSchema> => {
   return {
-    object: {
-      ...item.object,
+    content: {
+      ...item.content,
       parentId: 0,
     },
     slug: "/",
@@ -58,7 +58,7 @@ export default function ContentObjectEditRootView(props: {
       <Navbar
         item={props.item}
         pathPrefix="/edit"
-        titleOverride={getValue(form, "object.block.title")}
+        titleOverride={getValue(form, "content.object.title")}
       />
       <div>
         <Form
@@ -78,7 +78,7 @@ export default function ContentObjectEditRootView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/edit" />
             <main class="w-full px-2 bg-white">
-              <Field name="object.id" type="number">
+              <Field name="content.id" type="number">
                 {(field, props) => (
                   <input
                     {...props}
@@ -89,7 +89,7 @@ export default function ContentObjectEditRootView(props: {
                 )}
               </Field>
 
-              <Field name="object.parentId" type="number">
+              <Field name="content.parentId" type="number">
                 {(field, props) => (
                   <input
                     {...props}
@@ -111,7 +111,7 @@ export default function ContentObjectEditRootView(props: {
                 )}
               </Field>
 
-              <Field name="object.block.type">
+              <Field name="content.object.type">
                 {(field, props) => (
                   <input
                     {...props}
@@ -123,7 +123,7 @@ export default function ContentObjectEditRootView(props: {
               </Field>
 
               <div class="flex space-x-2 mx-2 my-4">
-                <Field name="object.block.title">
+                <Field name="content.object.title">
                   {(field, props) => (
                     <TextField
                       {...props}
@@ -136,7 +136,7 @@ export default function ContentObjectEditRootView(props: {
                 </Field>
               </div>
               <div class="flex space-x-2 mx-2 my-4">
-                <Field name="object.block.description">
+                <Field name="content.object.description">
                   {(field, props) => (
                     <TextField
                       {...props}
@@ -148,13 +148,13 @@ export default function ContentObjectEditRootView(props: {
                   )}
                 </Field>
               </div>
-              <FieldArray name="object.block.blocks">
+              <FieldArray name="content.object.blocks">
                 {(fieldArray) => (
                   <div class="flex flex-col space-y-4">
                     <For each={fieldArray.items}>
                       {(_, index) => (
                         <div class="flex flex-row space-x-2">
-                          <Field name={`object.block.blocks.${index()}.type`}>
+                          <Field name={`content.object.blocks.${index()}.type`}>
                             {(field, props) => (
                               <input
                                 {...props}
@@ -164,7 +164,7 @@ export default function ContentObjectEditRootView(props: {
                               />
                             )}
                           </Field>
-                          <Field name={`object.block.blocks.${index()}.text`}>
+                          <Field name={`content.object.blocks.${index()}.text`}>
                             {(field, props) => (
                               <TextField
                                 {...props}

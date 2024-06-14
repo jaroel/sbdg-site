@@ -28,9 +28,9 @@ export default function ContentObjectAddView(props: {
     z.infer<typeof contentObjectAddSchema>
   >({
     initialValues: {
-      object: {
-        parentId: props.container().object.id,
-        block: {
+      content: {
+        parentId: props.container().content.id,
+        object: {
           type: "page",
           title: "A new page",
           description: "Please describe this page",
@@ -50,8 +50,8 @@ export default function ContentObjectAddView(props: {
 
   createEffect(() => {
     setValues(form, {
-      object: {
-        parentId: props.container().object.id,
+      content: {
+        parentId: props.container().content.id,
       },
     });
   });
@@ -64,7 +64,7 @@ export default function ContentObjectAddView(props: {
       <Navbar
         item={props.container}
         pathPrefix="/add"
-        additionalTitle={getValue(form, "object.block.title")}
+        additionalTitle={getValue(form, "content.object.title")}
       />
       <div>
         <Form
@@ -84,7 +84,7 @@ export default function ContentObjectAddView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.container} pathPrefix="/add" />
             <main class="px-2 bg-white">
-              <Field name="object.parentId" type="number">
+              <Field name="content.parentId" type="number">
                 {(field, props) => (
                   <input
                     {...props}
@@ -94,7 +94,7 @@ export default function ContentObjectAddView(props: {
                   />
                 )}
               </Field>
-              <Field name="object.block.type">
+              <Field name="content.object.type">
                 {(field, props) => (
                   <input
                     {...props}
@@ -120,7 +120,7 @@ export default function ContentObjectAddView(props: {
               </div>
 
               <div class="flex space-x-2 mx-2 my-4">
-                <Field name="object.block.title">
+                <Field name="content.object.title">
                   {(field, props) => (
                     <TextField
                       {...props}
@@ -133,7 +133,7 @@ export default function ContentObjectAddView(props: {
                 </Field>
               </div>
               <div class="flex space-x-2 mx-2 my-4">
-                <Field name="object.block.description">
+                <Field name="content.object.description">
                   {(field, props) => (
                     <TextField
                       {...props}
@@ -145,13 +145,13 @@ export default function ContentObjectAddView(props: {
                   )}
                 </Field>
               </div>
-              <FieldArray name="object.block.blocks">
+              <FieldArray name="content.object.blocks">
                 {(fieldArray) => (
                   <div class="flex space-y-4 flex-col">
                     <For each={fieldArray.items}>
                       {(_, index) => (
                         <div class="flex flex-row space-x-2">
-                          <Field name={`object.block.blocks.${index()}.type`}>
+                          <Field name={`content.object.blocks.${index()}.type`}>
                             {(field, props) => (
                               <input
                                 {...props}
@@ -161,7 +161,7 @@ export default function ContentObjectAddView(props: {
                               />
                             )}
                           </Field>
-                          <Field name={`object.block.blocks.${index()}.text`}>
+                          <Field name={`content.object.blocks.${index()}.text`}>
                             {(field, props) => (
                               <TextField
                                 {...props}

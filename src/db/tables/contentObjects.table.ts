@@ -14,7 +14,7 @@ export class ContentObjectsTable extends BaseTable {
       onDelete: "CASCADE",
     }),
     ...t.timestamps(),
-    block: t.json(contentObjectBlockSchema),
+    object: t.json(contentObjectBlockSchema),
   }));
 
   relations = {

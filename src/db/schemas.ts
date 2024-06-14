@@ -17,5 +17,5 @@ export const contentObjectsTableSchema = z.object({
     .transform((arg) => arg || null),
   createdAt: z.date(),
   updatedAt: z.date(),
-  block: contentObjectBlockSchema,
+  object: contentObjectBlockSchema,
 });

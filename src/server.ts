@@ -30,15 +30,15 @@ export const saveContentObject = async (formData: FormData) => {
       formData,
       contentObjectEditFormSchema,
     );
-    const parentId = data.object.parentId;
+    const parentId = data.content.parentId;
     const parentPath = parentId
       ? await db.contentObjects.find(parentId).get("path")
       : "";
     const newPath = await db.contentObjects
-      .find(data.object.id)
+      .find(data.content.id)
       .update({
-        ...data.object,
-        parentId: data.object.parentId,
+        ...data.content,
+        parentId: data.content.parentId,
         path: `${parentPath}${data.slug}`,
       })
       .get("path");
@@ -67,14 +67,14 @@ const contentObjectAddFormSchema = contentObjectAddSchema.extend({
 export const addContentObject = async (formData: FormData) => {
   try {
     const data = await parseFormDataAsync(formData, contentObjectAddFormSchema);
-    const parentId = data.object.parentId;
+    const parentId = data.content.parentId;
     const parentPath = parentId
       ? await db.contentObjects.find(parentId).get("path")
       : "";
     const newPath = await db.contentObjects
       .create({
-        ...data.object,
-        parentId: data.object.parentId,
+        ...data.content,
+        parentId: data.content.parentId,
         path: `${parentPath}${data.slug}`,
       })
       .get("path");
@@ -105,20 +105,20 @@ export const fetchContentObject = async (path: string) => {
     return;
   }
   console.info("fetchContentObject", { path });
-  const object = await db.contentObjects
+  const content = await db.contentObjects
     .where({ path })
     .select("*", {
       children: (q) => q.children.select("*"),
     })
     .takeOptional();
-  if (!object) {
+  if (!content) {
     return;
   }
 
   // const subObjects = await db.$queryBuilder
   //   .withRecursive(
   //     "subObjects",
-  //     db.contentObjects.select("id", "path", "parentId").find(object.id),
+  //     db.contentObjects.select("id", "path", "parentId").find(content.id),
   //     (q) =>
   //       q
   //         .from(db.contentObjects)
@@ -133,25 +133,25 @@ export const fetchContentObject = async (path: string) => {
     .withRecursive(
       "parents",
       db.contentObjects
-        .select("id", "path", "parentId", "block")
-        .find(object.id),
+        .select("id", "path", "parentId", "object")
+        .find(content.id),
       (q) =>
         q
           .from(db.contentObjects)
-          .select("id", "path", "parentId", "block")
+          .select("id", "path", "parentId", "object")
           .join("parents", "parents.parentId", "id"),
     )
     .from("parents")
     .where({
       id: {
-        not: object.id,
+        not: content.id,
       },
     })
     .order({ path: "DESC" })
     .all();
 
   return {
-    object,
+    content: content,
     parents: parents,
   };
 };

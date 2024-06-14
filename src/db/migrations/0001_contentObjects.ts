@@ -5,7 +5,7 @@ change(async (db) => {
     id: t.identity().primaryKey(),
     path: t.string().unique(),
     parentId: t.integer().nullable(),
-    block: t.json(),
+    object: t.json(),
     ...t.timestamps(),
   }));
 

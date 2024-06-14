@@ -3,7 +3,7 @@ import { db } from "./db";
 export const seed = async () => {
   const root = await db.contentObjects.create({
     path: "/",
-    block: {
+    object: {
       type: "page",
       title: "Welkom",
       description:
@@ -36,7 +36,7 @@ export const seed = async () => {
   const persoonlijkGemiddelde = await db.contentObjects.create({
     parentId: root.id,
     path: "/persoonlijk-gemiddelde",
-    block: {
+    object: {
       type: "page",
       title: "Persoonlijk gemiddelde",
       description:
@@ -53,7 +53,7 @@ export const seed = async () => {
   await db.contentObjects.create({
     parentId: persoonlijkGemiddelde.id,
     path: "/persoonlijk-gemiddelde/2023-2024",
-    block: {
+    object: {
       type: "page",
       title: "Persoonlijk gemiddelde - 2023-2024",
       description: "Persoonlijke resultaten seizoen 2023 / 2024",

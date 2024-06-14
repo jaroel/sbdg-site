@@ -2,7 +2,7 @@ import { z } from "zod";
 import { contentObjectsTableSchema } from "./db/schemas";
 
 export const contentObjectAddSchema = z.object({
-  object: contentObjectsTableSchema
+  content: contentObjectsTableSchema
     .omit({
       id: true,
       path: true,
@@ -14,7 +14,7 @@ export const contentObjectAddSchema = z.object({
 });
 
 export const contentObjectEditSchema = z.object({
-  object: contentObjectsTableSchema
+  content: contentObjectsTableSchema
     .omit({
       path: true,
       createdAt: true,

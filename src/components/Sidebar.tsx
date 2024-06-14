@@ -11,10 +11,10 @@ export default function Sidebar(props: {
   return (
     <aside class="flex-shrink-0 w-64 bg-gray-200">
       <ul class="list-inside list-disc mb-4">
-        <For each={props.item().object.children}>
+        <For each={props.item().content.children}>
           {(item) => (
             <li>
-              <a href={props.pathPrefix + item.path}>{item.block.title}</a>
+              <a href={props.pathPrefix + item.path}>{item.object.title}</a>
             </li>
           )}
         </For>
