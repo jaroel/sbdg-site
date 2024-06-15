@@ -37,19 +37,21 @@ export function TextField(props: TextFieldProps) {
           <Kobalte.Input
             {...inputProps}
             type={props.type}
-            class="border border-gray-200 ui-invalid:border-red-600"
+            class="border border-gray-200 ui-invalid:border-red-600 ui-disabled:text-gray-400"
           />
         }
       >
         <Kobalte.TextArea
           {...inputProps}
           autoResize
-          class="border border-gray-200 ui-invalid:border-red-600"
+          class="border border-gray-200 ui-invalid:border-red-600 ui-disabled:text-gray-400"
         >
           {props.value}
         </Kobalte.TextArea>
       </Show>
-      <Kobalte.ErrorMessage>{props.error}</Kobalte.ErrorMessage>
+      <Kobalte.ErrorMessage class="text-red-500">
+        {props.error}
+      </Kobalte.ErrorMessage>
     </Kobalte.Root>
   );
 }
