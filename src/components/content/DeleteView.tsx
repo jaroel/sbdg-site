@@ -23,19 +23,13 @@ export default function ContentObjectDeleteView(props: {
   const [form, { Form }] = createForm<
     z.infer<typeof contentObjectDeleteSchema>
   >({
-    initialValues: {
-      content: { id: props.item().content.id },
-    },
+    initialValues: { id: props.item().id },
     validate: zodForm(contentObjectDeleteSchema),
     validateOn: "change",
   });
 
   createEffect(() => {
-    reset(form, {
-      initialValues: {
-        content: { id: props.item().content.id },
-      },
-    });
+    reset(form, { initialValues: { id: props.item().id } });
   });
 
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("default");
@@ -66,7 +60,7 @@ export default function ContentObjectDeleteView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/delete" />
             <main class="w-full px-2 bg-white">
-              <DeleteContentObject form={form} path="content." />
+              <DeleteContentObject form={form} path="" />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

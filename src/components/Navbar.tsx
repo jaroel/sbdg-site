@@ -12,7 +12,7 @@ export default function Navbar(props: {
       <div class="px-4 flex space-x-1">
         <span>U bent hier:</span>
         <ul class="inline-flex items-center space-x-1">
-          <For each={props.item().parents.reverse()}>
+          <For each={props.item().parents}>
             {(item) => (
               <>
                 <li>
@@ -36,7 +36,7 @@ export default function Navbar(props: {
               </>
             )}
           </For>
-          <li>{props.titleOverride ?? props.item().content.object.title}</li>
+          <li>{props.titleOverride ?? props.item().object.title}</li>
           {props.additionalTitle && (
             <>
               <svg

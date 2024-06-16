@@ -23,7 +23,7 @@ export default function ContentObjectAddView(props: {
   const [form, { Form }] = createForm<z.infer<typeof contentObjectAddSchema>>({
     initialValues: {
       content: {
-        parentId: props.container().content.id,
+        parentId: props.container().id,
         object: {
           type: "page",
           title: "A new page",
@@ -43,11 +43,7 @@ export default function ContentObjectAddView(props: {
   });
 
   createEffect(() => {
-    setValues(form, {
-      content: {
-        parentId: props.container().content.id,
-      },
-    });
+    setValues(form, { parentId: props.container().id });
   });
 
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("edit");
@@ -58,7 +54,7 @@ export default function ContentObjectAddView(props: {
       <Navbar
         item={props.container}
         pathPrefix="/add"
-        additionalTitle={getValue(form, "content.object.title")}
+        additionalTitle={getValue(form, "object.title")}
       />
       <div>
         <Form
@@ -78,7 +74,7 @@ export default function ContentObjectAddView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.container} pathPrefix="/add" />
             <main class="px-2 bg-white">
-              <AddContentObject form={form} path="content." />
+              <AddContentObject form={form} path="" />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

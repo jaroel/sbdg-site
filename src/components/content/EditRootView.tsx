@@ -54,7 +54,7 @@ export default function ContentObjectEditRootView(props: {
       <Navbar
         item={props.item}
         pathPrefix="/edit"
-        titleOverride={getValue(form, "content.object.title")}
+        titleOverride={getValue(form, "object.title")}
       />
       <div>
         <Form
@@ -74,7 +74,7 @@ export default function ContentObjectEditRootView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/edit" />
             <main class="w-full px-2 bg-white">
-              <EditContentObject hideSlugField form={form} path="content." />
+              <EditContentObject hideSlugField form={form} path="" />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

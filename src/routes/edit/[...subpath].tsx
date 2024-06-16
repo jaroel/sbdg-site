@@ -11,7 +11,7 @@ export default function Route() {
     <ContentObjectRoute
       component={(item) => (
         <Show
-          when={item().content.path !== "/"}
+          when={item().path !== "/"}
           fallback={<ContentObjectEditRootView item={item} />}
         >
           <ContentObjectEditView item={item} />

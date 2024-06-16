@@ -19,7 +19,7 @@ const toFormData = (
 ): z.infer<typeof contentObjectEditSchema> => {
   return {
     ...item,
-    slug: item.content.path.slice(item.content.path.lastIndexOf("/") + 1),
+    slug: item.path.slice(item.path.lastIndexOf("/") + 1),
   };
 };
 
@@ -49,7 +49,7 @@ export default function ContentObjectEditView(props: {
       <Navbar
         item={props.item}
         pathPrefix="/edit"
-        titleOverride={getValue(form, "content.object.title")}
+        titleOverride={getValue(form, "object.title")}
       />
       <div>
         <Form
@@ -69,7 +69,7 @@ export default function ContentObjectEditView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/edit" />
             <main class="w-full px-2 bg-white">
-              <EditContentObject form={form} path="content." />
+              <EditContentObject form={form} path="" />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

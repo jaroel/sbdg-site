@@ -1,5 +1,6 @@
 "use server";
 import { cache, redirect } from "@solidjs/router";
+import * as z from "zod";
 import { db } from "./db/db";
 import {
   contentObjectAddSchema,
@@ -9,8 +10,6 @@ import {
   contentViews,
 } from "./schemas";
 import { parseFormDataAsync } from "./zod-web-api";
-
-import * as z from "zod";
 
 export const getContentObjectBySubPath = (subpath: string) =>
   getContentObjectBySubPathCache(subpath === "/" ? "/" : `/${subpath}`);
@@ -37,16 +36,16 @@ export const saveContentObject = async (formData: FormData) => {
       formData,
       contentObjectEditFormSchema,
     );
-    const contentId = data.content.id;
+    const contentId = data.id;
     const parentPath = await db.contentObjects
       .find(contentId)
       .parent.get("path");
 
     const newPath = await db.contentObjects
-      .find(data.content.id)
+      .find(data.id)
       .update({
-        ...data.content,
-        path: `${parentPath}/${data.slug}`,
+        ...data,
+        path: `${parentPath === "/" ? "" : parentPath}/${data.slug}`,
       })
       .get("path");
     throw redirect(routePrefixMapping[data.routePrefix] + newPath);
@@ -78,9 +77,9 @@ export const saveContentObjectRoot = async (formData: FormData) => {
       contentObjectEditRootFormSchema,
     );
     const newPath = await db.contentObjects
-      .find(data.content.id)
+      .find(data.id)
       .update({
-        ...data.content,
+        ...data,
         path: "/",
       })
       .get("path");
@@ -109,12 +108,12 @@ const contentObjectAddFormSchema = contentObjectAddSchema.extend({
 export const addContentObject = async (formData: FormData) => {
   try {
     const data = await parseFormDataAsync(formData, contentObjectAddFormSchema);
-    const parentId = data.content.parentId;
+    const parentId = data.parentId;
     const parentPath = await db.contentObjects.find(parentId).get("path");
     const newPath = await db.contentObjects
       .create({
-        ...data.content,
-        parentId: data.content.parentId,
+        ...data,
+        parentId: data.parentId,
         path: parentId
           ? `${parentPath}/${data.slug}`.replaceAll("//", "/")
           : "/",
@@ -150,7 +149,7 @@ export const deleteContentObject = async (formData: FormData) => {
     );
 
     const parentId = await db.contentObjects
-      .find(data.content.id)
+      .find(data.id)
       .delete()
       .get("parentId");
 
@@ -185,57 +184,20 @@ export const fetchContentObject = async (path: string) => {
     return;
   }
   console.info("fetchContentObject", { path });
-  const content = await db.contentObjects
+  const result = await db.contentObjects
+    .as("outer")
     .where({ path })
     .select("*", {
       children: (q) => q.children,
     })
-    .takeOptional();
-  if (!content) {
-    return;
-  }
-
-  // const subObjects = await db.$queryBuilder
-  //   .withRecursive(
-  //     "subObjects",
-  //     db.contentObjects.select("id", "path", "parentId").find(content.id),
-  //     (q) =>
-  //       q
-  //         .from(db.contentObjects)
-  //         .select("id", "path", "parentId")
-  //         .join("subObjects", "subObjects.id", "parentId"),
-  //   )
-  //   .from("subObjects")
-  //   .selectAll()
-  //   .all();
-
-  // const parents = await db.$queryBuilder
-  //   .withRecursive(
-  //     "parents",
-  //     db.contentObjects
-  //       .select("id", "path", "parentId", "object")
-  //       .find(content.id),
-  //     (q) =>
-  //       q
-  //         .from(db.contentObjects)
-  //         .select("id", "path", "parentId", "object")
-  //         .join("parents", "parents.parentId", "id"),
-  //   )
-  //   .from("parents")
-  //   .where({
-  //     id: {
-  //       not: content.id,
-  //     },
-  //   })
-  //   .order({ path: "DESC" })
-  //   .all();
+    .take();
 
   const parents = await db.$queryBuilder
     .withRecursive(
       "parents",
       db.contentObjects
         .select("id", "path", "parentId", "object")
-        .find(content.id),
+        .find(result.id),
       (q) =>
         q
           .from(db.contentObjects)
@@ -245,14 +207,10 @@ export const fetchContentObject = async (path: string) => {
     .from("parents")
     .where({
       id: {
-        not: content.id,
+        not: result.id,
       },
     })
-    .order({ path: "DESC" })
+    .order({ path: "ASC" })
     .all();
-
-  return {
-    content: content,
-    parents: parents,
-  };
+  return { ...result, parents };
 };

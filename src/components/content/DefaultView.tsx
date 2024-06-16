@@ -16,7 +16,7 @@ export default function ContentObjectDefaultView(props: {
         <div class="flex flex-row space-x-2 mx-2 my-4">
           <Sidebar item={props.item} pathPrefix="" />
           <main class="px-2 bg-white">
-            <ViewBlocks blocks={[props.item().content.object]} />
+            <ViewBlocks blocks={[props.item().object]} />
           </main>
         </div>
       </div>
