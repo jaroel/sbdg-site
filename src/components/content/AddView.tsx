@@ -22,20 +22,19 @@ export default function ContentObjectAddView(props: {
 
   const [form, { Form }] = createForm<z.infer<typeof contentObjectAddSchema>>({
     initialValues: {
-      content: {
-        parentId: props.container().id,
-        object: {
-          type: "page",
-          title: "A new page",
-          description: "Please describe this page",
-          blocks: [
-            {
-              type: "text",
-              text: "This is a new page",
-            },
-          ],
-        },
+      parentId: props.container().id,
+      object: {
+        type: "page",
+        title: "A new page",
+        description: "Please describe this page",
+        blocks: [
+          {
+            type: "text",
+            text: "This is a new page",
+          },
+        ],
       },
+
       slug: "new-page",
     },
     validate: zodForm(contentObjectAddSchema),
