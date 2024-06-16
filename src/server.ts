@@ -137,6 +137,25 @@ export const addContentObject = async (formData: FormData) => {
   }
 };
 
+export const fetchDescentants = async (id: number) =>
+  db.$queryBuilder
+    .withRecursive(
+      "parents",
+      db.contentObjects.select("id", "path", "parentId", "object").find(id),
+      (q) =>
+        q
+          .from(db.contentObjects)
+          .select("id", "path", "parentId", "object")
+          .join("parents", "parents.id", "parentId"),
+    )
+    .from("parents")
+    .where({
+      id: {
+        not: id,
+      },
+    })
+    .order({ path: "ASC" });
+
 const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
   routePrefix: contentViews,
 });

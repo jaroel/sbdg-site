@@ -1,18 +1,31 @@
 import { createForm, reset, zodForm } from "@modular-forms/solid";
-import { action, useAction, useSubmission } from "@solidjs/router";
-import { type Accessor, createEffect, createSignal } from "solid-js";
+import { action, cache, useAction, useSubmission } from "@solidjs/router";
+import {
+  type Accessor,
+  For,
+  Show,
+  createEffect,
+  createResource,
+  createSignal,
+} from "solid-js";
 import type * as z from "zod";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
 import { type ContentViews, contentObjectDeleteSchema } from "~/schemas";
-import { type ContentObject, deleteContentObject } from "~/server";
+import {
+  type ContentObject,
+  deleteContentObject,
+  fetchDescentants,
+} from "~/server";
 import { DeleteContentObject } from "../blocks/Object";
 
 const deleteContentObjectAction = action(
   deleteContentObject,
   "deleteContentObjectAction",
 );
+
+const loadDescentants = cache(fetchDescentants, "loadDescentants");
 
 export default function ContentObjectDeleteView(props: {
   item: Accessor<ContentObject>;
@@ -33,6 +46,13 @@ export default function ContentObjectDeleteView(props: {
   });
 
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("default");
+
+  const [contentId, setContentId] = createSignal<number>();
+  const [descentants] = createResource(contentId, loadDescentants);
+
+  createEffect(() => {
+    setContentId(props.item().id);
+  });
 
   return (
     <>
@@ -61,6 +81,19 @@ export default function ContentObjectDeleteView(props: {
             <Sidebar item={props.item} pathPrefix="/delete" />
             <main class="w-full px-2 bg-white">
               <DeleteContentObject form={form} path="" />
+              The following content objects will be deleted after confirmation:
+              <Show when={descentants()}>
+                <ol class="list-decimal list-inside ml-2">
+                  <li>{props.item().object.title}</li>
+                  <For each={descentants()}>
+                    {(item) => (
+                      <li>
+                        <a href={item.path}>{item.object.title}</a>
+                      </li>
+                    )}
+                  </For>
+                </ol>
+              </Show>
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
