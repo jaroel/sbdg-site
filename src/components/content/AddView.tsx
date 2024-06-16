@@ -1,32 +1,26 @@
-import {
-  createForm,
-  getErrors,
-  getValue,
-  setValues,
-  zodForm,
-} from "@modular-forms/solid";
+import { createForm, getValue, setValues, zodForm } from "@modular-forms/solid";
 import { action, useAction, useSubmission } from "@solidjs/router";
 import { type Accessor, createEffect, createSignal } from "solid-js";
-import { For } from "solid-js/web";
 import type * as z from "zod";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
-import { TextField } from "~/components/input/TextField";
 import { type ContentViews, contentObjectAddSchema } from "~/schemas";
 import { type ContentObject, addContentObject } from "~/server";
+import { AddContentObject } from "../blocks/Object";
 
-const addSLObjectPage = action(addContentObject, "addSLObjectPage");
+const addContentObjectAction = action(
+  addContentObject,
+  "addContentObjectAction",
+);
 
 export default function ContentObjectAddView(props: {
   container: Accessor<ContentObject>;
 }) {
-  const formSubmission = useSubmission(addSLObjectPage);
-  const submitForm = useAction(addSLObjectPage);
+  const formSubmission = useSubmission(addContentObjectAction);
+  const submitForm = useAction(addContentObjectAction);
 
-  const [form, { Form, Field, FieldArray }] = createForm<
-    z.infer<typeof contentObjectAddSchema>
-  >({
+  const [form, { Form }] = createForm<z.infer<typeof contentObjectAddSchema>>({
     initialValues: {
       content: {
         parentId: props.container().content.id,
@@ -74,7 +68,7 @@ export default function ContentObjectAddView(props: {
             await submitForm(formData);
           }}
           method="post"
-          action={addSLObjectPage}
+          action={addContentObjectAction}
           encoding="multipart/form-data"
           class="w-full"
           classList={{
@@ -84,101 +78,7 @@ export default function ContentObjectAddView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.container} pathPrefix="/add" />
             <main class="px-2 bg-white">
-              <Field name="content.parentId" type="number">
-                {(field, props) => (
-                  <input
-                    {...props}
-                    type="text"
-                    name={field.name}
-                    value={field.value || undefined}
-                  />
-                )}
-              </Field>
-              <Field name="content.object.type">
-                {(field, props) => (
-                  <input
-                    {...props}
-                    type="text"
-                    name={field.name}
-                    value={field.value}
-                  />
-                )}
-              </Field>
-
-              <div class="flex space-x-2 mx-2 my-4">
-                <Field name="slug">
-                  {(field, props) => (
-                    <TextField
-                      {...props}
-                      label="Slug"
-                      value={field.value}
-                      error={field.error}
-                      required
-                    />
-                  )}
-                </Field>
-              </div>
-
-              <div class="flex space-x-2 mx-2 my-4">
-                <Field name="content.object.title">
-                  {(field, props) => (
-                    <TextField
-                      {...props}
-                      label="Page title"
-                      value={field.value}
-                      error={field.error}
-                      required
-                    />
-                  )}
-                </Field>
-              </div>
-              <div class="flex space-x-2 mx-2 my-4">
-                <Field name="content.object.description">
-                  {(field, props) => (
-                    <TextField
-                      {...props}
-                      label="Page description"
-                      value={field.value}
-                      error={field.error}
-                      required
-                    />
-                  )}
-                </Field>
-              </div>
-              <FieldArray name="content.object.blocks">
-                {(fieldArray) => (
-                  <div class="flex space-y-4 flex-col">
-                    <For each={fieldArray.items}>
-                      {(_, index) => (
-                        <div class="flex flex-row space-x-2">
-                          <Field name={`content.object.blocks.${index()}.type`}>
-                            {(field, props) => (
-                              <input
-                                {...props}
-                                type="text"
-                                name={field.name}
-                                value={field.value}
-                              />
-                            )}
-                          </Field>
-                          <Field name={`content.object.blocks.${index()}.text`}>
-                            {(field, props) => (
-                              <TextField
-                                {...props}
-                                label="Text"
-                                value={field.value}
-                                error={field.error}
-                                multiline
-                                required
-                              />
-                            )}
-                          </Field>
-                        </div>
-                      )}
-                    </For>
-                  </div>
-                )}
-              </FieldArray>
+              <AddContentObject form={form} path="content." />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

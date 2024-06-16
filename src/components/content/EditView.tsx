@@ -7,9 +7,12 @@ import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
 import { type ContentViews, contentObjectEditSchema } from "~/schemas";
 import { type ContentObject, saveContentObject } from "~/server";
-import { EditContenObject } from "../blocks/Object";
+import { EditContentObject } from "../blocks/Object";
 
-const saveSLObjectPage = action(saveContentObject, "saveSLObjectPage");
+const saveContentObjectAction = action(
+  saveContentObject,
+  "saveContentObjectAction",
+);
 
 const toFormData = (
   item: ContentObject,
@@ -23,8 +26,8 @@ const toFormData = (
 export default function ContentObjectEditView(props: {
   item: Accessor<ContentObject>;
 }) {
-  const formSubmission = useSubmission(saveSLObjectPage);
-  const submitForm = useAction(saveSLObjectPage);
+  const formSubmission = useSubmission(saveContentObjectAction);
+  const submitForm = useAction(saveContentObjectAction);
 
   const [form, { Form }] = createForm<z.infer<typeof contentObjectEditSchema>>({
     initialValues: toFormData(props.item()),
@@ -56,7 +59,7 @@ export default function ContentObjectEditView(props: {
             await submitForm(formData);
           }}
           method="post"
-          action={saveSLObjectPage}
+          action={saveContentObjectAction}
           encoding="multipart/form-data"
           class="w-full"
           classList={{
@@ -66,7 +69,7 @@ export default function ContentObjectEditView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/edit" />
             <main class="w-full px-2 bg-white">
-              <EditContenObject form={form} path="content." />
+              <EditContentObject form={form} path="content." />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

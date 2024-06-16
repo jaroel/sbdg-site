@@ -78,7 +78,9 @@ export const addContentObject = async (formData: FormData) => {
       .create({
         ...data.content,
         parentId: data.content.parentId,
-        path: `${parentPath}${data.slug}`,
+        path: parentId
+          ? `${parentPath}/${data.slug}`.replaceAll("//", "/")
+          : "/",
       })
       .get("path");
     throw redirect(routePrefixMapping[data.routePrefix] + newPath);
