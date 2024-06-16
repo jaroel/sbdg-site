@@ -3,6 +3,7 @@ import { cache, redirect } from "@solidjs/router";
 import { db } from "./db/db";
 import {
   contentObjectAddSchema,
+  contentObjectDeleteSchema,
   contentObjectEditSchema,
   contentViews,
 } from "./schemas";
@@ -22,7 +23,12 @@ const contentObjectEditFormSchema = contentObjectEditSchema.extend({
   routePrefix: contentViews,
 });
 
-const routePrefixMapping = { default: "", add: "/add", edit: "/edit" };
+const routePrefixMapping = {
+  default: "",
+  add: "/add",
+  edit: "/edit",
+  delete: "/delete",
+};
 
 export const saveContentObject = async (formData: FormData) => {
   try {
@@ -84,6 +90,45 @@ export const addContentObject = async (formData: FormData) => {
       })
       .get("path");
     throw redirect(routePrefixMapping[data.routePrefix] + newPath);
+  } catch (exception) {
+    if (!(exception instanceof Response)) {
+      console.info("addContentObject", {
+        type: typeof exception,
+        error: exception,
+      });
+    }
+    if (exception instanceof z.ZodError) {
+      throw new Response(JSON.stringify(exception.errors), {
+        status: 400,
+        statusText: "Too bad, peanut butter",
+      });
+    }
+    throw exception;
+  }
+};
+
+const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
+  routePrefix: contentViews,
+});
+
+export const deleteContentObject = async (formData: FormData) => {
+  try {
+    const data = await parseFormDataAsync(
+      formData,
+      contentObjectDeleteFormSchema,
+    );
+
+    const parentId = await db.contentObjects
+      .find(data.content.id)
+      .delete()
+      .get("parentId");
+
+    const parentPath = parentId
+      ? await db.contentObjects.find(parentId).get("path")
+      : "/";
+
+    console.log({ parentId, parentPath });
+    throw redirect(routePrefixMapping[data.routePrefix] + parentPath);
   } catch (exception) {
     if (!(exception instanceof Response)) {
       console.info("addContentObject", {

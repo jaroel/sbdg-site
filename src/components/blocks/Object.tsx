@@ -1,7 +1,11 @@
 import { Field, getValue } from "@modular-forms/solid";
 import { Show } from "solid-js";
 import { AddBlock, EditBlock } from "../Blocks";
-import type { BlockAddFormProps, BlockEditFormProps } from "../content/mapping";
+import type {
+  BlockAddFormProps,
+  BlockDeleteFormProps,
+  BlockEditFormProps,
+} from "../content/mapping";
 import { TextField } from "../input/TextField";
 
 export function AddContentObject(props: BlockAddFormProps) {
@@ -112,6 +116,38 @@ export function EditContentObject(props: BlockEditFormProps) {
       </Field>
 
       <EditBlock form={props.form} path={`${props.path}object.`} />
+    </>
+  );
+}
+
+export function DeleteContentObject(props: BlockDeleteFormProps) {
+  return (
+    <>
+      <Field of={props.form} name={`${props.path}id`} type="number">
+        {(field, fprops) => (
+          <input
+            {...fprops}
+            type="hidden"
+            name={field.name}
+            value={field.value}
+          />
+        )}
+      </Field>
+
+      <Field of={props.form} name="confirmation">
+        {(field, fprops) => (
+          <div class="flex space-x-2 mx-2 my-4">
+            <TextField
+              {...fprops}
+              label="Confirmation"
+              placeholder="delete me"
+              value={field.value || ""}
+              error={field.error}
+              required
+            />
+          </div>
+        )}
+      </Field>
     </>
   );
 }
