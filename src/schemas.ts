@@ -9,6 +9,9 @@ export const contentObjectAddSchema = z.object({
       createdAt: true,
       updatedAt: true,
     })
+    .extend({
+      parentId: z.number().min(1),
+    })
     .required({ parentId: true }),
   slug: z.string().trim().min(1),
 });
@@ -16,12 +19,17 @@ export const contentObjectAddSchema = z.object({
 export const contentObjectEditSchema = z.object({
   content: contentObjectsTableSchema
     .omit({
+      parentId: true,
       path: true,
       createdAt: true,
       updatedAt: true,
     })
     .required({ id: true }),
   slug: z.string().trim().min(1),
+});
+
+export const contentObjectEditRootSchema = contentObjectEditSchema.omit({
+  slug: true,
 });
 
 export const contentObjectDeleteSchema = z.object({

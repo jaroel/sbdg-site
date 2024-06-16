@@ -7,14 +7,8 @@ export const contentObjectBlockSchema = z.discriminatedUnion("type", [
 
 export const contentObjectsTableSchema = z.object({
   id: z.number().min(1),
-  path: z
-    .string()
-    .min(1)
-    .transform((arg) => arg.replace("//", "/")),
-  parentId: z
-    .number()
-    .nullable()
-    .transform((arg) => arg || null),
+  path: z.string().min(1),
+  parentId: z.number().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
   object: contentObjectBlockSchema,

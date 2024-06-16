@@ -64,7 +64,9 @@ export function AddContentObject(props: BlockAddFormProps) {
   );
 }
 
-export function EditContentObject(props: BlockEditFormProps) {
+export function EditContentObject(
+  props: BlockEditFormProps & { hideSlugField?: boolean },
+) {
   return (
     <>
       <Field of={props.form} name={`${props.path}id`} type="number">
@@ -78,7 +80,7 @@ export function EditContentObject(props: BlockEditFormProps) {
         )}
       </Field>
 
-      <Field of={props.form} name={`${props.path}parentId`} type="number">
+      {/* <Field of={props.form} name={`${props.path}parentId`} type="number">
         {(field, fprops) => (
           <input
             {...fprops}
@@ -87,12 +89,12 @@ export function EditContentObject(props: BlockEditFormProps) {
             value={field.value}
           />
         )}
-      </Field>
+      </Field> */}
 
       <Field of={props.form} name="slug">
         {(field, fprops) => (
           <Show
-            when={getValue(props.form, `${props.path}parentId`)}
+            when={!props.hideSlugField}
             fallback={
               <input
                 {...fprops}

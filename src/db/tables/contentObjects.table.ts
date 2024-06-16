@@ -18,9 +18,9 @@ export class ContentObjectsTable extends BaseTable {
   }));
 
   relations = {
-    parent: this.hasOne(() => ContentObjectsTable, {
-      columns: ["id"],
-      references: ["parentId"],
+    parent: this.belongsTo(() => ContentObjectsTable, {
+      columns: ["parentId"],
+      references: ["id"],
     }),
     children: this.hasMany(() => ContentObjectsTable, {
       columns: ["id"],

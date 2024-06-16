@@ -11,36 +11,32 @@ import type * as z from "zod";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
-import { type ContentViews, contentObjectEditSchema } from "~/schemas";
-import { type ContentObject, saveContentObject } from "~/server";
+import { type ContentViews, contentObjectEditRootSchema } from "~/schemas";
+import { type ContentObject, saveContentObjectRoot } from "~/server";
 import { EditContentObject } from "../blocks/Object";
 
-const saveContentObjectAction = action(
-  saveContentObject,
-  "saveContentObjectAction",
+const saveContentObjectRootAction = action(
+  saveContentObjectRoot,
+  "saveContentObjectRootAction",
 );
 
 const toFormData = (
   item: ContentObject,
-): z.infer<typeof contentObjectEditSchema> => {
-  return {
-    content: {
-      ...item.content,
-      parentId: 0,
-    },
-    slug: "/",
-  };
+): z.infer<typeof contentObjectEditRootSchema> => {
+  return item;
 };
 
 export default function ContentObjectEditRootView(props: {
   item: Accessor<ContentObject>;
 }) {
-  const formSubmission = useSubmission(saveContentObjectAction);
-  const submitForm = useAction(saveContentObjectAction);
+  const formSubmission = useSubmission(saveContentObjectRootAction);
+  const submitForm = useAction(saveContentObjectRootAction);
 
-  const [form, { Form }] = createForm<z.infer<typeof contentObjectEditSchema>>({
+  const [form, { Form }] = createForm<
+    z.infer<typeof contentObjectEditRootSchema>
+  >({
     initialValues: toFormData(props.item()),
-    validate: zodForm(contentObjectEditSchema),
+    validate: zodForm(contentObjectEditRootSchema),
     validateOn: "change",
   });
 
@@ -68,7 +64,7 @@ export default function ContentObjectEditRootView(props: {
             await submitForm(formData);
           }}
           method="post"
-          action={saveContentObjectAction}
+          action={saveContentObjectRootAction}
           encoding="multipart/form-data"
           class="w-full"
           classList={{
@@ -78,7 +74,7 @@ export default function ContentObjectEditRootView(props: {
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/edit" />
             <main class="w-full px-2 bg-white">
-              <EditContentObject form={form} path="content." />
+              <EditContentObject hideSlugField form={form} path="content." />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
