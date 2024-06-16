@@ -34,12 +34,15 @@ export const saveContentObject = async (formData: FormData) => {
     const parentPath = parentId
       ? await db.contentObjects.find(parentId).get("path")
       : "";
+
     const newPath = await db.contentObjects
       .find(data.content.id)
       .update({
         ...data.content,
-        parentId: data.content.parentId,
-        path: `${parentPath === "/" ? "" : parentPath}/${data.slug}`,
+        parentId,
+        path: parentId
+          ? `${parentPath}/${data.slug}`.replaceAll("//", "/")
+          : "/",
       })
       .get("path");
     throw redirect(routePrefixMapping[data.routePrefix] + newPath);
