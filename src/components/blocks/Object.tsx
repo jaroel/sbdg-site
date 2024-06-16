@@ -29,20 +29,20 @@ export function EditContenObject(props: BlockEditFormProps) {
         )}
       </Field>
 
-      <div class="flex space-x-2 mx-2 my-4">
-        <Field of={props.form} name="slug">
-          {(field, fprops) => (
-            <Show
-              when={getValue(props.form, `${props.path}parentId`)}
-              fallback={
-                <input
-                  {...fprops}
-                  type="hidden"
-                  name={field.name}
-                  value={field.value}
-                />
-              }
-            >
+      <Field of={props.form} name="slug">
+        {(field, fprops) => (
+          <Show
+            when={getValue(props.form, `${props.path}parentId`)}
+            fallback={
+              <input
+                {...fprops}
+                type="hidden"
+                name={field.name}
+                value={field.value}
+              />
+            }
+          >
+            <div class="flex space-x-2 mx-2 my-4">
               <TextField
                 {...fprops}
                 label="Slug"
@@ -50,10 +50,10 @@ export function EditContenObject(props: BlockEditFormProps) {
                 error={field.error}
                 required
               />
-            </Show>
-          )}
-        </Field>
-      </div>
+            </div>
+          </Show>
+        )}
+      </Field>
 
       <EditBlock form={props.form} path={`${props.path}object.`} />
     </>
