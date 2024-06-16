@@ -24,10 +24,6 @@ export const contentObjectEditSchema = z.object({
   slug: z.string().trim().min(1),
 });
 
-export const contentObjectEditRootSchema = contentObjectEditSchema.extend({
-  slug: z.literal("/"),
-});
-
 export type ContentViews = z.infer<typeof contentViews>;
 export const contentViews = z.union([
   z.literal("default"),

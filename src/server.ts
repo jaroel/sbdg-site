@@ -39,7 +39,7 @@ export const saveContentObject = async (formData: FormData) => {
       .update({
         ...data.content,
         parentId: data.content.parentId,
-        path: `${parentPath}${data.slug}`,
+        path: `${parentPath === "/" ? "" : parentPath}/${data.slug}`,
       })
       .get("path");
     throw redirect(routePrefixMapping[data.routePrefix] + newPath);

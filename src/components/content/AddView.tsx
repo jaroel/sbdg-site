@@ -88,7 +88,7 @@ export default function ContentObjectAddView(props: {
                 {(field, props) => (
                   <input
                     {...props}
-                    type="hidden"
+                    type="text"
                     name={field.name}
                     value={field.value || undefined}
                   />
@@ -98,7 +98,7 @@ export default function ContentObjectAddView(props: {
                 {(field, props) => (
                   <input
                     {...props}
-                    type="hidden"
+                    type="text"
                     name={field.name}
                     value={field.value}
                   />
@@ -155,7 +155,7 @@ export default function ContentObjectAddView(props: {
                             {(field, props) => (
                               <input
                                 {...props}
-                                type="hidden"
+                                type="text"
                                 name={field.name}
                                 value={field.value}
                               />

@@ -27,7 +27,7 @@ export const seed = async () => {
         },
         {
           type: "text",
-          text: "1e) Uitslagen na de laatste ronde 2023/2024  (08-04-24)\n2e) Standen na 20 ronden seizoen 2023/2024  (08-04-24)\n3e) Persoonlijke scores seizoen na 20 ronden 2023/2024  (08-04-24)\n4e) uitslagen open kampioenschap Oude IJsselstreek KKP 2024  (08-04-24)\n5e) uitslagen open kampioenschap Oude IJsselstreek LP 2024 (08-04-24)\n6e) uitslagen open kampioenschap Oude IJsselstreek LG+LGO openvizier (22-05-24)\n7e) uitslagen open kampioenschap Oude IJsselstreek LG Knielend 2023 (13-07-23)\n8e) uitslagen open kampioenschap Oude IJsselstreek KKG 50m  2023 (13-07-23)\n9e) uitslagen open kampioenschap Oude IJsselstreek KKG 12m 2023 (22-09-23)\n10e) uitslagen open kampioenschap Oude IJsselstreek kruisboog 2023 (11-10-23)\n11e) uitslagen open kampioenschap Oude IJsselstreek LG staand 2023 (22-11-23)\n12e) totaalstand (tussenstand) 2024  open kampioenschap Oude IJsselstreek  (22-05-24)\n13e) nieuw wedstrijd-reglement  (d.d. 12-09-23)\n14e) wedstrijdschema seizoen 2023-2024 (08-09-23)\n15e) wedstrijdkalender open kampioenschap Oude IJsselstreek  (09-02-24)\n16e) uitnodiging Open schietkampioenschap Oude IJsselstreek (21-03-23 LG wedstrijd toegevoegd)",
+          text: "1e) Uitslagen na de laatste ronde 2023/2024 ",
         },
       ],
     },

@@ -1,7 +1,9 @@
-import { For } from "solid-js/web";
-import { EditPage, ViewPage } from "~/components/blocks/page";
-import ViewTextBlock from "~/components/blocks/text";
+import { Field } from "@modular-forms/solid";
+import { Dynamic, For } from "solid-js/web";
+import ViewPage from "~/components/blocks/Page";
+import ViewTextBlock from "~/components/blocks/Text";
 import type { BlockTypes } from "./blocks/schemas";
+import { type BlockEditFormProps, editComponents } from "./content/mapping";
 
 export function ViewBlocks(props: {
   blocks: BlockTypes[];
@@ -20,19 +22,25 @@ export function ViewBlocks(props: {
   );
 }
 
-export function EditBlocks(props: {
-  blocks: BlockTypes[];
-}) {
+export function EditBlock(props: BlockEditFormProps) {
   return (
-    <For each={props.blocks}>
-      {(item) => {
-        switch (item.type) {
-          case "page":
-            return <EditPage object={item} />;
-          case "text":
-            return <ViewTextBlock object={item} />;
-        }
-      }}
-    </For>
+    <Field of={props.form} name={`${props.path}type`}>
+      {(field, fprops) => (
+        <>
+          <input
+            {...fprops}
+            type="hidden"
+            name={field.name}
+            value={field.value}
+          />
+          <Dynamic
+            component={editComponents[field.value]}
+            {...props}
+            field={field}
+            fprops={fprops}
+          />
+        </>
+      )}
+    </Field>
   );
 }
