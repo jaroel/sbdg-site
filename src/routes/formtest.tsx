@@ -25,7 +25,7 @@ const level1BlockSchema = z.object({
 
 const pageBlockSchema = z.object({
   type: z.literal("page"),
-  title: z.string().min(1),
+  title: z.string().trim().min(1),
   description: z.optional(z.string()),
   blocks: z.array(
     z.discriminatedUnion("type", [textBlockSchema, level1BlockSchema]),
