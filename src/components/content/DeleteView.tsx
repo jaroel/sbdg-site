@@ -16,7 +16,7 @@ import { type ContentViews, contentObjectDeleteSchema } from "~/schemas";
 import {
   type ContentObject,
   deleteContentObject,
-  fetchDescentants,
+  fetchDescendants,
 } from "~/server";
 import { DeleteContentObject } from "../blocks/Object";
 
@@ -25,7 +25,7 @@ const deleteContentObjectAction = action(
   "deleteContentObjectAction",
 );
 
-const loadDescentants = cache(fetchDescentants, "loadDescentants");
+const loadDescendants = cache(fetchDescendants, "loadDescendants");
 
 export default function ContentObjectDeleteView(props: {
   item: Accessor<ContentObject>;
@@ -48,7 +48,7 @@ export default function ContentObjectDeleteView(props: {
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("default");
 
   const [contentId, setContentId] = createSignal<number>();
-  const [descentants] = createResource(contentId, loadDescentants);
+  const [descendants] = createResource(contentId, loadDescendants);
 
   createEffect(() => {
     setContentId(props.item().id);
@@ -81,19 +81,31 @@ export default function ContentObjectDeleteView(props: {
             <Sidebar item={props.item} pathPrefix="/delete" />
             <main class="w-full px-2 bg-white">
               <DeleteContentObject form={form} path="" />
-              The following content objects will be deleted after confirmation:
-              <Show when={descentants()}>
+              <div class="ml-2">
+                The following content objects will be deleted after
+                confirmation:
                 <ol class="list-decimal list-inside ml-2">
-                  <li>{props.item().object.title}</li>
-                  <For each={descentants()}>
+                  <li>
+                    <ul class="inline-flex flex-col">
+                      <li>{props.item().object.title}</li>
+                      <li class="text-slate-300">{props.item().path}</li>
+                    </ul>
+                  </li>
+                  <Show when={descendants() === undefined}>
+                    <li>All descendants content objects</li>
+                  </Show>
+                  <For each={descendants()}>
                     {(item) => (
                       <li>
-                        <a href={item.path}>{item.object.title}</a>
+                        <ul class="inline-flex flex-col">
+                          <li>{item.object.title}</li>
+                          <li class="text-slate-300">{item.path}</li>
+                        </ul>
                       </li>
                     )}
                   </For>
                 </ol>
-              </Show>
+              </div>
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

@@ -137,7 +137,7 @@ export const addContentObject = async (formData: FormData) => {
   }
 };
 
-export const fetchDescentants = async (id: number) =>
+export const fetchDescendants = async (id: number) =>
   db.$queryBuilder
     .withRecursive(
       "parents",
