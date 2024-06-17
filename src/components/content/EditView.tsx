@@ -8,6 +8,7 @@ import Toolbar from "~/components/Toolbar";
 import { type ContentViews, contentObjectEditSchema } from "~/schemas";
 import { type ContentObject, saveContentObject } from "~/server";
 import { EditContentObject } from "../blocks/Object";
+import Button from "../input/Button";
 
 const saveContentObjectAction = action(
   saveContentObject,
@@ -73,26 +74,24 @@ export default function ContentObjectEditView(props: {
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
-            <button
+            <Button
               type="submit"
-              class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm disabled:text-gray-300 disabled:bg-gray-400"
               disabled={form.submitting || formSubmission.pending}
               name="routePrefix"
               value="edit"
               onClick={() => setRoutePrefix("edit")}
             >
               Save
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm disabled:text-gray-300 disabled:bg-gray-400"
               disabled={form.submitting || formSubmission.pending}
               name="routePrefix"
               value="default"
               onClick={() => setRoutePrefix("default")}
             >
               Save and view
-            </button>
+            </Button>
           </div>
         </Form>
       </div>
