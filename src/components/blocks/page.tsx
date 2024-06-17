@@ -1,4 +1,4 @@
-import { Field, FieldArray, move } from "@modular-forms/solid";
+import { Field, FieldArray, move, remove } from "@modular-forms/solid";
 import { For } from "solid-js";
 import { EditBlock, ViewBlocks } from "~/components/Blocks";
 import type { BlockEditFormProps } from "../content/mapping";
@@ -58,70 +58,89 @@ export function EditPage(props: BlockEditFormProps) {
             {fieldArray.error && (
               <div class="text-red-500">{fieldArray.error}</div>
             )}
-            <div class="space-y-2">
+            <div class="space-y-4 mt-2">
               <For each={fieldArray.items}>
                 {(_, index) => (
                   <div>
-                    <div class="border-b-2 border-orange-300">
-                      <button
-                        type="button"
-                        title="Move item up"
-                        class="size-4 disabled:text-gray-400"
-                        disabled={index() === 0}
-                        onClick={(event) => {
-                          console.log(`${props.path}blocks`, {
-                            from: index(),
-                            to: index() - 1,
-                          });
-                          move(props.form, `${props.path}blocks`, {
-                            from: index(),
-                            to: index() - 1,
-                          });
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
+                    <div class="border-b border-orange-300 divide-x flex flex-row">
+                      <div>
+                        <button
+                          type="button"
+                          title="Move item up"
+                          class="size-4 disabled:text-gray-400"
+                          disabled={index() === 0}
+                          onClick={() => {
+                            move(props.form, `${props.path}blocks`, {
+                              from: index(),
+                              to: index() - 1,
+                            });
+                          }}
                         >
-                          <title>Move item up</title>
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 17a.75.75 0 0 1-.75-.75V5.612L5.29 9.77a.75.75 0 0 1-1.08-1.04l5.25-5.5a.75.75 0 0 1 1.08 0l5.25 5.5a.75.75 0 1 1-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0 1 10 17Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </button>
-
-                      <button
-                        type="button"
-                        title="Move item down"
-                        class="size-4 disabled:text-gray-400"
-                        disabled={index() >= fieldArray.items.length - 1}
-                        onClick={(event) => {
-                          console.log(`${props.path}blocks`, {
-                            from: index(),
-                            to: index() + 1,
-                          });
-                          move(props.form, `${props.path}blocks`, {
-                            from: index(),
-                            to: index() + 1,
-                          });
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <title>Move item up</title>
+                            <path
+                              fill-rule="evenodd"
+                              d="M10 17a.75.75 0 0 1-.75-.75V5.612L5.29 9.77a.75.75 0 0 1-1.08-1.04l5.25-5.5a.75.75 0 0 1 1.08 0l5.25 5.5a.75.75 0 1 1-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0 1 10 17Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          title="Move item down"
+                          class="size-4 disabled:text-gray-400"
+                          disabled={index() >= fieldArray.items.length - 1}
+                          onClick={() => {
+                            move(props.form, `${props.path}blocks`, {
+                              from: index(),
+                              to: index() + 1,
+                            });
+                          }}
                         >
-                          <title>Move item down</title>
-                          <path
-                            fill-rule="evenodd"
-                            d="M10 3a.75.75 0 0 1 .75.75v10.638l3.96-4.158a.75.75 0 1 1 1.08 1.04l-5.25 5.5a.75.75 0 0 1-1.08 0l-5.25-5.5a.75.75 0 1 1 1.08-1.04l3.96 4.158V3.75A.75.75 0 0 1 10 3Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </button>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <title>Move item down</title>
+                            <path
+                              fill-rule="evenodd"
+                              d="M10 3a.75.75 0 0 1 .75.75v10.638l3.96-4.158a.75.75 0 1 1 1.08 1.04l-5.25 5.5a.75.75 0 0 1-1.08 0l-5.25-5.5a.75.75 0 1 1 1.08-1.04l3.96 4.158V3.75A.75.75 0 0 1 10 3Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="px-2">
+                        <button
+                          type="button"
+                          title="Delete item"
+                          class="size-4"
+                          onClick={() => {
+                            remove(props.form, `${props.path}blocks`, {
+                              at: index(),
+                            });
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <title>Remove this block</title>
+                            <path d="M2 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2Z" />
+                            <path
+                              fill-rule="evenodd"
+                              d="M2 7.5h16l-.811 7.71a2 2 0 0 1-1.99 1.79H4.802a2 2 0 0 1-1.99-1.79L2 7.5Zm5.22 1.72a.75.75 0 0 1 1.06 0L10 10.94l1.72-1.72a.75.75 0 1 1 1.06 1.06L11.06 12l1.72 1.72a.75.75 0 1 1-1.06 1.06L10 13.06l-1.72 1.72a.75.75 0 0 1-1.06-1.06L8.94 12l-1.72-1.72a.75.75 0 0 1 0-1.06Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                     <EditBlock
                       form={props.form}
