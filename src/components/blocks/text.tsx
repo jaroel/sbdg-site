@@ -27,7 +27,7 @@ export default function ViewTextBlock(props: {
 }) {
   return (
     <p class="text-sm text-gray-600">
-      <For each={props.object.text.split("\n")}>
+      <For each={props.object.text.split(/\r?\n/)}>
         {(item) => (
           <>
             {item}
