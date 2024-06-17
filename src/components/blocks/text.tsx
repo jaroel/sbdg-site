@@ -14,6 +14,7 @@ export function EditText(props: BlockEditFormProps) {
             label="Field text"
             value={field.value}
             error={field.error}
+            multiline
           />
         )}
       </Field>
