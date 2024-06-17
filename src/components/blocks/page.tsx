@@ -119,7 +119,7 @@ export function EditPage(props: BlockEditFormProps) {
                         <button
                           type="button"
                           title="Delete item"
-                          class="size-4"
+                          class="size-4 disabled:text-gray-400"
                           onClick={() => {
                             remove(props.form, `${props.path}blocks`, {
                               at: index(),

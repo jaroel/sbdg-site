@@ -1,4 +1,4 @@
-import { Field, getValue } from "@modular-forms/solid";
+import { Field } from "@modular-forms/solid";
 import { Show } from "solid-js";
 import { AddBlock, EditBlock } from "../Blocks";
 import type {
