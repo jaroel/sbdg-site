@@ -1,60 +1,29 @@
 import { Field, FieldArray, insert, move, remove } from "@modular-forms/solid";
 import { For } from "solid-js";
-import { EditBlock, ViewBlocks } from "~/components/Blocks";
+import { EditBlock, ViewBlocks } from "../Blocks";
 import type { BlockEditFormProps } from "../content/mapping";
 import { TextField } from "../input/TextField";
-import type { PageBlock } from "./schemas";
+import type { NestedBlock } from "./schemas";
 
-export default function ViewPage(props: {
-  object: PageBlock;
-}) {
-  return (
-    <div>
-      <h1>{props.object.title}</h1>
-      <p class="text-sm text-gray-600 mb-2">{props.object.description}</p>
-      <ViewBlocks blocks={props.object.blocks} />
-    </div>
-  );
-}
-
-export function EditPage(props: BlockEditFormProps) {
+export function EditNested(props: BlockEditFormProps) {
   return (
     <>
-      <Field of={props.form} name={`${props.path}title`}>
-        {(field, fprops) => (
-          <>
-            <div class="flex space-x-2 mx-2 my-4">
-              <TextField
-                {...fprops}
-                label="Page title"
-                value={field.value}
-                error={field.error}
-                required
-              />
-            </div>
-          </>
-        )}
-      </Field>
-      <Field of={props.form} name={`${props.path}description`}>
-        {(field, fprops) => (
-          <>
-            <div class="flex space-x-2 mx-2 my-4">
-              <TextField
-                {...fprops}
-                label="Page description"
-                value={field.value}
-                error={field.error}
-                required
-              />
-            </div>
-          </>
+      <Field of={props.form} name={`${props.path}nestedTitle`}>
+        {(field, props) => (
+          <TextField
+            {...props}
+            label="Nested title"
+            value={field.value}
+            error={field.error}
+            multiline
+          />
         )}
       </Field>
 
-      <FieldArray of={props.form} name={`${props.path}blocks`}>
+      <FieldArray of={props.form} name={`${props.path}texts`}>
         {(fieldArray) => (
           <div class="flex flex-col mx-2 my-4">
-            <label>Page blocks</label>
+            <label>Nested texts</label>
             {fieldArray.error && (
               <div class="text-red-500">{fieldArray.error}</div>
             )}
@@ -176,6 +145,17 @@ export function EditPage(props: BlockEditFormProps) {
           </div>
         )}
       </FieldArray>
+    </>
+  );
+}
+
+export default function ViewNestedBlock(props: {
+  object: NestedBlock;
+}) {
+  return (
+    <>
+      <p class="text-sm text-gray-600">{props.object.nestedTitle}</p>
+      <ViewBlocks blocks={props.object.texts || []} />
     </>
   );
 }

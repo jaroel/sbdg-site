@@ -6,9 +6,16 @@ import type {
   contentObjectDeleteSchema,
   contentObjectEditSchema,
 } from "~/schemas";
-import { EditPage } from "../blocks/page";
+import ViewNestedBlock, { EditNested } from "../blocks/nested";
+import ViewPage, { EditPage } from "../blocks/page";
 import type { BlockKeys } from "../blocks/schemas";
-import { EditText } from "../blocks/text";
+import ViewTextBlock, { EditText } from "../blocks/text";
+
+export const viewComponents: Record<BlockKeys, Component<any>> = {
+  text: ViewTextBlock,
+  page: ViewPage,
+  nested: ViewNestedBlock,
+};
 
 export type BlockAddFormProps = {
   path: string;
@@ -20,6 +27,7 @@ export type BlockAddFormProps = {
 export const addComponents: Record<BlockKeys, Component<BlockEditFormProps>> = {
   text: EditText,
   page: EditPage,
+  nested: EditNested,
 };
 
 export type BlockEditFormProps = {
@@ -42,4 +50,5 @@ export const editComponents: Record<
 > = {
   text: EditText,
   page: EditPage,
+  nested: EditNested,
 };

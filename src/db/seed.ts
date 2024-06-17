@@ -46,6 +46,18 @@ export const seed = async () => {
           type: "text",
           text: "[TODO: folder listing]",
         },
+        {
+          type: "nested",
+          nestedTitle: "Ik ben nested - texts",
+          texts: [
+            { type: "text", text: "Nested text A" },
+            { type: "text", text: "Nested text B" },
+          ],
+        },
+        {
+          type: "nested",
+          nestedTitle: "Ik ben nested - no texts",
+        },
       ],
     },
   });
