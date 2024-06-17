@@ -11,11 +11,11 @@ export const seed = async () => {
       blocks: [
         {
           type: "text",
-          text: "Op onze site zijn alle uitslagen en standen te vinden. Ook de gegevens van onze leden.",
+          text: "Op onze site zijn alle uitslagen en standen te vinden",
         },
         {
           type: "text",
-          text: "Op onze site zijn alle uitslagen en standen te vinden. Ook de gegevens van onze leden.",
+          text: "Ook de gegevens van onze leden.",
         },
         {
           type: "text",

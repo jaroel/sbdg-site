@@ -1,4 +1,4 @@
-import { Field, FieldArray } from "@modular-forms/solid";
+import { Field, FieldArray, move } from "@modular-forms/solid";
 import { For } from "solid-js";
 import { EditBlock, ViewBlocks } from "~/components/Blocks";
 import type { BlockEditFormProps } from "../content/mapping";
@@ -58,14 +58,79 @@ export function EditPage(props: BlockEditFormProps) {
             {fieldArray.error && (
               <div class="text-red-500">{fieldArray.error}</div>
             )}
-            <For each={fieldArray.items}>
-              {(_, index) => (
-                <EditBlock
-                  form={props.form}
-                  path={`${fieldArray.name}.${index()}.`}
-                />
-              )}
-            </For>
+            <div class="space-y-2">
+              <For each={fieldArray.items}>
+                {(_, index) => (
+                  <div>
+                    <div class="border-b-2 border-orange-300">
+                      <button
+                        type="button"
+                        title="Move item up"
+                        class="size-4 disabled:text-gray-400"
+                        disabled={index() === 0}
+                        onClick={(event) => {
+                          console.log(`${props.path}blocks`, {
+                            from: index(),
+                            to: index() - 1,
+                          });
+                          move(props.form, `${props.path}blocks`, {
+                            from: index(),
+                            to: index() - 1,
+                          });
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <title>Move item up</title>
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 17a.75.75 0 0 1-.75-.75V5.612L5.29 9.77a.75.75 0 0 1-1.08-1.04l5.25-5.5a.75.75 0 0 1 1.08 0l5.25 5.5a.75.75 0 1 1-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0 1 10 17Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </button>
+
+                      <button
+                        type="button"
+                        title="Move item down"
+                        class="size-4 disabled:text-gray-400"
+                        disabled={index() >= fieldArray.items.length - 1}
+                        onClick={(event) => {
+                          console.log(`${props.path}blocks`, {
+                            from: index(),
+                            to: index() + 1,
+                          });
+                          move(props.form, `${props.path}blocks`, {
+                            from: index(),
+                            to: index() + 1,
+                          });
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <title>Move item down</title>
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 3a.75.75 0 0 1 .75.75v10.638l3.96-4.158a.75.75 0 1 1 1.08 1.04l-5.25 5.5a.75.75 0 0 1-1.08 0l-5.25-5.5a.75.75 0 1 1 1.08-1.04l3.96 4.158V3.75A.75.75 0 0 1 10 3Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <EditBlock
+                      form={props.form}
+                      path={`${fieldArray.name}.${index()}.`}
+                    />
+                  </div>
+                )}
+              </For>
+            </div>
           </div>
         )}
       </FieldArray>
