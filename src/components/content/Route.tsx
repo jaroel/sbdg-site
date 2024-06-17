@@ -11,10 +11,11 @@ export const contentLoadRouteDefinition = {
 
 export default function ContentObjectRoute(props: {
   component: (item: Accessor<ContentObject>) => JSXElement;
+  deferStream?: boolean;
 }) {
   const params = useParams();
   const data = createAsync(() => getContentObjectBySubPath(params.subpath), {
-    deferStream: true,
+    deferStream: props.deferStream,
   });
   return <Show when={data()}>{props.component}</Show>;
 }

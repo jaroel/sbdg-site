@@ -8,6 +8,7 @@ export default function Route() {
   return (
     <ContentObjectRoute
       component={(item) => <ContentObjectDefaultView item={item} />}
+      deferStream
     />
   );
 }
