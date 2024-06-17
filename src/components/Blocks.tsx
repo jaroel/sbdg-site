@@ -1,7 +1,7 @@
 import { Field } from "@modular-forms/solid";
 import { Dynamic, For } from "solid-js/web";
-import ViewPage from "~/components/blocks/Page";
-import ViewTextBlock from "~/components/blocks/Text";
+import ViewPage from "~/components/blocks/page";
+import ViewTextBlock from "~/components/blocks/text";
 import type { BlockTypes } from "./blocks/schemas";
 import {
   type BlockAddFormProps,

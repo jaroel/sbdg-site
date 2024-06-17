@@ -6,9 +6,9 @@ import type {
   contentObjectDeleteSchema,
   contentObjectEditSchema,
 } from "~/schemas";
-import { EditPage } from "../blocks/Page";
-import { EditText } from "../blocks/Text";
+import { EditPage } from "../blocks/page";
 import type { BlockKeys } from "../blocks/schemas";
+import { EditText } from "../blocks/text";
 
 export type BlockAddFormProps = {
   path: string;
