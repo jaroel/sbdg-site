@@ -81,7 +81,6 @@ export default function ContentObjectEditRootView(props: {
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
             <Button
               type="submit"
-              class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm disabled:text-gray-300 disabled:bg-gray-400"
               disabled={form.submitting || formSubmission.pending}
               name="routePrefix"
               value="edit"
@@ -93,7 +92,6 @@ export default function ContentObjectEditRootView(props: {
             </Button>
             <Button
               type="submit"
-              class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm disabled:text-gray-300 disabled:bg-gray-400"
               disabled={form.submitting || formSubmission.pending}
               name="routePrefix"
               value="default"
