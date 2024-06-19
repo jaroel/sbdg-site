@@ -1,5 +1,12 @@
 import { Button } from "@kobalte/core/button";
-import { Field, FieldArray, insert, move, remove } from "@modular-forms/solid";
+import {
+  Field,
+  FieldArray,
+  getValues,
+  insert,
+  move,
+  remove,
+} from "@modular-forms/solid";
 import { For } from "solid-js";
 import { EditBlock, ViewBlocks } from "~/components/Blocks";
 import {
@@ -7,11 +14,13 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   ArrowUpTrayIcon,
+  ClipboardDocumentIcon,
   DocumentIcon,
   RectangleStackIcon,
 } from "../Icons";
 import type { BlockEditFormProps } from "../content/mapping";
 import { TextField } from "../input/TextField";
+import { copyBuffer, setCopyBuffer } from "./copy";
 import type { PageBlock } from "./schemas";
 
 export default function ViewPage(props: {
@@ -116,19 +125,38 @@ export function EditPage(props: BlockEditFormProps) {
                           <ArchiveBoxXMarkIcon title="Remove this block" />
                         </Button>
                       </div>
-                      <div class="px-2">
+                      <div class="px-1 space-x-1">
                         <Button
                           type="button"
-                          title="Insert new item above"
+                          title="Copy this block"
                           class="size-4 disabled:text-gray-400"
                           onClick={() => {
-                            insert(props.form, fieldArray.name, {
-                              at: index(),
-                              value: { text: "", type: "text" },
-                            });
+                            const values = getValues(
+                              props.form,
+                              fieldArray.name,
+                            );
+                            const value = values && values[index()];
+                            value && setCopyBuffer(value);
                           }}
                         >
-                          <ArrowUpTrayIcon title="Insert new item above" />
+                          <ClipboardDocumentIcon title="Copy this block" />
+                        </Button>
+                        <Button
+                          type="button"
+                          title="Paste block above"
+                          class="size-4 disabled:text-gray-400"
+                          disabled={!copyBuffer()}
+                          onClick={() => {
+                            const value = copyBuffer();
+                            console.log({ value });
+                            value &&
+                              insert(props.form, fieldArray.name, {
+                                at: index(),
+                                value: value,
+                              });
+                          }}
+                        >
+                          <ArrowUpTrayIcon title="Paste block above" />
                         </Button>
                       </div>
                     </div>
