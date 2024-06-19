@@ -12,13 +12,13 @@
     "@kobalte/core": "^0.13.3",
     "@kobalte/tailwindcss": "^0.9.0",
     "@modular-forms/solid": "^0.21.0",
-    "@solidjs/router": "^0.13.5",
-    "@solidjs/start": "^1.0.1",
+    "@solidjs/router": "^0.13.6",
+    "@solidjs/start": "^1.0.2",
     "autoprefixer": "^10.4.19",
     "dotenv": "^16.4.5",
     "imagetools-core": "^7.0.0",
-    "orchid-orm": "^1.29.1",
-    "orchid-orm-schema-to-zod": "^0.7.23",
+    "orchid-orm": "^1.29.2",
+    "orchid-orm-schema-to-zod": "^0.7.24",
     "postcss": "^8.4.38",
     "solid-js": "^1.8.17",
     "tailwindcss": "^3.4.4",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.1",
     "@types/bun": "latest",
-    "orchid-orm-test-factory": "^0.6.23",
+    "orchid-orm-test-factory": "^0.6.24",
     "vite-imagetools": "^7.0.2"
   }
 }
