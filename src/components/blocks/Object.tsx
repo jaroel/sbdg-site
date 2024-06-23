@@ -13,23 +13,29 @@ export function AddContentObject(props: BlockAddFormProps) {
     <>
       <Field of={props.form} name={`${props.path}id`} type="number">
         {(field, fprops) => (
-          <input
-            {...fprops}
-            type="hidden"
-            name={field.name}
-            value={field.value}
-          />
+          <>
+            {field.error && <div class="text-red-500">{field.error}</div>}
+            <input
+              {...fprops}
+              type="hidden"
+              name={field.name}
+              value={field.value}
+            />
+          </>
         )}
       </Field>
 
       <Field of={props.form} name={`${props.path}parentId`} type="number">
         {(field, fprops) => (
-          <input
-            {...fprops}
-            type="hidden"
-            name={field.name}
-            value={field.value}
-          />
+          <>
+            {field.error && <div class="text-red-500">{field.error}</div>}
+            <input
+              {...fprops}
+              type="hidden"
+              name={field.name}
+              value={field.value}
+            />
+          </>
         )}
       </Field>
       <Field of={props.form} name={`${props.path}slug`}>
@@ -57,12 +63,15 @@ export function EditContentObject(
     <>
       <Field of={props.form} name={`${props.path}id`} type="number">
         {(field, fprops) => (
-          <input
-            {...fprops}
-            type="hidden"
-            name={field.name}
-            value={field.value}
-          />
+          <>
+            {field.error && <div class="text-red-500">{field.error}</div>}
+            <input
+              {...fprops}
+              type="hidden"
+              name={field.name}
+              value={field.value}
+            />
+          </>
         )}
       </Field>
       <Field of={props.form} name={`${props.path}slug`}>
@@ -70,12 +79,15 @@ export function EditContentObject(
           <Show
             when={!props.hideSlugField}
             fallback={
-              <input
-                {...fprops}
-                type="hidden"
-                name={field.name}
-                value={field.value}
-              />
+              <>
+                {field.error && <div class="text-red-500">{field.error}</div>}
+                <input
+                  {...fprops}
+                  type="hidden"
+                  name={field.name}
+                  value={field.value}
+                />
+              </>
             }
           >
             <div class="flex space-x-2 mx-2 my-4">
@@ -100,12 +112,15 @@ export function DeleteContentObject(props: BlockDeleteFormProps) {
     <>
       <Field of={props.form} name={`${props.path}id`} type="number">
         {(field, fprops) => (
-          <input
-            {...fprops}
-            type="hidden"
-            name={field.name}
-            value={field.value}
-          />
+          <>
+            {field.error && <div class="text-red-500">{field.error}</div>}
+            <input
+              {...fprops}
+              type="hidden"
+              name={field.name}
+              value={field.value}
+            />
+          </>
         )}
       </Field>
 

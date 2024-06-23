@@ -26,6 +26,7 @@ export function AddBlock(props: BlockAddFormProps) {
     <Field of={props.form} name={`${props.path}type`}>
       {(field, fprops) => (
         <>
+          {field.error && <div class="text-red-500">{field.error}</div>}
           <input
             {...fprops}
             type="hidden"
@@ -49,6 +50,7 @@ export function EditBlock(props: BlockEditFormProps) {
     <Field of={props.form} name={`${props.path}type`}>
       {(field, fprops) => (
         <>
+          {field.error && <div class="text-red-500">{field.error}</div>}
           <input
             {...fprops}
             type="hidden"
