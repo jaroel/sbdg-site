@@ -1,9 +1,44 @@
 import * as z from "zod";
 
+export type TiptapMark = z.infer<typeof tiptapMarkSchema>;
+export const tiptapMarkSchema = z.object({
+  type: z.string(),
+  attrs: z.optional(z.record(z.any())),
+});
+
+export type TiptapText = z.infer<typeof tiptapTextSchema>;
+const tiptapTextSchema = z
+  .object({
+    type: z.literal("text"),
+    text: z.string().trim().min(1),
+    marks: z.array(tiptapMarkSchema).optional(),
+  })
+  .strict();
+
+export type TiptapParagraph = z.infer<typeof tiptapParagraphSchema>;
+const tiptapParagraphSchema = z.object({
+  type: z.literal("paragraph"),
+  content: z.array(z.discriminatedUnion("type", [tiptapTextSchema])),
+});
+
+export type TiptapDoc = z.infer<typeof tiptapDocSchema>;
+export const tiptapDocSchema = z.object({
+  type: z.literal("doc"),
+  content: z.array(z.discriminatedUnion("type", [tiptapParagraphSchema])),
+});
+
+export type TiptapElement = z.infer<typeof tiptapElementSchema>;
+export type TiptapKeys = z.infer<typeof tiptapElementSchema>["type"];
+export const tiptapElementSchema = z.union([
+  tiptapDocSchema,
+  tiptapParagraphSchema,
+  tiptapTextSchema,
+]);
+
 export type TextBlock = z.infer<typeof textBlockSchema>;
 export const textBlockSchema = z.object({
   type: z.literal("text"),
-  text: z.string().trim().min(1),
+  text: tiptapDocSchema,
 });
 
 export type NestedBlock = z.infer<typeof nestedBlockSchema>;
