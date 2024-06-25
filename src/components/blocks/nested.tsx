@@ -115,7 +115,6 @@ export function EditNested(props: BlockEditFormProps) {
                           disabled={!copyBuffer()}
                           onClick={() => {
                             const value = copyBuffer();
-                            console.log({ value });
                             value &&
                               insert(props.form, fieldArray.name, {
                                 at: index(),
