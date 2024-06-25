@@ -125,7 +125,7 @@ export function EditPage(props: BlockEditFormProps) {
                           <ArchiveBoxXMarkIcon title="Remove this block" />
                         </Button>
                       </div>
-                      <div class="px-1 space-x-1">
+                      {/* <div class="px-1 space-x-1">
                         <Button
                           type="button"
                           title="Copy this block"
@@ -157,7 +157,7 @@ export function EditPage(props: BlockEditFormProps) {
                         >
                           <ArrowUpTrayIcon title="Paste block above" />
                         </Button>
-                      </div>
+                      </div> */}
                     </div>
                     <EditBlock
                       form={props.form}
