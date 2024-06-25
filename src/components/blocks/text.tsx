@@ -46,21 +46,23 @@ function RenderParagraph(props: {
   element: TiptapParagraph;
 }) {
   return (
-    <For each={props.element.content}>
-      {(value) => (
-        <p>
-          <RenderTiptapElement element={value} />
-        </p>
-      )}
-    </For>
+    <p>
+      <RenderElements elements={props.element.content} />
+    </p>
   );
 }
 
 function renderDoc(props: {
   element: TiptapDoc;
 }) {
+  return <RenderElements elements={props.element.content} />;
+}
+
+function RenderElements(props: {
+  elements: TiptapElement[];
+}) {
   return (
-    <For each={props.element.content}>
+    <For each={props.elements}>
       {(value) => <RenderTiptapElement element={value} />}
     </For>
   );
