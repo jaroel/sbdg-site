@@ -41,7 +41,7 @@ export function EditPage(props: BlockEditFormProps) {
       <Field of={props.form} name={`${props.path}title`}>
         {(field, fprops) => (
           <>
-            <div class="flex space-x-2 mx-2 my-4">
+            <div class="mx-2 my-4">
               <TextField
                 {...fprops}
                 label="Page title"
@@ -56,7 +56,7 @@ export function EditPage(props: BlockEditFormProps) {
       <Field of={props.form} name={`${props.path}description`}>
         {(field, fprops) => (
           <>
-            <div class="flex space-x-2 mx-2 my-4">
+            <div class="mx-2 my-4">
               <TextField
                 {...fprops}
                 label="Page description"
@@ -148,7 +148,6 @@ export function EditPage(props: BlockEditFormProps) {
                           disabled={!copyBuffer()}
                           onClick={() => {
                             const value = copyBuffer();
-                            console.log({ value });
                             value &&
                               insert(props.form, fieldArray.name, {
                                 at: index(),
