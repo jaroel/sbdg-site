@@ -1,12 +1,6 @@
-import {
-  createForm,
-  getErrors,
-  getValue,
-  reset,
-  zodForm,
-} from "@modular-forms/solid";
+import { createForm, getValue, reset, zodForm } from "@modular-forms/solid";
 import { action, useAction, useSubmission } from "@solidjs/router";
-import { type Accessor, createEffect, createSignal } from "solid-js";
+import { type Accessor, Show, createEffect, createSignal } from "solid-js";
 import type * as z from "zod";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
@@ -70,6 +64,7 @@ export default function ContentObjectEditRootView(props: {
           class="w-full"
           classList={{
             blur: form.submitting || formSubmission.pending,
+            "border border-red-600": form.invalid,
           }}
         >
           <div class="flex space-x-2 mx-2 my-4">
@@ -79,6 +74,11 @@ export default function ContentObjectEditRootView(props: {
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
+            <Show when={form.response.message}>
+              <div class="border-b border-red-600 text-red-500 filter grayscale-0">
+                Validation failure: {JSON.stringify(form.response)}. Call Roel.
+              </div>
+            </Show>
             <Button
               type="submit"
               disabled={form.submitting || formSubmission.pending}
