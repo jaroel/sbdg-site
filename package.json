@@ -21,7 +21,7 @@
     "autoprefixer": "^10.4.19",
     "dotenv": "^16.4.5",
     "imagetools-core": "^7.0.0",
-    "orchid-orm": "^1.31.7",
+    "orchid-orm": "^1.32.3",
     "orchid-orm-schema-to-zod": "^0.7.24",
     "postcss": "^8.4.38",
     "solid-js": "^1.8.17",
@@ -31,7 +31,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.2",
+    "@biomejs/biome": "^1.8.3",
     "@types/bun": "latest",
     "orchid-orm-test-factory": "^0.6.24",
     "vite-imagetools": "^7.0.2"
