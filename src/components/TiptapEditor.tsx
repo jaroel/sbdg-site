@@ -323,7 +323,7 @@ export default function TiptapEditor(props: {
   }));
 
   return (
-    <div class="flex items-center justify-center">
+    <div class="flex items-center justify-center w-full border border-gray-200">
       <div class="flex-1 m-1">
         <Toolbar
           ref={setMenu}
