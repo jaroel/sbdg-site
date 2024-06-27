@@ -1,10 +1,22 @@
 import * as z from "zod";
 
-export type TiptapMark = z.infer<typeof tiptapMarkSchema>;
-export const tiptapMarkSchema = z.object({
-  type: z.string(),
+export type TiptapMarkBold = z.infer<typeof tiptapMarkBoldSchema>;
+export const tiptapMarkBoldSchema = z.object({
+  type: z.literal("bold"),
   attrs: z.optional(z.record(z.any())),
 });
+
+export type TiptapMarkItalic = z.infer<typeof tiptapMarkItalicSchema>;
+export const tiptapMarkItalicSchema = z.object({
+  type: z.literal("italic"),
+  attrs: z.optional(z.record(z.any())),
+});
+
+export type TiptapMark = z.infer<typeof tiptapMarkSchema>;
+export const tiptapMarkSchema = z.discriminatedUnion("type", [
+  tiptapMarkBoldSchema,
+  tiptapMarkItalicSchema,
+]);
 
 export type TiptapText = z.infer<typeof tiptapTextSchema>;
 const tiptapTextSchema = z

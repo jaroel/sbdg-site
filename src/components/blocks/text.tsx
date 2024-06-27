@@ -8,6 +8,7 @@ import type {
   TiptapDoc,
   TiptapElement,
   TiptapKeys,
+  TiptapMark,
   TiptapParagraph,
   TiptapText,
 } from "./schemas";
@@ -35,9 +36,14 @@ export function EditText(props: BlockEditFormProps) {
 function RenderText(props: {
   element: TiptapText;
 }) {
+  const hasMark = (type: TiptapMark["type"]) =>
+    props.element.marks?.map((item) => item.type === type).filter(Boolean)
+      .length !== 0;
+
   return (
-    <Show when={props.element.marks} fallback={props.element.text}>
-      <strong>{props.element.text}</strong>
+    <Show when={props.element.marks?.length} fallback={props.element.text}>
+      {hasMark("bold") && <strong>{props.element.text}</strong>}
+      {hasMark("italic") && <em>{props.element.text}</em>}
     </Show>
   );
 }
