@@ -1,6 +1,6 @@
 import { Field } from "@modular-forms/solid";
 import { Dynamic, For } from "solid-js/web";
-import type { BlockTypes } from "./blocks/schemas";
+import type { Block } from "./blocks/schemas";
 import {
   type BlockAddFormProps,
   type BlockEditFormProps,
@@ -10,7 +10,7 @@ import {
 } from "./content/mapping";
 
 export function ViewBlocks(props: {
-  blocks: BlockTypes[];
+  blocks: Block[];
 }) {
   return (
     <For each={props.blocks}>

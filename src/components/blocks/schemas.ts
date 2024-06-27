@@ -12,6 +12,7 @@ export const tiptapMarkItalicSchema = z.object({
   attrs: z.optional(z.record(z.any())),
 });
 
+export type TiptapMarkType = z.infer<typeof blocksSchema>["type"];
 export type TiptapMark = z.infer<typeof tiptapMarkSchema>;
 export const tiptapMarkSchema = z.discriminatedUnion("type", [
   tiptapMarkBoldSchema,
@@ -39,8 +40,8 @@ export const tiptapDocSchema = z.object({
   content: z.array(z.discriminatedUnion("type", [tiptapParagraphSchema])),
 });
 
+export type TiptapElementType = TiptapElement["type"];
 export type TiptapElement = z.infer<typeof tiptapElementSchema>;
-export type TiptapKeys = z.infer<typeof tiptapElementSchema>["type"];
 export const tiptapElementSchema = z.union([
   tiptapDocSchema,
   tiptapParagraphSchema,
@@ -70,9 +71,9 @@ export const pageBlockSchema = z.object({
   ),
 });
 
-export type BlockTypes = z.infer<typeof blockTypesSchema>;
-export type BlockKeys = z.infer<typeof blockTypesSchema>["type"];
-export const blockTypesSchema = z.union([
+export type BlockType = Block["type"];
+export type Block = z.infer<typeof blocksSchema>;
+export const blocksSchema = z.union([
   textBlockSchema,
   pageBlockSchema,
   nestedBlockSchema,

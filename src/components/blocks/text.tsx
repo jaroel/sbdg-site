@@ -7,8 +7,8 @@ import type {
   TextBlock,
   TiptapDoc,
   TiptapElement,
-  TiptapKeys,
-  TiptapMark,
+  TiptapElementType,
+  TiptapMarkType,
   TiptapParagraph,
   TiptapText,
 } from "./schemas";
@@ -36,7 +36,7 @@ export function EditText(props: BlockEditFormProps) {
 function RenderText(props: {
   element: TiptapText;
 }) {
-  const hasMark = (type: TiptapMark["type"]) =>
+  const hasMark = (type: TiptapMarkType) =>
     props.element.marks?.map((item) => item.type === type).filter(Boolean)
       .length !== 0;
 
@@ -74,7 +74,7 @@ function RenderElements(props: {
   );
 }
 
-export const viewTiptapElement: Record<TiptapKeys, Component<any>> = {
+export const viewTiptapElement: Record<TiptapElementType, Component<any>> = {
   text: RenderText,
   doc: renderDoc,
   paragraph: RenderParagraph,

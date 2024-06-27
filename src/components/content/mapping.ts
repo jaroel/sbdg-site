@@ -8,10 +8,10 @@ import type {
 } from "~/schemas";
 import ViewNestedBlock, { EditNested } from "../blocks/nested";
 import ViewPage, { EditPage } from "../blocks/page";
-import type { BlockKeys } from "../blocks/schemas";
+import type { BlockType } from "../blocks/schemas";
 import ViewTextBlock, { EditText } from "../blocks/text";
 
-export const viewComponents: Record<BlockKeys, Component<any>> = {
+export const viewComponents: Record<BlockType, Component<any>> = {
   text: ViewTextBlock,
   page: ViewPage,
   nested: ViewNestedBlock,
@@ -24,7 +24,7 @@ export type BlockAddFormProps = {
   >[0];
 };
 
-export const addComponents: Record<BlockKeys, Component<BlockEditFormProps>> = {
+export const addComponents: Record<BlockType, Component<BlockEditFormProps>> = {
   text: EditText,
   page: EditPage,
   nested: EditNested,
@@ -45,7 +45,7 @@ export type BlockDeleteFormProps = {
 };
 
 export const editComponents: Record<
-  BlockKeys,
+  BlockType,
   Component<BlockEditFormProps>
 > = {
   text: EditText,

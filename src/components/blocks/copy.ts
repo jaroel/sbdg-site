@@ -1,6 +1,4 @@
 import { createSignal } from "solid-js";
-import type { BlockTypes } from "./schemas";
+import type { Block } from "./schemas";
 
-export const [copyBuffer, setCopyBuffer] = createSignal<
-  BlockTypes | undefined
->();
+export const [copyBuffer, setCopyBuffer] = createSignal<Block | undefined>();
