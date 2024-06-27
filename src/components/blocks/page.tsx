@@ -63,6 +63,7 @@ export function EditPage(props: BlockEditFormProps) {
                 value={field.value}
                 error={field.error}
                 required
+                multiline
               />
             </div>
           </>
