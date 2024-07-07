@@ -1,26 +1,17 @@
 import { Button } from "@kobalte/core/button";
-import {
-  Field,
-  FieldArray,
-  getValues,
-  insert,
-  move,
-  remove,
-} from "@modular-forms/solid";
+import { Field, FieldArray, insert, move, remove } from "@modular-forms/solid";
 import { For } from "solid-js";
 import { EditBlock, ViewBlocks } from "~/components/Blocks";
 import {
   ArchiveBoxXMarkIcon,
   ArrowDownIcon,
   ArrowUpIcon,
-  ArrowUpTrayIcon,
-  ClipboardDocumentIcon,
   DocumentIcon,
+  PictureIcon,
   RectangleStackIcon,
 } from "../Icons";
 import type { BlockEditFormProps } from "../content/mapping";
 import { TextField } from "../input/TextField";
-import { copyBuffer, setCopyBuffer } from "./copy";
 import type { PageBlock } from "./schemas";
 
 export default function ViewPage(props: {
@@ -199,6 +190,21 @@ export function EditPage(props: BlockEditFormProps) {
                     }}
                   >
                     <RectangleStackIcon title="Insert nested block" />
+                  </Button>
+                </div>
+                <div class="px-1">
+                  <Button
+                    type="button"
+                    title="Image block"
+                    class="size-4 disabled:text-gray-400"
+                    onClick={() => {
+                      insert(props.form, fieldArray.name, {
+                        at: fieldArray.items.length,
+                        value: { type: "image", label: "", image: "" },
+                      });
+                    }}
+                  >
+                    <PictureIcon title="Insert image block" />
                   </Button>
                 </div>
               </div>

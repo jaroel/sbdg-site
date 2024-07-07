@@ -61,13 +61,24 @@ export const nestedBlockSchema = z.object({
   texts: z.array(z.discriminatedUnion("type", [textBlockSchema])).optional(),
 });
 
+export type ImageBlock = z.infer<typeof imageBlockSchema>;
+export const imageBlockSchema = z.object({
+  type: z.literal("image"),
+  label: z.string().trim().min(1),
+  fileId: z.string().trim().optional(),
+});
+
 export type PageBlock = z.infer<typeof pageBlockSchema>;
 export const pageBlockSchema = z.object({
   type: z.literal("page"),
   title: z.string().trim().min(1),
   description: z.optional(z.string().trim()),
   blocks: z.array(
-    z.discriminatedUnion("type", [textBlockSchema, nestedBlockSchema]),
+    z.discriminatedUnion("type", [
+      textBlockSchema,
+      nestedBlockSchema,
+      imageBlockSchema,
+    ]),
   ),
 });
 
@@ -77,4 +88,5 @@ export const blocksSchema = z.union([
   textBlockSchema,
   pageBlockSchema,
   nestedBlockSchema,
+  imageBlockSchema,
 ]);
