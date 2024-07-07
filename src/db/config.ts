@@ -1,13 +1,16 @@
 import "dotenv/config";
 
 const database = {
-  databaseURL: process.env.DATABASE_URL,
-  //  || "postgres://roel:@localhost:5432/sbdg?ssl=false",
+  databaseURL:
+    process.env.DATABASE_URL ||
+    "postgres://roel:@localhost:5432/sbdg?ssl=false",
 };
 if (!database.databaseURL) throw new Error("DATABASE_URL is missing in .env");
 
 const testDatabase = {
-  databaseURL: process.env.DATABASE_TEST_URL,
+  databaseURL:
+    process.env.DATABASE_TEST_URL ||
+    "postgres://roel:@localhost:5432/sbdg_test?ssl=false",
 };
 
 const allDatabases = [database];
