@@ -199,7 +199,7 @@ export type ContentObject = NonNullable<
 >;
 
 export const fetchContentObject = async (path: string) => {
-  if (path.startsWith("/_")) {
+  if (path.startsWith("/_") || path.startsWith("/file/")) {
     return;
   }
   console.info("fetchContentObject", { path });
