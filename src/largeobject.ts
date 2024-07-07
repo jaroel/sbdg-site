@@ -1,4 +1,4 @@
-import { LargeObjectManager } from "pg-large-object";
+import { LargeObjectManager, type ReadStream } from "pg-large-object";
 import { type HTTPEvent, sendStream, setResponseHeader } from "vinxi/server";
 
 import { createReadStream } from "node:fs";
@@ -25,6 +25,30 @@ export async function streamLargeObject(event: HTTPEvent) {
   });
 }
 
+export async function createLargeObjectFromStream(fileStream: ReadStream) {
+  const bufferSize = 16384;
+
+  return await db.$adapter.transaction(beginSql, async (adapter) => {
+    const loManager = new LargeObjectManager({
+      pg: adapter.client,
+    });
+
+    return loManager
+      .createAndWritableStreamAsync(bufferSize)
+      .then(async ([oid, stream]) => {
+        // The server has generated an oid
+        console.log("Creating a large object with the oid", oid);
+
+        fileStream.pipe(stream);
+        await new Promise((resolve, reject) => {
+          stream.on("finish", resolve);
+          stream.on("error", reject);
+        });
+        return oid;
+      });
+  });
+}
+
 export async function createLargeObject() {
   const bufferSize = 16384;
 
@@ -35,17 +59,18 @@ export async function createLargeObject() {
 
     return loManager
       .createAndWritableStreamAsync(bufferSize)
-      .then(([oid, stream]) => {
+      .then(async ([oid, stream]) => {
         // The server has generated an oid
         console.log("Creating a large object with the oid", oid);
 
         const fileStream = createReadStream("./data/demo.jpeg");
         fileStream.pipe(stream);
 
-        return new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
           stream.on("finish", resolve);
           stream.on("error", reject);
-        }).then(() => oid);
+        });
+        return oid;
       });
   });
 }
