@@ -6,9 +6,6 @@ export const BaseTable = createBaseTable({
 
   columnTypes: (t) => ({
     ...t,
-    text: (min = 1, max = Number.POSITIVE_INFINITY) => t.text(min, max),
     timestamp: (precision?: number) => t.timestamp(precision).asDate(),
   }),
 });
-
-// export const { sql } = BaseTable;

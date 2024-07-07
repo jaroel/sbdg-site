@@ -15,8 +15,8 @@ importers:
         specifier: ^0.9.0
         version: 0.9.0(tailwindcss@3.4.4)
       '@modular-forms/solid':
-        specifier: ^0.21.0
-        version: 0.21.0(solid-js@1.8.18)
+        specifier: ^0.22.1
+        version: 0.22.1(solid-js@1.8.18)
       '@solidjs/router':
         specifier: ^0.13.6
         version: 0.13.6(solid-js@1.8.18)
@@ -48,8 +48,8 @@ importers:
         specifier: ^1.32.13
         version: 1.32.13(typescript@5.5.3)
       orchid-orm-schema-to-zod:
-        specifier: ^0.7.24
-        version: 0.7.24
+        specifier: ^0.8.20
+        version: 0.8.20
       pg-large-object:
         specifier: ^2.0.0
         version: 2.0.0(pg@8.12.0)
@@ -762,8 +762,8 @@ packages:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
 
-  '@modular-forms/solid@0.21.0':
-    resolution: {integrity: sha512-9QUykslNeVvn/gBj4iXoiNPV1UutS8sOCPGoqBxCNBwVQVjfeMljvXU3kZtctWEMy984q7JtKVVGSOXMDydW6A==}
+  '@modular-forms/solid@0.22.1':
+    resolution: {integrity: sha512-l6p/erp9k5bAFZDLVVLyyFTp+JQsp+wxsmuaT8n7BMllHDDVblkMlerB7PxmwXPnZbB5sTetVu2onzYq6rlMrQ==}
     peerDependencies:
       solid-js: ^1.3.1
 
@@ -2432,14 +2432,8 @@ packages:
     resolution: {integrity: sha512-c/hfooPx+RBIOPM09GSxABOZhYPblDoyaGhqBkD/59vtpN21jEuWKDlM0KYTvqJVlSYjKs0tBcIdeXKChlSPtw==}
     hasBin: true
 
-  orchid-core@0.16.1:
-    resolution: {integrity: sha512-39B7VP+ed5HgPmw34xY8PLeMkSGAnLxJ7FUcmjNL2H1zHwl8VFsX4jMbkEfKP0iSkXj1+k9j0iF0lGNR1UCnCw==}
-
   orchid-core@0.19.4:
     resolution: {integrity: sha512-30XOezAIzMp6fp+UxmOs2mz5CKwlKAMTtHll6UU8qRLX2dHQesF4SU6RASALwwfOdAxcvfxF4hKrShHCJDF6dA==}
-
-  orchid-orm-schema-to-zod@0.7.24:
-    resolution: {integrity: sha512-SfVVGL1UwOcC0CbkVZVfa0hKP2xMxR7H+V0WhPKOid/DBYQVJ6PiSuUaa4HSZejhS8D17FQwNmX4Mi7ImDJiMQ==}
 
   orchid-orm-schema-to-zod@0.8.20:
     resolution: {integrity: sha512-9PhlLZ++peaqzLoKAtV2ZoK04/l1j+AQKCz5tPm09f90dPkKiBOKA4kiEJobr8T6PE9kjt9QlFF6E29eFcL6NA==}
@@ -2634,9 +2628,6 @@ packages:
 
   postgres-range@1.1.4:
     resolution: {integrity: sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==}
-
-  pqb@0.33.2:
-    resolution: {integrity: sha512-75Fhh7ee7POel+wpofx89OdAldYk0xrRyefwuY6hPp9RCvFpucRsN9Y/yraylJgZXl0fbA90/5NMVvJOEF51mg==}
 
   pqb@0.36.10:
     resolution: {integrity: sha512-QrRlX/j/wtWvPUq/cR4Y0Os70smFbdmgMFodCPhtNXAnPX5thBfWAwhL9e/T3WyTy/dKzX2rSAsdoYsIwUo3Tg==}
@@ -3926,7 +3917,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@modular-forms/solid@0.21.0(solid-js@1.8.18)':
+  '@modular-forms/solid@0.22.1(solid-js@1.8.18)':
     dependencies:
       solid-js: 1.8.18
       valibot: 0.36.0
@@ -5696,17 +5687,7 @@ snapshots:
       undici: 5.28.4
       yargs-parser: 21.1.1
 
-  orchid-core@0.16.1: {}
-
   orchid-core@0.19.4: {}
-
-  orchid-orm-schema-to-zod@0.7.24:
-    dependencies:
-      orchid-core: 0.16.1
-      pqb: 0.33.2
-      zod: 3.23.8
-    transitivePeerDependencies:
-      - pg-native
 
   orchid-orm-schema-to-zod@0.8.20:
     dependencies:
@@ -5888,14 +5869,6 @@ snapshots:
   postgres-interval@3.0.0: {}
 
   postgres-range@1.1.4: {}
-
-  pqb@0.33.2:
-    dependencies:
-      '@types/pg': 8.11.6
-      orchid-core: 0.16.1
-      pg: 8.12.0
-    transitivePeerDependencies:
-      - pg-native
 
   pqb@0.36.10:
     dependencies:
