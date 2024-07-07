@@ -1,6 +1,6 @@
 // import type { Insertable, Queryable, Selectable, Updatable } from "orchid-orm";
 import { BaseTable } from "../baseTable";
-import { contentObjectBlockSchema } from "../schemas";
+import type { contentObjectBlockSchema } from "../schemas";
 
 export class ContentObjectsTable extends BaseTable {
   readonly table = "contentObjects";
@@ -14,7 +14,7 @@ export class ContentObjectsTable extends BaseTable {
       onDelete: "CASCADE",
     }),
     ...t.timestamps(),
-    object: t.json(contentObjectBlockSchema),
+    object: t.json<typeof contentObjectBlockSchema>(),
   }));
 
   relations = {
