@@ -9,6 +9,7 @@ export default defineConfig({
     },
   },
   server: {
-    preset: "bun",
+    preset: "node-server",
   },
+  middleware: "./src/middleware.ts",
 });

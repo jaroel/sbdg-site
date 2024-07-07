@@ -5,8 +5,10 @@
     "dev": "vinxi dev",
     "build": "vinxi build",
     "start": "vinxi start",
-    "db": "bun src/db/dbScript.ts --",
-    "resetdb": "bun run db drop && bun run db create && bun run db up"
+    "db": "vite-node src/db/dbScript.ts --",
+    "build:migrations": "vite build --config vite.migrations.mts",
+    "db:compiled": "node dist/db/dbScript.mjs",
+    "resetdb": "pnpm run db drop && pnpm run db create && pnpm run db up"
   },
   "dependencies": {
     "@kobalte/core": "^0.13.3",
@@ -21,19 +23,27 @@
     "autoprefixer": "^10.4.19",
     "dotenv": "^16.4.5",
     "imagetools-core": "^7.0.0",
-    "orchid-orm": "^1.32.3",
+    "orchid-orm": "^1.32.13",
     "orchid-orm-schema-to-zod": "^0.7.24",
-    "postcss": "^8.4.38",
-    "solid-js": "^1.8.17",
+    "pg-large-object": "^2.0.0",
+    "postcss": "^8.4.39",
+    "solid-js": "^1.8.18",
     "solid-tiptap": "^0.7.0",
     "tailwindcss": "^3.4.4",
+    "terracotta": "^1.0.5",
     "vinxi": "^0.3.12",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
-    "@types/bun": "latest",
-    "orchid-orm-test-factory": "^0.6.24",
-    "vite-imagetools": "^7.0.2"
+    "@types/node": "^20.14.10",
+    "@types/pg": "^8.11.6",
+    "@types/pg-large-object": "^2.0.7",
+    "orchid-orm-test-factory": "^0.7.20",
+    "rollup-plugin-node-externals": "^7.1.2",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3",
+    "vite-imagetools": "^7.0.2",
+    "vite-node": "^1.6.0"
   }
 }
