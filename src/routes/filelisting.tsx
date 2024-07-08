@@ -16,8 +16,8 @@ export default function Home() {
         <For each={oids()}>
           {(oid) => (
             <li>
-              <a href={`/++file++/${oid}`} target="blank">
-                <img src={`/++file++/${oid}`} alt="Preview!" class="w-60" />
+              <a href={`/++file++/id:${oid}`} target="blank">
+                <img src={`/++file++/id:${oid}`} alt="Preview!" class="w-60" />
               </a>
             </li>
           )}

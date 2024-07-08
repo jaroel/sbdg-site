@@ -65,7 +65,7 @@ export type ImageBlock = z.infer<typeof imageBlockSchema>;
 export const imageBlockSchema = z.object({
   type: z.literal("image"),
   label: z.string().trim().min(1),
-  fileId: z.string().trim().optional(),
+  fileId: z.string().trim().min(1),
 });
 
 export type PageBlock = z.infer<typeof pageBlockSchema>;

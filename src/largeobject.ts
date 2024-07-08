@@ -10,7 +10,7 @@ const beginSql: SingleSqlItem = { text: "BEGIN" };
 
 export async function streamLargeObject(event: HTTPEvent) {
   const largeObjectId = Number.parseInt(
-    event.path.replace("/++file++/", ""),
+    event.path.replace("/++file++/id:", ""),
     10,
   );
 
