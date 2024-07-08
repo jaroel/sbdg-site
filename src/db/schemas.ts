@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { pageBlockSchema } from "~/components/blocks/schemas";
+import { pageBlockSchema } from "../components/blocks/schemas";
 
 export const contentObjectBlockSchema = z.discriminatedUnion("type", [
   pageBlockSchema,
