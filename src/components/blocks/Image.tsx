@@ -31,9 +31,22 @@ export function EditImage(props: BlockEditFormProps) {
           />
         )}
       </Field>
-      <Show when={oids().length}>
-        <Field of={props.form} name={`${props.path}fileId`}>
-          {(field, fprops) => (
+
+      <Field of={props.form} name={`${props.path}fileId`}>
+        {(field, fprops) => (
+          <Show
+            when={oids().length}
+            fallback={
+              <Select
+                {...fprops}
+                label="File Id"
+                placeholder={field.value}
+                options={[{ label: field.value, value: field.value }]}
+                value={field.value}
+                error=""
+              />
+            }
+          >
             <Select
               {...fprops}
               label="File Id"
@@ -46,11 +59,10 @@ export function EditImage(props: BlockEditFormProps) {
               })}
               value={field.value}
               error={field.error}
-              class="max-w-fit"
             />
-          )}
-        </Field>
-      </Show>
+          </Show>
+        )}
+      </Field>
     </>
   );
 }
