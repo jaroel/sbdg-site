@@ -1,3 +1,4 @@
+"use server";
 import { LargeObjectManager, type ReadStream } from "pg-large-object";
 import { type HTTPEvent, sendStream, setResponseHeader } from "vinxi/server";
 
@@ -73,4 +74,14 @@ export async function createLargeObject() {
         return oid;
       });
   });
+}
+
+export async function listObjects() {
+  // pg_largeobject_metadata
+  console.log("hier");
+  const results = await db.$query<{
+    oid: number;
+  }>`select distinct oid from pg_largeobject_metadata`;
+
+  return results.rows.map((row) => row.oid);
 }
