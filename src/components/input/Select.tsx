@@ -1,5 +1,6 @@
 import { Select as Kobalte } from "@kobalte/core/select";
 import {
+  type Accessor,
   type JSX,
   Show,
   createEffect,
@@ -22,6 +23,7 @@ type SelectProps = {
   error: string;
   required?: boolean | undefined;
   disabled?: boolean | undefined;
+  readOnly?: boolean;
   ref: (element: HTMLSelectElement) => void;
   onInput: JSX.EventHandler<HTMLSelectElement, InputEvent>;
   onChange: JSX.EventHandler<HTMLSelectElement, Event>;
@@ -65,7 +67,10 @@ export function Select(props: SelectProps) {
         <Kobalte.Label class="block text-gray-600">{props.label}</Kobalte.Label>
       </Show>
       <Kobalte.HiddenSelect {...selectProps} />
-      <Kobalte.Trigger class="flex flex-row divide-x space-x-2 min-w-48 max-w-fit p-2 border border-gray-200 ui-invalid:border-red-600 ui-disabled:text-gray-400">
+      <Kobalte.Trigger
+        class="flex flex-row divide-x space-x-2 min-w-48 max-w-fit p-2 border border-gray-200 ui-invalid:border-red-600 ui-disabled:text-gray-400"
+        disabled={props.readOnly}
+      >
         <Kobalte.Value<Option> class="w-full text-left">
           {(state) => state.selectedOption().label}
         </Kobalte.Value>
@@ -82,5 +87,30 @@ export function Select(props: SelectProps) {
         {props.error}
       </Kobalte.ErrorMessage>
     </Kobalte>
+  );
+}
+
+export function SelectFieldValueFallback(
+  props: Omit<SelectProps, "options"> & {
+    options: Accessor<Option[]>;
+  },
+) {
+  return (
+    <Show
+      when={props.options().length}
+      fallback={
+        <Select
+          {...props}
+          onChange={(event) => {
+            console.log({ event });
+          }}
+          placeholder={props.value || undefined}
+          options={[{ label: props.value, value: props.value }]}
+          readOnly
+        />
+      }
+    >
+      <Select {...props} options={props.options()} />
+    </Show>
   );
 }

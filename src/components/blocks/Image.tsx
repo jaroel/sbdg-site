@@ -1,8 +1,8 @@
 import { Field } from "@modular-forms/solid";
-import { Show, createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import { listObjects } from "~/largeobject";
 import type { BlockEditFormProps } from "../content/mapping";
-import { Select } from "../input/Select";
+import { SelectFieldValueFallback } from "../input/Select";
 import { TextField } from "../input/TextField";
 import type { ImageBlock } from "./schemas";
 
@@ -34,33 +34,18 @@ export function EditImage(props: BlockEditFormProps) {
 
       <Field of={props.form} name={`${props.path}fileId`}>
         {(field, fprops) => (
-          <Show
-            when={oids().length}
-            fallback={
-              <Select
-                {...fprops}
-                label="File Id"
-                placeholder={field.value}
-                options={[{ label: field.value, value: field.value }]}
-                value={field.value}
-                error=""
-              />
-            }
-          >
-            <Select
-              {...fprops}
-              label="File Id"
-              placeholder={
-                (field.value && `Invalid value: ${field.value}`) ||
-                "Please select a value"
-              }
-              options={oids().map((oid) => {
+          <SelectFieldValueFallback
+            {...fprops}
+            label="File Id"
+            placeholder="Please select a value"
+            options={() =>
+              oids().map((oid) => {
                 return { label: `OID: ${oid}`, value: `id:${oid}` };
-              })}
-              value={field.value}
-              error={field.error}
-            />
-          </Show>
+              })
+            }
+            value={field.value}
+            error={field.error}
+          />
         )}
       </Field>
     </>
