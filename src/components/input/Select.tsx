@@ -26,13 +26,12 @@ type SelectProps = {
   onInput: JSX.EventHandler<HTMLSelectElement, InputEvent>;
   onChange: JSX.EventHandler<HTMLSelectElement, Event>;
   onBlur: JSX.EventHandler<HTMLSelectElement, FocusEvent>;
-  class?: string;
 };
 
 export function Select(props: SelectProps) {
   const [rootProps, selectProps] = splitProps(
     props,
-    ["name", "placeholder", "options", "required", "disabled", "class"],
+    ["name", "placeholder", "options", "required", "disabled"],
     ["placeholder", "ref", "onInput", "onChange", "onBlur"],
   );
   const [getValue, setValue] = createSignal<Option>();
@@ -49,10 +48,15 @@ export function Select(props: SelectProps) {
       optionTextValue="label"
       validationState={props.error ? "invalid" : "valid"}
       itemComponent={(props) => (
-        <Kobalte.Item item={props.item} class="flex flex-row space-x-2">
-          <Kobalte.ItemLabel>{props.item.textValue}</Kobalte.ItemLabel>
+        <Kobalte.Item
+          item={props.item}
+          class="flex flex-row space-x-2 p-2 cursor-pointer"
+        >
+          <Kobalte.ItemLabel class="w-full">
+            {props.item.textValue}
+          </Kobalte.ItemLabel>
           <Kobalte.ItemIndicator class="size-6">
-            <CheckIcon title="Checked!" />
+            <CheckIcon title="This item is selected" />
           </Kobalte.ItemIndicator>
         </Kobalte.Item>
       )}
@@ -61,17 +65,17 @@ export function Select(props: SelectProps) {
         <Kobalte.Label class="block text-gray-600">{props.label}</Kobalte.Label>
       </Show>
       <Kobalte.HiddenSelect {...selectProps} />
-      <Kobalte.Trigger class="flex flex-row divide-x space-x-2 p-2 border border-gray-200 ui-invalid:border-red-600 ui-disabled:text-gray-400">
-        <Kobalte.Value<Option>>
+      <Kobalte.Trigger class="flex flex-row divide-x space-x-2 min-w-48 max-w-fit p-2 border border-gray-200 ui-invalid:border-red-600 ui-disabled:text-gray-400">
+        <Kobalte.Value<Option> class="w-full text-left">
           {(state) => state.selectedOption().label}
         </Kobalte.Value>
         <Kobalte.Icon class="size-6">
-          <ChevronUpDownIcon title="Something?" />
+          <ChevronUpDownIcon title="Click to toggle the options" />
         </Kobalte.Icon>
       </Kobalte.Trigger>
       <Kobalte.Portal>
         <Kobalte.Content class="bg-white border">
-          <Kobalte.Listbox class="flex flex-col divide-y space-y-2 p-2" />
+          <Kobalte.Listbox class="flex flex-col divide-y" />
         </Kobalte.Content>
       </Kobalte.Portal>
       <Kobalte.ErrorMessage class="text-red-500">
