@@ -99,15 +99,14 @@ export function SelectFieldValueFallback(
     <Show
       when={props.options().length}
       fallback={
-        <Select
-          {...props}
-          onChange={(event) => {
-            console.log({ event });
-          }}
-          placeholder={props.value || undefined}
-          options={[{ label: props.value, value: props.value }]}
-          readOnly
-        />
+        props.value && (
+          <Select
+            {...props}
+            placeholder={props.value || undefined}
+            options={[{ label: props.value, value: props.value }]}
+            readOnly
+          />
+        )
       }
     >
       <Select {...props} options={props.options()} />
