@@ -1,6 +1,7 @@
 "use server";
 import { cache, redirect } from "@solidjs/router";
 import * as z from "zod";
+import { NOTFOUND404CONTENTOBJECT } from "./components/blocks/notfound";
 import { db } from "./db/db";
 import {
   contentObjectAddSchema,
@@ -209,7 +210,8 @@ export const fetchContentObject = async (path: string) => {
     .select("*", {
       children: (q) => q.children,
     })
-    .take();
+    .takeOptional();
+  if (result === undefined) return NOTFOUND404CONTENTOBJECT;
 
   const parents = await db.$queryBuilder
     .withRecursive(
