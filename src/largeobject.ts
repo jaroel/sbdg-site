@@ -77,11 +77,8 @@ export async function createLargeObject() {
 }
 
 export async function listObjects() {
-  // pg_largeobject_metadata
-  console.log("hier");
-  const results = await db.$query<{
+  const results = db.$query<{
     oid: number;
   }>`select distinct oid from pg_largeobject_metadata`;
-
-  return results.rows.map((row) => row.oid);
+  return results.then((value) => value.rows.map((row) => row.oid));
 }
