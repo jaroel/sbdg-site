@@ -71,6 +71,7 @@ export const imageBlockSchema = z.object({
 export type PageBlock = z.infer<typeof pageBlockSchema>;
 export const pageBlockSchema = z.object({
   type: z.literal("page"),
+  status: z.number().optional(),
   title: z.string().trim().min(1),
   description: z.optional(z.string().trim()),
   blocks: z.array(

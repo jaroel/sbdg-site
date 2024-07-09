@@ -1,5 +1,6 @@
 import { Button } from "@kobalte/core/button";
 import { Field, FieldArray, insert, move, remove } from "@modular-forms/solid";
+import { HttpStatusCode } from "@solidjs/start";
 import { For } from "solid-js";
 import { EditBlock, ViewBlocks } from "~/components/Blocks";
 import {
@@ -20,6 +21,7 @@ export default function ViewPage(props: {
   return (
     <div>
       <h1>{props.object.title}</h1>
+      <HttpStatusCode code={props.object.status || 200} />
       <p class="text-sm text-gray-600 mb-2">{props.object.description}</p>
       <ViewBlocks blocks={props.object.blocks} />
     </div>
