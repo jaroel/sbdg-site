@@ -1,25 +1,15 @@
 import { Button } from "@kobalte/core/button";
-import {
-  Field,
-  FieldArray,
-  getValues,
-  insert,
-  move,
-  remove,
-} from "@modular-forms/solid";
+import { Field, FieldArray, insert, move, remove } from "@modular-forms/solid";
 import { For } from "solid-js";
 import { EditBlock, ViewBlocks } from "../Blocks";
 import {
   ArchiveBoxXMarkIcon,
   ArrowDownIcon,
   ArrowUpIcon,
-  ArrowUpTrayIcon,
-  ClipboardDocumentIcon,
   DocumentIcon,
 } from "../Icons";
 import type { BlockEditFormProps } from "../content/mapping";
 import { TextField } from "../input/TextField";
-import { copyBuffer, setCopyBuffer } from "./copy";
 import type { NestedBlock } from "./schemas";
 
 export function EditNested(props: BlockEditFormProps) {
