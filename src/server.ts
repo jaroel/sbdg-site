@@ -4,6 +4,10 @@ import * as z from "zod";
 import { NOTFOUND404PAGE } from "./components/blocks/notfound";
 import { db } from "./db/db";
 import {
+  type Content,
+  contentFieldnames,
+} from "./db/tables/contentObjects.table";
+import {
   contentObjectAddSchema,
   contentObjectDeleteSchema,
   contentObjectEditRootSchema,
@@ -195,11 +199,14 @@ export const deleteContentObject = async (formData: FormData) => {
   }
 };
 
-export type ContentObject = NonNullable<
-  Awaited<ReturnType<typeof fetchContentObject>>
->;
+export type ContentObject = Content & {
+  children: Content[];
+  parents: Content[];
+};
 
-export const fetchContentObject = async (path: string) => {
+export const fetchContentObject = async (
+  path: string,
+): Promise<ContentObject | undefined> => {
   if (path.startsWith("/_") || path.startsWith("/file/")) {
     return;
   }
@@ -207,7 +214,7 @@ export const fetchContentObject = async (path: string) => {
   const result = await db.contentObjects
     .as("outer")
     .where({ path })
-    .select("*", {
+    .select(...contentFieldnames, {
       children: (q) => q.children,
     })
     .takeOptional();
@@ -227,13 +234,11 @@ export const fetchContentObject = async (path: string) => {
   const parents = await db.$queryBuilder
     .withRecursive(
       "parents",
-      db.contentObjects
-        .select("id", "path", "parentId", "object")
-        .find(result.id),
+      db.contentObjects.select(...contentFieldnames).find(result.id),
       (q) =>
         q
           .from(db.contentObjects)
-          .select("id", "path", "parentId", "object")
+          .select(...contentFieldnames)
           .join("parents", "parents.parentId", "id"),
     )
     .from("parents")
