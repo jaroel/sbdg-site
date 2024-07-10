@@ -1,7 +1,9 @@
-import { Field } from "@modular-forms/solid";
-import { createEffect, createSignal } from "solid-js";
+import { Field, setValue } from "@modular-forms/solid";
+import { For, createEffect, createSignal } from "solid-js";
 import { listObjects } from "~/largeobject";
+import Dialog from "../Dialog";
 import type { BlockEditFormProps } from "../content/mapping";
+import Button from "../input/Button";
 import { SelectFieldValueFallback } from "../input/Select";
 import { TextField } from "../input/TextField";
 import type { ImageBlock } from "./schemas";
@@ -9,6 +11,7 @@ import type { ImageBlock } from "./schemas";
 export function EditImage(props: BlockEditFormProps) {
   const [oids, setOids] = createSignal<number[]>([]);
   createEffect(async () => setOids(await listObjects()));
+  const [open, setOpen] = createSignal(false);
   return (
     <>
       <Field of={props.form} name={`${props.path}label`}>
@@ -34,18 +37,53 @@ export function EditImage(props: BlockEditFormProps) {
 
       <Field of={props.form} name={`${props.path}fileId`}>
         {(field, fprops) => (
-          <SelectFieldValueFallback
-            {...fprops}
-            label="File Id"
-            placeholder="Please select a value"
-            options={() =>
-              oids().map((oid) => {
-                return { label: `OID: ${oid}`, value: `id:${oid}` };
-              })
-            }
-            value={field.value}
-            error={field.error}
-          />
+          <>
+            <div>
+              <SelectFieldValueFallback
+                {...fprops}
+                label="File Id"
+                placeholder="Please select a value"
+                options={() =>
+                  oids().map((oid) => {
+                    return { label: `OID: ${oid}`, value: `id:${oid}` };
+                  })
+                }
+                value={field.value}
+                error={field.error}
+              />
+            </div>
+            <div>
+              <p>Image browser</p>
+              <Dialog
+                title="Choose an image"
+                open={open()}
+                onOpenChange={setOpen}
+              >
+                <ul class="flex flex-row space-x-2">
+                  <For each={oids()}>
+                    {(oid) => (
+                      <li>
+                        <Button
+                          name="routePrefix"
+                          value="default"
+                          onClick={() => {
+                            setValue(props.form, field.name, `id:${oid}`);
+                            setOpen(false);
+                          }}
+                        >
+                          <img
+                            class="w-40"
+                            src={`/++file++/id:${oid}`}
+                            alt="Preview!"
+                          />
+                        </Button>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </Dialog>
+            </div>
+          </>
         )}
       </Field>
     </>
