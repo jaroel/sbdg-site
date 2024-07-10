@@ -77,7 +77,6 @@ export function EditPage(props: BlockEditFormProps) {
                     <div class="border-b border-orange-300 divide-x flex flex-row">
                       <div>
                         <Button
-                          type="button"
                           title="Move item up"
                           class="size-4 disabled:text-gray-400"
                           disabled={index() === 0}
@@ -91,7 +90,6 @@ export function EditPage(props: BlockEditFormProps) {
                           <ArrowUpIcon title="Move item up" />
                         </Button>
                         <Button
-                          type="button"
                           title="Move item down"
                           class="size-4 disabled:text-gray-400"
                           disabled={index() >= fieldArray.items.length - 1}
@@ -107,7 +105,6 @@ export function EditPage(props: BlockEditFormProps) {
                       </div>
                       <div class="px-2">
                         <Button
-                          type="button"
                           title="Delete item"
                           class="size-4 disabled:text-gray-400"
                           onClick={() => {
@@ -121,7 +118,6 @@ export function EditPage(props: BlockEditFormProps) {
                       </div>
                       {/* <div class="px-1 space-x-1">
                         <Button
-                          type="button"
                           title="Copy this block"
                           class="size-4 disabled:text-gray-400"
                           onClick={() => {
@@ -136,7 +132,6 @@ export function EditPage(props: BlockEditFormProps) {
                           <ClipboardDocumentIcon title="Copy this block" />
                         </Button>
                         <Button
-                          type="button"
                           title="Paste block above"
                           class="size-4 disabled:text-gray-400"
                           disabled={!copyBuffer()}
@@ -166,7 +161,6 @@ export function EditPage(props: BlockEditFormProps) {
               <div class="border-b border-orange-300 divide-x flex flex-row">
                 <div class="px-1">
                   <Button
-                    type="button"
                     title="Text block"
                     class="size-4 disabled:text-gray-400"
                     onClick={() => {
@@ -181,7 +175,6 @@ export function EditPage(props: BlockEditFormProps) {
                 </div>
                 <div class="px-1">
                   <Button
-                    type="button"
                     title="Nested block"
                     class="size-4 disabled:text-gray-400"
                     onClick={() => {
@@ -196,7 +189,6 @@ export function EditPage(props: BlockEditFormProps) {
                 </div>
                 <div class="px-1">
                   <Button
-                    type="button"
                     title="Image block"
                     class="size-4 disabled:text-gray-400"
                     onClick={() => {

@@ -165,7 +165,6 @@ function Control(props: ControlProps): JSX.Element {
       }}
       title={props.title}
       onChange={props.onChange}
-      type="button"
     >
       {props.children}
     </Toggle>

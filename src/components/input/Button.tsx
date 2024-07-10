@@ -3,7 +3,7 @@ import type { JSX, ParentProps } from "solid-js";
 
 type ButtonProps = {
   name: string;
-  type: "submit" | "button";
+  type?: "submit" | "button";
   label?: string;
   value?: string;
   disabled?: boolean;
@@ -12,8 +12,10 @@ type ButtonProps = {
 export default function Button(props: ParentProps & ButtonProps) {
   return (
     <Kobalte
-      class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm disabled:text-gray-300 disabled:bg-gray-400"
+      class="rounded-md border px-3 py-2 text-sm font-semibold text-white disabled:text-gray-300 disabled:bg-gray-400"
       {...props}
+      type={props.type || "button"}
+      classList={{ "bg-indigo-600 shadow-sm": props.type === "submit" }}
     >
       {props.children}
     </Kobalte>
