@@ -1,4 +1,5 @@
 "use server";
+import { Readable } from "node:stream";
 import { cache, redirect } from "@solidjs/router";
 import * as z from "zod";
 import { NOTFOUND404PAGE } from "./components/blocks/notfound";
@@ -7,12 +8,14 @@ import {
   type Content,
   contentFieldnames,
 } from "./db/tables/contentObjects.table";
+import { createLargeObjectFromStream } from "./largeobject";
 import {
   contentObjectAddSchema,
   contentObjectDeleteSchema,
   contentObjectEditRootSchema,
   contentObjectEditSchema,
   contentViews,
+  fileAddSchema,
 } from "./schemas";
 import { parseFormDataAsync } from "./zod-web-api";
 
@@ -140,6 +143,33 @@ export const addContentObject = async (formData: FormData) => {
     }
     throw exception;
   }
+};
+
+function readableStreamToNodeReadable(readableStream: ReadableStream) {
+  const reader = readableStream.getReader();
+
+  return new Readable({
+    async read(size) {
+      try {
+        const { done, value } = await reader.read();
+        if (done) {
+          this.push(null);
+        } else {
+          this.push(Buffer.from(value));
+        }
+      } catch (err) {
+        this.destroy(err);
+      }
+    },
+  });
+}
+
+export const addFile = async (formData: FormData) => {
+  const data = await parseFormDataAsync(formData, fileAddSchema);
+  console.log({ data });
+  return await createLargeObjectFromStream(
+    readableStreamToNodeReadable(data.someFile.stream()),
+  );
 };
 
 export const fetchDescendants = async (id: number) =>

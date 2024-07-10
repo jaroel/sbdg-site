@@ -4,6 +4,14 @@ import geweer from "~/assets/copy_of_geweersteyr.jpg?w=168&format=avif;webp;jpeg
 import Picture from "~/components/Picture";
 import type { ContentObject } from "~/server";
 
+export function SidebarGunOnly() {
+  return (
+    <aside class="flex-shrink-0 w-64 bg-gray-200">
+      <Picture src={geweer} alt="Geweer" />
+    </aside>
+  );
+}
+
 export default function Sidebar(props: {
   item: Accessor<ContentObject>;
   pathPrefix: string;

@@ -46,3 +46,7 @@ export const contentViews = z.union([
   z.literal("edit"),
   z.literal("delete"),
 ]);
+
+export const fileAddSchema = z.object({
+  someFile: z.instanceof(File),
+});
