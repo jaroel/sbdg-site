@@ -29,6 +29,9 @@ export default function Toolbar(props: {
       <a class="mr-4" href="/" title="Go to the home page">
         home
       </a>
+      <a class="mr-4" href="/images" title="Manage images">
+        images
+      </a>
     </div>
   );
 }
