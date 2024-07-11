@@ -59,28 +59,30 @@ export function EditImage(props: BlockEditFormProps) {
                 open={open()}
                 onOpenChange={setOpen}
               >
-                <ul class="flex flex-row space-x-2">
-                  <For each={oids()}>
-                    {(oid) => (
-                      <li>
-                        <Button
-                          name="routePrefix"
-                          value="default"
-                          onClick={() => {
-                            setValue(props.form, field.name, `id:${oid}`);
-                            setOpen(false);
-                          }}
-                        >
-                          <img
-                            class="w-40"
-                            src={`/++file++/id:${oid}`}
-                            alt="Preview!"
-                          />
-                        </Button>
-                      </li>
-                    )}
-                  </For>
-                </ul>
+                <div class="">
+                  <ul class="flex flex-wrap space-x-2">
+                    <For each={oids()}>
+                      {(oid) => (
+                        <li>
+                          <Button
+                            name="routePrefix"
+                            value="default"
+                            onClick={() => {
+                              setValue(props.form, field.name, `id:${oid}`);
+                              setOpen(false);
+                            }}
+                          >
+                            <img
+                              class="w-40"
+                              src={`/++file++/id:${oid}`}
+                              alt="Preview!"
+                            />
+                          </Button>
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </div>
               </Dialog>
             </div>
             {field.value && (
