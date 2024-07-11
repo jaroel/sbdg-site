@@ -17,8 +17,8 @@ export default function Sidebar(props: {
   pathPrefix: string;
 }) {
   return (
-    <aside class="flex-shrink-0 w-64 bg-gray-200">
-      <ul class="list-inside list-disc mb-4">
+    <aside class="flex flex-col p-2 w-64 bg-gray-200">
+      <ul class="list-outside list-disc ml-4 mb-4">
         <For each={props.item().children}>
           {(item) => (
             <li>
@@ -27,7 +27,7 @@ export default function Sidebar(props: {
           )}
         </For>
       </ul>
-      <Picture src={geweer} alt="Geweer" />
+      <Picture src={geweer} alt="Geweer" class="ml-auto mr-auto" />
     </aside>
   );
 }
