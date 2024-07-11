@@ -13,6 +13,7 @@ import {
 } from "../Icons";
 import type { BlockEditFormProps } from "../content/mapping";
 import { TextField } from "../input/TextField";
+import { textBlockFactory } from "./factories";
 import type { PageBlock } from "./schemas";
 
 export default function ViewPage(props: {
@@ -166,7 +167,7 @@ export function EditPage(props: BlockEditFormProps) {
                     onClick={() => {
                       insert(props.form, fieldArray.name, {
                         at: fieldArray.items.length,
-                        value: { text: "", type: "text" },
+                        value: textBlockFactory("text"),
                       });
                     }}
                   >

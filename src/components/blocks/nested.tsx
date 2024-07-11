@@ -10,6 +10,7 @@ import {
 } from "../Icons";
 import type { BlockEditFormProps } from "../content/mapping";
 import { TextField } from "../input/TextField";
+import { textBlockFactory } from "./factories";
 import type { NestedBlock } from "./schemas";
 
 export function EditNested(props: BlockEditFormProps) {
@@ -129,7 +130,7 @@ export function EditNested(props: BlockEditFormProps) {
                     onClick={() => {
                       insert(props.form, fieldArray.name, {
                         at: fieldArray.items.length,
-                        value: { text: "", type: "text" },
+                        value: textBlockFactory("text"),
                       });
                     }}
                   >

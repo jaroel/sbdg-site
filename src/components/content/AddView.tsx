@@ -8,6 +8,7 @@ import Toolbar from "~/components/Toolbar";
 import { type ContentViews, contentObjectAddSchema } from "~/schemas";
 import { type ContentObject, addContentObject } from "~/server";
 import { AddContentObject } from "../blocks/Object";
+import { textBlockFactory } from "../blocks/factories";
 import Button from "../input/Button";
 
 const addContentObjectAction = action(
@@ -28,12 +29,7 @@ export default function ContentObjectAddView(props: {
         type: "page",
         title: "A new page",
         description: "Please describe this page",
-        blocks: [
-          {
-            type: "text",
-            text: "This is a new page",
-          },
-        ],
+        blocks: [textBlockFactory("This is a new page")],
       },
 
       slug: "new-page",
