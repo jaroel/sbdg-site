@@ -4,7 +4,7 @@ import { XMarkIcon } from "./Icons";
 
 export default function Dialog(props: DialogRootProps & { title: string }) {
   return (
-    <Kobalte {...props}>
+    <Kobalte {...props} modal>
       <Kobalte.Trigger class="dialog__trigger">Open</Kobalte.Trigger>
       <Kobalte.Portal>
         <Kobalte.Overlay class="dialog__overlay" />
