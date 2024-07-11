@@ -37,7 +37,7 @@ export function EditImage(props: BlockEditFormProps) {
 
       <Field of={props.form} name={`${props.path}fileId`}>
         {(field, fprops) => (
-          <>
+          <div class="flex flex-row space-x-4 mt-2">
             <div>
               <SelectFieldValueFallback
                 {...fprops}
@@ -83,7 +83,17 @@ export function EditImage(props: BlockEditFormProps) {
                 </ul>
               </Dialog>
             </div>
-          </>
+            {field.value && (
+              <div>
+                <p>Image preview</p>
+                <img
+                  class="w-40"
+                  src={`/++file++/${field.value}`}
+                  alt="Preview!"
+                />
+              </div>
+            )}
+          </div>
         )}
       </Field>
     </>
