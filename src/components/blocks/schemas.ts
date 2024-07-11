@@ -12,7 +12,7 @@ export const tiptapMarkItalicSchema = z.object({
   attrs: z.optional(z.record(z.any())),
 });
 
-export type TiptapMarkType = z.infer<typeof blocksSchema>["type"];
+export type TiptapMarkType = z.infer<typeof tiptapMarkSchema>["type"];
 export type TiptapMark = z.infer<typeof tiptapMarkSchema>;
 export const tiptapMarkSchema = z.discriminatedUnion("type", [
   tiptapMarkBoldSchema,
