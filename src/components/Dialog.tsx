@@ -1,11 +1,8 @@
 import { type DialogRootProps, Dialog as Kobalte } from "@kobalte/core/dialog";
 import "./Dialog.css";
-import type { ParentProps } from "solid-js";
 import { XMarkIcon } from "./Icons";
 
-export default function Dialog(
-  props: ParentProps & DialogRootProps & { title: string },
-) {
+export default function Dialog(props: DialogRootProps & { title: string }) {
   return (
     <Kobalte {...props}>
       <Kobalte.Trigger class="dialog__trigger">Open</Kobalte.Trigger>
