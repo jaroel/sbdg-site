@@ -39,7 +39,7 @@ export function FileInput(props: FileInputProps) {
   );
 
   return (
-    <div class="px-8 lg:px-10">
+    <div>
       <p>{props.label}</p>
       <p>{props.required}</p>
 
