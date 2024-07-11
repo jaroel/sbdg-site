@@ -44,7 +44,8 @@
 }
 .dialog__content {
   z-index: 50;
-  max-width: min(calc(100vw - 16px), 500px);
+  /* max-width: min(calc(100vw - 48px), 800px); */
+  max-width: calc(100vw - 48px);
   border: 1px solid hsl(240 5% 84%);
   border-radius: 6px;
   padding: 16px;
