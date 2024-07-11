@@ -8,13 +8,15 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
+    "allowJs": true,
+    "checkJs": true,
     "noEmit": true,
+    "isolatedModules": true,
     "strict": true,
     "types": [
       "vinxi/client",
       "vite/client"
     ],
-    "isolatedModules": true,
     "paths": {
       "~/*": [
         "./src/*"
