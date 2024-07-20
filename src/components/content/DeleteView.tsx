@@ -57,12 +57,8 @@ export default function ContentObjectDeleteView(props: {
 
   return (
     <>
-      <Toolbar item={props.item} />
-      <Navbar
-        item={props.item}
-        pathPrefix="/delete"
-        additionalTitle="Delete confirmation"
-      />
+      <Toolbar />
+      <Navbar pathPrefix="/delete" additionalTitle="Delete confirmation" />
       <div>
         <Form
           onSubmit={async (_, event) => {
@@ -79,7 +75,7 @@ export default function ContentObjectDeleteView(props: {
           }}
         >
           <div class="flex space-x-2 mx-2 my-4">
-            <Sidebar item={props.item} pathPrefix="/delete" />
+            <Sidebar pathPrefix="/delete" />
             <main class="w-full px-2 bg-white">
               <DeleteContentObject form={form} path="" />
               <div class="ml-2">

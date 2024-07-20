@@ -1,37 +1,40 @@
-import type { Accessor } from "solid-js";
-import type { ContentObject } from "~/server";
+import { Show, useContext } from "solid-js";
+import { ContentObjectContext } from "./content/context";
 
-export default function Toolbar(props: {
-  item: Accessor<ContentObject>;
-}) {
+export default function Toolbar() {
+  const item = useContext(ContentObjectContext);
   return (
-    <div class="text-right bg-blue-100">
-      <a
-        class="mr-4"
-        href={`/delete${props.item().path}`}
-        title="Delete this item"
-      >
-        delete
-      </a>
-      <a
-        class="mr-4"
-        href={`/add${props.item().path}`}
-        title="Add a new item here"
-      >
-        add
-      </a>
-      <a class="mr-4" href={`/edit${props.item().path}`} title="Edit this item">
-        edit
-      </a>
-      <a class="mr-4" href={props.item().path} title="View this item">
-        view
-      </a>
-      <a class="mr-4" href="/" title="Go to the home page">
-        home
-      </a>
-      <a class="mr-4" href="/images" title="Manage images">
-        images
-      </a>
-    </div>
+    <Show when={item?.()}>
+      {(item) => (
+        <div class="text-right bg-blue-100">
+          <a
+            class="mr-4"
+            href={`/delete${item().path}`}
+            title="Delete this item"
+          >
+            delete
+          </a>
+          <a
+            class="mr-4"
+            href={`/add${item().path}`}
+            title="Add a new item here"
+          >
+            add
+          </a>
+          <a class="mr-4" href={`/edit${item().path}`} title="Edit this item">
+            edit
+          </a>
+          <a class="mr-4" href={item().path} title="View this item">
+            view
+          </a>
+          <a class="mr-4" href="/" title="Go to the home page">
+            home
+          </a>
+          <a class="mr-4" href="/images" title="Manage images">
+            images
+          </a>
+        </div>
+      )}
+    </Show>
   );
 }

@@ -9,6 +9,7 @@ import { type ContentViews, contentObjectEditSchema } from "~/schemas";
 import { type ContentObject, saveContentObject } from "~/server";
 import { EditContentObject } from "../blocks/Object";
 import Button from "../input/Button";
+import { ContentObjectContext } from "./context";
 
 const saveContentObjectAction = action(
   saveContentObject,
@@ -45,10 +46,9 @@ export default function ContentObjectEditView(props: {
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("edit");
 
   return (
-    <>
-      <Toolbar item={props.item} />
+    <ContentObjectContext.Provider value={props.item}>
+      <Toolbar />
       <Navbar
-        item={props.item}
         pathPrefix="/edit"
         titleOverride={getValue(form, "object.title")}
       />
@@ -69,7 +69,7 @@ export default function ContentObjectEditView(props: {
           }}
         >
           <div class="flex space-x-2 mx-2 my-4">
-            <Sidebar item={props.item} pathPrefix="/edit" />
+            <Sidebar pathPrefix="/edit" />
             <main class="w-full px-2 bg-white">
               <EditContentObject form={form} path="" />
             </main>
@@ -101,6 +101,6 @@ export default function ContentObjectEditView(props: {
           </div>
         </Form>
       </div>
-    </>
+    </ContentObjectContext.Provider>
   );
 }

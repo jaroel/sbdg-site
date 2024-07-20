@@ -10,6 +10,7 @@ import { type ContentObject, addContentObject } from "~/server";
 import { AddContentObject } from "../blocks/Object";
 import { textBlockFactory } from "../blocks/factories";
 import Button from "../input/Button";
+import { ContentObjectContext } from "./context";
 
 const addContentObjectAction = action(
   addContentObject,
@@ -45,10 +46,9 @@ export default function ContentObjectAddView(props: {
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("edit");
 
   return (
-    <>
-      <Toolbar item={props.container} />
+    <ContentObjectContext.Provider value={props.container}>
+      <Toolbar />
       <Navbar
-        item={props.container}
         pathPrefix="/add"
         additionalTitle={getValue(form, "object.title")}
       />
@@ -68,7 +68,7 @@ export default function ContentObjectAddView(props: {
           }}
         >
           <div class="flex space-x-2 mx-2 my-4">
-            <Sidebar item={props.container} pathPrefix="/add" />
+            <Sidebar pathPrefix="/add" />
             <main class="px-2 bg-white">
               <AddContentObject form={form} path="" />
             </main>
@@ -95,6 +95,6 @@ export default function ContentObjectAddView(props: {
           </div>
         </Form>
       </div>
-    </>
+    </ContentObjectContext.Provider>
   );
 }
