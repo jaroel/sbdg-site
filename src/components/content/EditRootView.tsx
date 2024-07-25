@@ -1,6 +1,6 @@
 import { createForm, getValue, reset, zodForm } from "@modular-forms/solid";
 import { action, useAction, useSubmission } from "@solidjs/router";
-import { type Accessor, Show, createEffect, createSignal } from "solid-js";
+import { Show, createEffect, createSignal } from "solid-js";
 import type * as z from "zod";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
@@ -22,7 +22,7 @@ const toFormData = (
 };
 
 export default function ContentObjectEditRootView(props: {
-  item: Accessor<ContentObject>;
+  item: ContentObject;
 }) {
   const formSubmission = useSubmission(saveContentObjectRootAction);
   const submitForm = useAction(saveContentObjectRootAction);
@@ -30,14 +30,14 @@ export default function ContentObjectEditRootView(props: {
   const [form, { Form }] = createForm<
     z.infer<typeof contentObjectEditRootSchema>
   >({
-    initialValues: toFormData(props.item()),
+    initialValues: toFormData(props.item),
     validate: zodForm(contentObjectEditRootSchema),
     validateOn: "change",
   });
 
   createEffect(() => {
     reset(form, {
-      initialValues: toFormData(props.item()),
+      initialValues: toFormData(props.item),
     });
   });
 

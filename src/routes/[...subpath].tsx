@@ -6,9 +6,6 @@ export const route = contentLoadRouteDefinition;
 
 export default function Route() {
   return (
-    <ContentObjectRoute
-      component={(item) => <ContentObjectDefaultView item={item} />}
-      deferStream
-    />
+    <ContentObjectRoute component={ContentObjectDefaultView} deferStream />
   );
 }

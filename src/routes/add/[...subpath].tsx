@@ -5,9 +5,5 @@ import { contentLoadRouteDefinition } from "~/components/content/Route";
 export const route = contentLoadRouteDefinition;
 
 export default function Route() {
-  return (
-    <ContentObjectRoute
-      component={(item) => <ContentObjectAddView container={item} />}
-    />
-  );
+  return <ContentObjectRoute component={ContentObjectAddView} />;
 }

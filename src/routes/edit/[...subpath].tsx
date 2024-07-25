@@ -9,12 +9,12 @@ export const route = contentLoadRouteDefinition;
 export default function Route() {
   return (
     <ContentObjectRoute
-      component={(item) => (
+      component={(props) => (
         <Show
-          when={item().path !== "/"}
-          fallback={<ContentObjectEditRootView item={item} />}
+          when={props.item.path !== "/"}
+          fallback={<ContentObjectEditRootView {...props} />}
         >
-          <ContentObjectEditView item={item} />
+          <ContentObjectEditView {...props} />
         </Show>
       )}
     />

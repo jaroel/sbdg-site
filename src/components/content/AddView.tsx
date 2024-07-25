@@ -1,6 +1,6 @@
 import { createForm, getValue, setValues, zodForm } from "@modular-forms/solid";
 import { action, useAction, useSubmission } from "@solidjs/router";
-import { type Accessor, createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 import type * as z from "zod";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
@@ -17,14 +17,14 @@ const addContentObjectAction = action(
 );
 
 export default function ContentObjectAddView(props: {
-  container: Accessor<ContentObject>;
+  item: ContentObject;
 }) {
   const formSubmission = useSubmission(addContentObjectAction);
   const submitForm = useAction(addContentObjectAction);
 
   const [form, { Form }] = createForm<z.infer<typeof contentObjectAddSchema>>({
     initialValues: {
-      parentId: props.container().id,
+      parentId: props.item.id,
       object: {
         type: "page",
         title: "A new page",
@@ -39,16 +39,16 @@ export default function ContentObjectAddView(props: {
   });
 
   createEffect(() => {
-    setValues(form, { parentId: props.container().id });
+    setValues(form, { parentId: props.item.id });
   });
 
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("edit");
 
   return (
     <>
-      <Toolbar item={props.container} />
+      <Toolbar item={props.item} />
       <Navbar
-        item={props.container}
+        item={props.item}
         pathPrefix="/add"
         additionalTitle={getValue(form, "object.title")}
       />
@@ -68,7 +68,7 @@ export default function ContentObjectAddView(props: {
           }}
         >
           <div class="flex space-x-2 mx-2 my-4">
-            <Sidebar item={props.container} pathPrefix="/add" />
+            <Sidebar item={props.item} pathPrefix="/add" />
             <main class="px-2 bg-white">
               <AddContentObject form={form} path="" />
             </main>

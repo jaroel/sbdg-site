@@ -1,8 +1,8 @@
-import { type Accessor, For } from "solid-js";
+import { For } from "solid-js";
 import type { ContentObject } from "~/server";
 
 export default function Navbar(props: {
-  item: Accessor<ContentObject>;
+  item: ContentObject;
   pathPrefix: string;
   titleOverride?: string;
   additionalTitle?: string;
@@ -12,7 +12,7 @@ export default function Navbar(props: {
       <div class="px-4 flex space-x-1">
         <span>U bent hier:</span>
         <ul class="inline-flex items-center space-x-1">
-          <For each={props.item().parents}>
+          <For each={props.item.parents}>
             {(item) => (
               <>
                 <li>
@@ -37,13 +37,13 @@ export default function Navbar(props: {
             )}
           </For>
           {!props.additionalTitle && (
-            <li>{props.titleOverride ?? props.item().object.title}</li>
+            <li>{props.titleOverride ?? props.item.object.title}</li>
           )}
           {props.additionalTitle && (
             <>
               <li>
-                <a href={props.pathPrefix + props.item().path}>
-                  {props.titleOverride ?? props.item().object.title}
+                <a href={props.pathPrefix + props.item.path}>
+                  {props.titleOverride ?? props.item.object.title}
                 </a>
               </li>
               <svg

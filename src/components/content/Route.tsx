@@ -1,6 +1,6 @@
 import { type RouteDefinition, createAsync, useParams } from "@solidjs/router";
-import type { Accessor, JSXElement } from "solid-js";
-import { Show } from "solid-js/web";
+import type { JSXElement } from "solid-js";
+import { Dynamic, Show } from "solid-js/web";
 import { type ContentObject, getContentObjectBySubPath } from "~/server";
 
 export const contentLoadRouteDefinition = {
@@ -10,12 +10,16 @@ export const contentLoadRouteDefinition = {
 } satisfies RouteDefinition;
 
 export default function ContentObjectRoute(props: {
-  component: (item: Accessor<ContentObject>) => JSXElement;
+  component: (props: { item: ContentObject }) => JSXElement;
   deferStream?: boolean;
 }) {
   const params = useParams();
   const data = createAsync(() => getContentObjectBySubPath(params.subpath), {
     deferStream: props.deferStream,
   });
-  return <Show when={data()}>{props.component}</Show>;
+  return (
+    <Show when={data()}>
+      {(item) => <Dynamic component={props.component} item={item()} />}
+    </Show>
+  );
 }

@@ -1,7 +1,6 @@
 import { createForm, reset, zodForm } from "@modular-forms/solid";
 import { action, cache, useAction, useSubmission } from "@solidjs/router";
 import {
-  type Accessor,
   For,
   Show,
   createEffect,
@@ -29,7 +28,7 @@ const deleteContentObjectAction = action(
 const loadDescendants = cache(fetchDescendants, "loadDescendants");
 
 export default function ContentObjectDeleteView(props: {
-  item: Accessor<ContentObject>;
+  item: ContentObject;
 }) {
   const formSubmission = useSubmission(deleteContentObjectAction);
   const submitForm = useAction(deleteContentObjectAction);
@@ -37,13 +36,13 @@ export default function ContentObjectDeleteView(props: {
   const [form, { Form }] = createForm<
     z.infer<typeof contentObjectDeleteSchema>
   >({
-    initialValues: { id: props.item().id },
+    initialValues: { id: props.item.id },
     validate: zodForm(contentObjectDeleteSchema),
     validateOn: "change",
   });
 
   createEffect(() => {
-    reset(form, { initialValues: { id: props.item().id } });
+    reset(form, { initialValues: { id: props.item.id } });
   });
 
   const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("default");
@@ -52,7 +51,7 @@ export default function ContentObjectDeleteView(props: {
   const [descendants] = createResource(contentId, loadDescendants);
 
   createEffect(() => {
-    setContentId(props.item().id);
+    setContentId(props.item.id);
   });
 
   return (
@@ -88,8 +87,8 @@ export default function ContentObjectDeleteView(props: {
                 <ol class="list-decimal list-inside ml-2">
                   <li>
                     <ul class="inline-flex flex-col">
-                      <li>{props.item().object.title}</li>
-                      <li class="text-slate-300">{props.item().path}</li>
+                      <li>{props.item.object.title}</li>
+                      <li class="text-slate-300">{props.item.path}</li>
                     </ul>
                   </li>
                   <Show when={descendants() === undefined}>
