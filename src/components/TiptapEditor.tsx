@@ -8,11 +8,12 @@ import {
 import type { Editor } from "@tiptap/core";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
 import StarterKit from "@tiptap/starter-kit";
-import type { JSX, Signal } from "solid-js";
+import type { JSX } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
 import {
   createEditorTransaction,
   createTiptapEditor,
+  useEditorIsFocused,
   useEditorJSON,
 } from "solid-tiptap";
 import { Toggle, Toolbar } from "terracotta";
@@ -301,50 +302,62 @@ export default function TiptapEditor(props: {
   field: FieldStore<any, any>;
   fprops: FieldElementProps<any, any>;
   form: FormStore<any, any>;
-}): JSX.Element {
+}) {
   const [container, setContainer] = createSignal<HTMLDivElement>();
   const [menu, setMenu] = createSignal<HTMLDivElement>();
-
-  const editor = createTiptapEditor(() => ({
-    element: container()!,
-    extensions: [
-      StarterKit,
-      BubbleMenu.configure({
-        element: menu()!,
-      }),
-    ],
-    editorProps: {
-      attributes: {
-        class: "p-2 focus:outline-none prose max-w-full",
-      },
-    },
-    content: getValue(props.form, props.field.name),
-  }));
 
   return (
     <div class="flex items-center justify-center w-full border border-gray-200">
       <div class="flex-1 m-1">
+        <div class="bg-white overflow-y-scroll rounded-lg" ref={setContainer} />
         <Toolbar
           ref={setMenu}
           class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded"
           horizontal
         >
-          <Show when={editor()} keyed>
-            {(instance) => (
-              <>
-                <WithEditor
-                  field={props.field}
-                  fprops={props.fprops}
-                  editor={instance}
-                  form={props.form}
-                />
-              </>
+          <Show when={container()}>
+            {(container) => (
+              <Show when={menu()}>
+                {(menu) => (
+                  <Ding {...props} container={container()} menu={menu()} />
+                )}
+              </Show>
             )}
           </Show>
         </Toolbar>
-        <div class="bg-white overflow-y-scroll rounded-lg" ref={setContainer} />
       </div>
     </div>
+  );
+}
+
+function Ding(props: {
+  container: HTMLDivElement;
+  menu: HTMLDivElement;
+  field: FieldStore<any, any>;
+  fprops: FieldElementProps<any, any>;
+  form: FormStore<any, any>;
+}) {
+  const editor = createTiptapEditor(() => {
+    return {
+      element: props.container,
+      extensions: [
+        StarterKit,
+        BubbleMenu.configure({
+          element: props.menu,
+        }),
+      ],
+      editorProps: {
+        attributes: {
+          class: "p-2 focus:outline-none prose max-w-full",
+        },
+      },
+      content: getValue(props.form, props.field.name),
+    };
+  });
+  return (
+    <Show when={editor()}>
+      {(editor) => <WithEditor {...props} editor={editor()} />}
+    </Show>
   );
 }
 
@@ -354,20 +367,17 @@ function WithEditor(props: {
   form: FormStore<any, any>;
   editor: Editor;
 }) {
-  const output = useEditorJSON(() => props.editor);
+  const editorJSON = useEditorJSON(() => props.editor);
+  const isFocused = useEditorIsFocused(() => props.editor);
 
   createEffect(() => {
-    const editorContent = output();
-    if (editorContent) {
+    const editorContent = editorJSON();
+    if (editorContent && !isFocused()) {
       const fieldValue = getValue(props.form, props.field.name);
       if (!isDeepStrictEqual(fieldValue, editorContent)) {
         setValue(props.form, props.field.name, editorContent);
       }
     }
   });
-  return (
-    <>
-      <ToolbarContents editor={props.editor} />
-    </>
-  );
+  return <ToolbarContents editor={props.editor} />;
 }
