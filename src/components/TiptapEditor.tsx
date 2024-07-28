@@ -1,4 +1,5 @@
 import { ToggleButton } from "@kobalte/core/toggle-button";
+import { ToggleGroup } from "@kobalte/core/toggle-group";
 import {
   type FieldElementProps,
   type FieldStore,
@@ -17,7 +18,6 @@ import {
   useEditorIsFocused,
   useEditorJSON,
 } from "solid-tiptap";
-import { Toolbar } from "terracotta";
 import { isDeepStrictEqual } from "~/lib";
 
 function ParagraphIcon(
@@ -180,7 +180,7 @@ interface ToolbarProps {
 function ToolbarContents(props: ToolbarProps): JSX.Element {
   return (
     <div class="p-2 flex space-x-1">
-      <div class="flex space-x-1">
+      <ToggleGroup class="flex space-x-1">
         <Control
           key="paragraph"
           class="font-bold"
@@ -214,9 +214,9 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         >
           H2
         </Control>
-      </div>
+      </ToggleGroup>
       <Separator />
-      <div class="flex space-x-1">
+      <ToggleGroup class="flex space-x-1">
         <Control
           key="bold"
           class="font-bold"
@@ -253,9 +253,9 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         >
           <CodeIcon title="Code" class="w-full h-full m-1" />
         </Control>
-      </div>
+      </ToggleGroup>
       <Separator />
-      <div class="flex space-x-1">
+      <ToggleGroup class="flex space-x-1">
         <Control
           key="bulletList"
           class=""
@@ -294,7 +294,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         >
           <CodeBlockIcon title="Code Block" class="w-full h-full m-1" />
         </Control>
-      </div>
+      </ToggleGroup>
     </div>
   );
 }
@@ -311,10 +311,10 @@ export default function TiptapEditor(props: {
     <div class="flex items-center justify-center w-full border border-gray-200">
       <div class="flex-1 m-1">
         <div class="bg-white overflow-y-scroll rounded-lg" ref={setContainer} />
-        <Toolbar
+        <ToggleGroup
           ref={setMenu}
           class="bg-blue-400 text-white rounded"
-          horizontal
+          // horizontal
         >
           <Show when={container()}>
             {(container) => (
@@ -325,7 +325,7 @@ export default function TiptapEditor(props: {
               </Show>
             )}
           </Show>
-        </Toolbar>
+        </ToggleGroup>
       </div>
     </div>
   );
