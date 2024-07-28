@@ -1,3 +1,4 @@
+import { ToggleButton } from "@kobalte/core/toggle-button";
 import {
   type FieldElementProps,
   type FieldStore,
@@ -16,7 +17,7 @@ import {
   useEditorIsFocused,
   useEditorJSON,
 } from "solid-tiptap";
-import { Toggle, Toolbar } from "terracotta";
+import { Toolbar } from "terracotta";
 import { isDeepStrictEqual } from "~/lib";
 
 function ParagraphIcon(
@@ -158,9 +159,9 @@ function Control(props: ControlProps): JSX.Element {
   );
 
   return (
-    <Toggle
+    <ToggleButton
       defaultPressed={false}
-      class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none focus-visible:ring focus-visible:ring-purple-400 focus-visible:ring-opacity-75`}
+      class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none`}
       classList={{
         "text-color-600 bg-white bg-opacity-25": flag(),
       }}
@@ -168,7 +169,7 @@ function Control(props: ControlProps): JSX.Element {
       onChange={props.onChange}
     >
       {props.children}
-    </Toggle>
+    </ToggleButton>
   );
 }
 
