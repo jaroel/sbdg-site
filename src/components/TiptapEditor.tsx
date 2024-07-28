@@ -312,7 +312,7 @@ export default function TiptapEditor(props: {
         <div class="bg-white overflow-y-scroll rounded-lg" ref={setContainer} />
         <Toolbar
           ref={setMenu}
-          class="dynamic-shadow bg-gradient-to-bl from-indigo-500 to-blue-600 text-white rounded"
+          class="bg-blue-400 text-white rounded"
           horizontal
         >
           <Show when={container()}>
