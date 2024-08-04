@@ -158,7 +158,10 @@ function readableStreamToNodeReadable(readableStream: ReadableStream) {
           this.push(Buffer.from(value));
         }
       } catch (err) {
-        this.destroy(err);
+        if (err instanceof Error) {
+          this.destroy(err);
+        }
+        throw err;
       }
     },
   });
@@ -166,7 +169,6 @@ function readableStreamToNodeReadable(readableStream: ReadableStream) {
 
 export const addFile = async (formData: FormData) => {
   const data = await parseFormDataAsync(formData, fileAddSchema);
-  console.log({ data });
   return await createLargeObjectFromStream(
     readableStreamToNodeReadable(data.someFile.stream()),
   );
