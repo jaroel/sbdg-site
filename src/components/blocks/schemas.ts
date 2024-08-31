@@ -84,8 +84,8 @@ export const pageBlockSchema = z.object({
 });
 
 export type BlockType = Block["type"];
-export type Block = z.infer<typeof blocksSchema>;
-export const blocksSchema = z.union([
+export type Block = z.infer<typeof blockSchema>;
+export const blockSchema = z.union([
   textBlockSchema,
   pageBlockSchema,
   nestedBlockSchema,
