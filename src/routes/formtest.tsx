@@ -1,248 +1,133 @@
-import {
-  Field,
-  FieldArray,
-  Form,
-  type createForm,
-  createFormStore,
-  getErrors,
-  getValues,
-  zodForm,
-} from "@modular-forms/solid";
-import { type Component, For } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import { Button } from "@kobalte/core/button";
+import { For, type JSX } from "solid-js";
+import { createStore } from "solid-js/store";
 import * as z from "zod";
-import { TextField } from "~/components/input/TextField";
+import { DocumentIcon } from "~/components/Icons";
+import { textBlockFactory } from "~/components/blocks/factories";
 
 const textBlockSchema = z.object({
   type: z.literal("text"),
   text: z.string().trim().min(1),
 });
 
-const level1BlockSchema = z.object({
-  type: z.literal("level1"),
-  entries: z.array(z.discriminatedUnion("type", [textBlockSchema])),
-});
-
 const pageBlockSchema = z.object({
   type: z.literal("page"),
   title: z.string().trim().min(1),
   description: z.optional(z.string()),
-  blocks: z.array(
-    z.discriminatedUnion("type", [textBlockSchema, level1BlockSchema]),
-  ),
+  blocks: z.array(z.discriminatedUnion("type", [textBlockSchema])),
 });
 
-const contentObjectBlockSchema = z.discriminatedUnion("type", [
-  pageBlockSchema,
-  textBlockSchema,
-]);
+const formBlockSchema = z.object({
+  type: z.literal("form"),
+  formTitle: z.string().trim().min(1),
+  object: z.discriminatedUnion("type", [pageBlockSchema, textBlockSchema]),
+});
 
 const blockSchemas = z.discriminatedUnion("type", [
   pageBlockSchema,
   textBlockSchema,
-  level1BlockSchema,
+  formBlockSchema,
 ]);
 
-const formSchema = z.object({
-  formTitle: z.string().trim().min(1),
-  object: contentObjectBlockSchema,
-});
-
-type FormSchema = z.infer<typeof formSchema>;
-
-type FormProps = {
-  path: string;
-  form: ReturnType<typeof createForm<FormSchema>>[0];
-};
-
-function EditText(props: FormProps) {
+function TextBlockEdit(props: { value: z.infer<typeof textBlockSchema> }) {
   return (
     <>
-      <Field of={props.form} name={`${props.path}text`}>
-        {(field, props) => (
-          <div class="bg-slate-100">
-            <TextField
-              {...props}
-              label={`Field ${field.name}`}
-              value={field.value}
-              error={field.error}
-            />
-          </div>
-        )}
-      </Field>
-    </>
-  );
-}
-
-function EditLevel1(props: FormProps) {
-  return (
-    <>
-      <FieldArray of={props.form} name={`${props.path}entries`}>
-        {(fieldArray) => (
-          <div class="border border-y-emerald-500 pl-4">
-            <label>Field name: {fieldArray.name}</label>
-            {fieldArray.error && (
-              <div class="text-red-500">{fieldArray.error}</div>
-            )}
-            <For each={fieldArray.items}>
-              {(_, index) => (
-                <EditBlock
-                  form={props.form}
-                  path={`${fieldArray.name}.${index()}.`}
-                />
-              )}
-            </For>
-          </div>
-        )}
-      </FieldArray>
-    </>
-  );
-}
-
-function EditPage(props: FormProps) {
-  return (
-    <>
-      <Field of={props.form} name={`${props.path}title`}>
-        {(field, props) => (
-          <div class="bg-slate-100">
-            <TextField
-              {...props}
-              label={`Field ${field.name}`}
-              value={field.value}
-              error={field.error}
-            />
-          </div>
-        )}
-      </Field>
-
-      <Field of={props.form} name={`${props.path}description`}>
-        {(field, props) => (
-          <div class="bg-slate-100">
-            <TextField
-              {...props}
-              label={`Field ${field.name}`}
-              value={field.value}
-              error={field.error}
-            />
-          </div>
-        )}
-      </Field>
-
-      <FieldArray of={props.form} name={`${props.path}blocks`}>
-        {(fieldArray) => (
-          <div class="border border-y-emerald-500 pl-4">
-            <label>Field name: {fieldArray.name}</label>
-            {fieldArray.error && (
-              <div class="text-red-500">{fieldArray.error}</div>
-            )}
-
-            <For each={fieldArray.items}>
-              {(_, index) => (
-                <EditBlock
-                  form={props.form}
-                  path={`${fieldArray.name}.${index()}.`}
-                />
-              )}
-            </For>
-          </div>
-        )}
-      </FieldArray>
-    </>
-  );
-}
-
-type BlockKeys = z.infer<typeof blockSchemas>["type"];
-
-const editComponents: Record<BlockKeys, Component<FormProps>> = {
-  text: EditText,
-  level1: EditLevel1,
-  page: EditPage,
-};
-
-function EditBlock(props: FormProps) {
-  return (
-    <Field of={props.form} name={`${props.path}type`}>
-      {(field, fprops) => (
-        <>
-          <div class="bg-slate-100">
-            <TextField
-              {...fprops}
-              label={`EditBlock ${field.name}`}
-              value={field.value}
-              error={field.error}
-              disabled
-            />
-          </div>
-          <Dynamic
-            component={editComponents[field.value]}
-            {...props}
-            field={field}
-            fprops={fprops}
-          />
-        </>
-      )}
-    </Field>
-  );
-}
-
-function EditForm(props: FormProps) {
-  return (
-    <Form
-      of={props.form}
-      method="post"
-      onSubmit={(values, event) => {
-        console.log({ values, event });
-      }}
-      class="ml-4"
-    >
-      <button type="submit" class="p-1 border border-blue-500 bg-blue-200">
-        Le Button
-      </button>
-      <pre>{JSON.stringify(props.form.response)}</pre>
-      <pre>{JSON.stringify(props.form.invalid)}</pre>
-      <pre>{JSON.stringify(getErrors(props.form))}</pre>
-      <div class="border border-y-emerald-500 bg-emerald-500 p-1 space-x-2 space-y-2">
-        <Field of={props.form} name="formTitle">
-          {(field, props) => (
-            <div class="bg-slate-100">
-              <TextField
-                {...props}
-                label={`Field ${field.name}`}
-                value={field.value}
-                error={field.error}
-              />
-            </div>
-          )}
-        </Field>
-        <EditBlock form={props.form} path={`${props.path}object.`} />
+      <div class="bg-slate-100">
+        <p>{props.value.text}</p>
       </div>
-      <div>{JSON.stringify({ formValues: getValues(props.form) })}</div>
-    </Form>
+    </>
   );
+}
+
+function PageBlockEdit(props: { value: z.infer<typeof pageBlockSchema> }) {
+  function insert() {
+    const newValue = {
+      type: "text",
+      text: "New text value",
+    };
+    setStore("object", "blocks", store.object.blocks.length, newValue);
+    // if (store.object.type === "page") {
+    //   console.log("Click!", { newValue });
+    // }
+  }
+
+  return (
+    <>
+      <div class="bg-slate-100">
+        <label>{props.value.title}</label>
+      </div>
+      <div class="bg-slate-100">
+        <p>{props.value.description}</p>
+      </div>
+      <div>
+        <header>Insert a new block</header>
+        <div class="border-b border-orange-300 divide-x flex flex-row">
+          <div class="px-1">
+            <Button
+              title="Text block"
+              class="size-4 disabled:text-gray-400"
+              onClick={() => {
+                insert();
+              }}
+            >
+              <DocumentIcon title="Insert text block" />
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-slate-100">
+        <For each={props.value.blocks}>{(value) => <Edit value={value} />}</For>
+      </div>
+    </>
+  );
+}
+
+type FormBlockData = z.infer<typeof formBlockSchema>;
+function FormBlockEdit(props: {
+  value: FormBlockData;
+}) {
+  return (
+    <>
+      <div class="bg-slate-100">
+        <label>{props.value.formTitle}</label>
+      </div>
+      <div class="bg-slate-100">
+        <Edit value={props.value.object} />
+      </div>
+    </>
+  );
+}
+
+const initialValues: FormBlockData = {
+  type: "form",
+  formTitle: "Form title",
+  object: {
+    type: "page",
+    title: "Page title",
+    description: "Page description",
+    blocks: [{ type: "text", text: "Some text" }],
+  },
+};
+
+const [store, setStore] = createStore(initialValues);
+
+function Edit(props: { value: z.infer<typeof blockSchemas> }): JSX.Element {
+  switch (props.value.type) {
+    case "form":
+      return <FormBlockEdit value={props.value} />;
+    case "text":
+      return <TextBlockEdit value={props.value} />;
+    case "page":
+      return <PageBlockEdit value={props.value} />;
+    default:
+      assertCannotReach(props.value);
+  }
+}
+
+function assertCannotReach(value: never) {
+  throw new Error("Shouldn't reach");
 }
 
 export default function App() {
-  const form = createFormStore<FormSchema>({
-    validate: zodForm(formSchema),
-    initialValues: {
-      formTitle: "Form title",
-      object: {
-        type: "page",
-        title: "Page title",
-        description: "Page description",
-        blocks: [
-          { type: "text", text: "some text" },
-          {
-            type: "level1",
-            entries: [
-              { type: "text", text: "entry l1.1" },
-              { type: "text", text: "entry l1.2" },
-            ],
-          },
-        ],
-      },
-    },
-  });
-
-  return <EditForm form={form} path="" />;
+  return <Edit value={store} />;
 }
