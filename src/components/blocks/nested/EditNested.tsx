@@ -29,6 +29,55 @@ function moveRight<T>(array: T[], index: number): T[] {
   return head.concat([next, current]).concat(tail);
 }
 
+function BlockToolbar(props: {
+  index: any;
+  value: any;
+  setStore: any;
+}) {
+  return (
+    <div class="border-b border-orange-300 divide-x flex flex-row">
+      <div>
+        <Button
+          title="Move item up"
+          class="size-4 disabled:text-gray-400"
+          disabled={props.index() === 0}
+          onClick={() => {
+            const values = moveLeft(props.value.texts, props.index());
+            props.setStore("texts", values);
+          }}
+        >
+          <ArrowUpIcon title="Move item up" />
+        </Button>
+        <Button
+          title="Move item down"
+          class="size-4 disabled:text-gray-400"
+          disabled={props.index() >= props.value.texts.length - 1}
+          onClick={() => {
+            const values = moveRight(props.value.texts, props.index());
+            props.setStore("texts", values);
+          }}
+        >
+          <ArrowDownIcon title="Move item down" />
+        </Button>
+      </div>
+      <div class="px-2">
+        <Button
+          title="Delete item"
+          class="size-4 disabled:text-gray-400"
+          onClick={() => {
+            const values = props.value.texts
+              .slice(0, props.index())
+              .concat(props.value.texts.slice(props.index() + 1));
+            props.setStore("texts", values);
+          }}
+        >
+          <ArchiveBoxXMarkIcon title="Remove this block" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export default function EditNested(props: {
   value: NestedBlock;
   setStore: SetStoreFunction<NestedBlock>;
@@ -53,77 +102,11 @@ export default function EditNested(props: {
               const [store, setStore] = createStore(value);
               return (
                 <div>
-                  <div class="border-b border-orange-300 divide-x flex flex-row">
-                    <div>
-                      <Button
-                        title="Move item up"
-                        class="size-4 disabled:text-gray-400"
-                        disabled={index() === 0}
-                        onClick={() => {
-                          const values = moveLeft(props.value.texts, index());
-                          props.setStore("texts", values);
-                        }}
-                      >
-                        <ArrowUpIcon title="Move item up" />
-                      </Button>
-                      <Button
-                        title="Move item down"
-                        class="size-4 disabled:text-gray-400"
-                        disabled={index() >= props.value.texts.length - 1}
-                        onClick={() => {
-                          const values = moveRight(props.value.texts, index());
-                          props.setStore("texts", values);
-                        }}
-                      >
-                        <ArrowDownIcon title="Move item down" />
-                      </Button>
-                    </div>
-                    <div class="px-2">
-                      <Button
-                        title="Delete item"
-                        class="size-4 disabled:text-gray-400"
-                        onClick={() => {
-                          const values = props.value.texts
-                            .slice(0, index())
-                            .concat(props.value.texts.slice(index() + 1));
-                          props.setStore("texts", values);
-                        }}
-                      >
-                        <ArchiveBoxXMarkIcon title="Remove this block" />
-                      </Button>
-                    </div>
-                    {/* <div class="px-1 space-x-1">
-                  <Button
-                    title="Copy this block"
-                    class="size-4 disabled:text-gray-400"
-                    onClick={() => {
-                      const values = getValues(
-                        props.form,
-                        fieldArray.name,
-                      );
-                      const value = values && values[index()];
-                      value && setCopyBuffer(value);
-                    }}
-                  >
-                    <ClipboardDocumentIcon title="Copy this block" />
-                  </Button>
-                  <Button
-                    title="Paste block above"
-                    class="size-4 disabled:text-gray-400"
-                    disabled={!copyBuffer()}
-                    onClick={() => {
-                      const value = copyBuffer();
-                      value &&
-                        insert(props.form, fieldArray.name, {
-                          at: index(),
-                          value: value,
-                        });
-                    }}
-                  >
-                    <ArrowUpTrayIcon title="Paste block above" />
-                  </Button>
-                </div> */}
-                  </div>
+                  <BlockToolbar
+                    index={index}
+                    value={props.value}
+                    setStore={props.setStore}
+                  />
                   <EditText value={store} setStore={setStore} />
                 </div>
               );

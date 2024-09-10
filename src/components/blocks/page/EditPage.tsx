@@ -1,11 +1,11 @@
 import { Button } from "@kobalte/core/button";
-import { For } from "solid-js";
+import { type Accessor, For } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import type { Errors } from "~/types";
 import {
-  // ArchiveBoxXMarkIcon,
-  // ArrowDownIcon,
-  // ArrowUpIcon,
+  ArchiveBoxXMarkIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
   DocumentIcon,
   PictureIcon,
   RectangleStackIcon,
@@ -16,6 +16,70 @@ import EditImage from "../image/EditImage";
 import EditNested from "../nested/EditNested";
 import { type PageBlock, pageBlockSchema } from "../schemas";
 import EditText from "../text/EditText";
+
+function moveLeft<T>(array: T[], index: number): T[] {
+  const head = array.slice(0, index - 1);
+  const prev = array[index - 1];
+  const current = array[index];
+  const tail = array.slice(index + 1);
+  return head.concat([current, prev]).concat(tail);
+}
+function moveRight<T>(array: T[], index: number): T[] {
+  const head = array.slice(0, index);
+  const current = array[index];
+  const next = array[index + 1];
+  const tail = array.slice(index + 2);
+  return head.concat([next, current]).concat(tail);
+}
+
+function BlockToolbar(props: {
+  index: Accessor<number>;
+  value: PageBlock;
+  setStore: SetStoreFunction<PageBlock>;
+}) {
+  return (
+    <div class="border-b border-orange-300 divide-x flex flex-row">
+      <div>
+        <Button
+          title="Move item up"
+          class="size-4 disabled:text-gray-400"
+          disabled={props.index() === 0}
+          onClick={() => {
+            const values = moveLeft(props.value.blocks, props.index());
+            props.setStore("blocks", values);
+          }}
+        >
+          <ArrowUpIcon title="Move item up" />
+        </Button>
+        <Button
+          title="Move item down"
+          class="size-4 disabled:text-gray-400"
+          disabled={props.index() >= props.value.blocks.length - 1}
+          onClick={() => {
+            const values = moveRight(props.value.blocks, props.index());
+            props.setStore("blocks", values);
+          }}
+        >
+          <ArrowDownIcon title="Move item down" />
+        </Button>
+      </div>
+      <div class="px-2">
+        <Button
+          title="Delete item"
+          class="size-4 disabled:text-gray-400"
+          onClick={() => {
+            const values = props.value.blocks
+              .slice(0, props.index())
+              .concat(props.value.blocks.slice(props.index() + 1));
+            props.setStore("blocks", values);
+          }}
+        >
+          <ArchiveBoxXMarkIcon title="Remove this block" />
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export default function EditPage(props: {
   value: PageBlock;
@@ -53,19 +117,46 @@ export default function EditPage(props: {
 
         <div class="space-y-4 mt-2">
           <For each={props.value.blocks}>
-            {(value) => {
+            {(value, index) => {
               switch (value.type) {
                 case "text": {
                   const [store, setStore] = createStore(value);
-                  return <EditText value={store} setStore={setStore} />;
+                  return (
+                    <div>
+                      <BlockToolbar
+                        index={index}
+                        value={props.value}
+                        setStore={props.setStore}
+                      />
+                      <EditText value={store} setStore={setStore} />
+                    </div>
+                  );
                 }
                 case "image": {
                   const [store, setStore] = createStore(value);
-                  return <EditImage value={store} setStore={setStore} />;
+                  return (
+                    <div>
+                      <BlockToolbar
+                        index={index}
+                        value={props.value}
+                        setStore={props.setStore}
+                      />
+                      <EditImage value={store} setStore={setStore} />
+                    </div>
+                  );
                 }
                 case "nested": {
                   const [store, setStore] = createStore(value);
-                  return <EditNested value={store} setStore={setStore} />;
+                  return (
+                    <div>
+                      <BlockToolbar
+                        index={index}
+                        value={props.value}
+                        setStore={props.setStore}
+                      />
+                      <EditNested value={store} setStore={setStore} />
+                    </div>
+                  );
                 }
                 default:
                   assertCannotReach(value);
