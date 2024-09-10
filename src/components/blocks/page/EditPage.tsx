@@ -48,8 +48,9 @@ export default function EditPage(props: {
         />
       </div>
       <div class="flex flex-col mx-2 my-4">
-        <label>Page blocks</label>
+        <label class="text-gray-600">Page blocks</label>
         {false && <div class="text-red-500">{"fieldArray.error"}</div>}
+
         <div class="space-y-4 mt-2">
           <For each={props.value.blocks}>
             {(value) => {
@@ -73,9 +74,8 @@ export default function EditPage(props: {
           </For>
         </div>
         <div>
-          <header>Insert a new block!</header>
-
-          <div class="border-b border-orange-300 divide-x flex flex-row">
+          <header class="text-gray-600">Insert a new block!</header>
+          <div class="border-b border-orange-300 divide-x flex flex-row mt-1">
             <For each={pageBlockSchema.shape.blocks.element.options}>
               {(option) => {
                 const value = option.shape.type.value;

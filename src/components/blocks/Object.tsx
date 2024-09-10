@@ -48,7 +48,7 @@ export function EditContentObject(props: {
     props.value.path.slice(props.value.path.lastIndexOf("/") + 1),
   );
   return (
-    <div class="border m-2">
+    <div>
       <Show
         when={!props.hideSlugField}
         fallback={<input type="hidden" name="slug" value={slug()} />}

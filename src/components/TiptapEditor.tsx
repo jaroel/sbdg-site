@@ -302,7 +302,7 @@ export default function TiptapEditor(props: {
   const [menu, setMenu] = createSignal<HTMLDivElement>();
 
   return (
-    <div class="flex items-center justify-center w-full border border-gray-200">
+    <div class="flex items-center justify-center w-full border border-gray-200 border-t-0">
       <div class="flex-1 m-1">
         <div class="bg-white overflow-y-scroll rounded-lg" ref={setContainer} />
         <ToggleGroup

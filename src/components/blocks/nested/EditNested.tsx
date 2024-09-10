@@ -42,12 +42,12 @@ export default function EditNested(props: {
           props.setStore("nestedTitle", event.currentTarget.value);
         }}
       />
-      <div class="flex flex-col mx-2 my-4">
-        <label>Nested texts</label>
+      <div class="flex flex-col m-4">
+        <label class="text-gray-600">Nested texts</label>
         {false && "fieldArray.error" && (
           <div class="text-red-500">{"fieldArray.error"}</div>
         )}
-        <div class="space-y-4 mt-2">
+        <div class="space-y-4 mt-2 mb-2">
           <For each={props.value.texts}>
             {(value, index) => {
               const [store, setStore] = createStore(value);
@@ -131,8 +131,8 @@ export default function EditNested(props: {
           </For>
         </div>
         <div>
-          <header>Insert a new nested block!</header>
-          <div class="border-b border-orange-300 divide-x flex flex-row">
+          <header class="text-gray-600">Insert a new nested block!</header>
+          <div class="border-b border-orange-300 divide-x flex flex-row mt-1">
             <div class="px-1">
               <Button
                 title="Text block"
