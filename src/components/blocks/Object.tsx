@@ -5,7 +5,7 @@ import type { ContentObject } from "~/server";
 import { TextField } from "../input/TextField";
 
 import type { Errors } from "~/types";
-import { EditPage } from "./page";
+import EditPage from "./page/EditPage";
 
 export function AddContentObject(props: {
   parent: ContentObject;

@@ -1,13 +1,13 @@
 import { For, createEffect, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { listObjects } from "~/largeobject";
-import Dialog from "../Dialog";
-import Button from "../input/Button";
-import { SelectFieldValueFallback } from "../input/Select";
-import { TextField } from "../input/TextField";
-import type { ImageBlock } from "./schemas";
+import Dialog from "../../Dialog";
+import Button from "../../input/Button";
+import { SelectFieldValueFallback } from "../../input/Select";
+import { TextField } from "../../input/TextField";
+import type { ImageBlock } from "../schemas";
 
-export function EditImage(props: {
+export default function EditImage(props: {
   value: ImageBlock;
   setStore: SetStoreFunction<ImageBlock>;
 }) {
@@ -81,22 +81,5 @@ export function EditImage(props: {
         )}
       </div>
     </>
-  );
-}
-
-export default function ViewImageBlock(props: {
-  object: ImageBlock;
-}) {
-  return (
-    <div class="ml-4">
-      <p class="text-xl text-gray-600">{props.object.label}</p>
-      {props.object.fileId && (
-        <img
-          src={`/++file++/${props.object.fileId}`}
-          class="w-[400px]"
-          alt="Demo!"
-        />
-      )}
-    </div>
   );
 }

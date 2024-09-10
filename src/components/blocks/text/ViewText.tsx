@@ -1,8 +1,5 @@
 import type { Component } from "solid-js";
-import type { SetStoreFunction } from "solid-js/store";
 import { Dynamic, For, Show } from "solid-js/web";
-import TiptapEditor from "../TiptapEditor";
-
 import type {
   TextBlock,
   TiptapDoc,
@@ -11,21 +8,7 @@ import type {
   TiptapMarkType,
   TiptapParagraph,
   TiptapText,
-} from "./schemas";
-
-export function EditText(props: {
-  value: TextBlock;
-  setStore: SetStoreFunction<TextBlock>;
-}) {
-  return (
-    <>
-      {false && "field.error" && (
-        <div class="text-red-500">{"field.error"}</div>
-      )}
-      <TiptapEditor {...props} />
-    </>
-  );
-}
+} from "../schemas";
 
 function RenderText(props: {
   element: TiptapText;

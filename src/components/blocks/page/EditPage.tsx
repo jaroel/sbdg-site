@@ -1,5 +1,4 @@
 import { Button } from "@kobalte/core/button";
-import { HttpStatusCode } from "@solidjs/start";
 import { For } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import type { Errors } from "~/types";
@@ -10,45 +9,15 @@ import {
   DocumentIcon,
   PictureIcon,
   RectangleStackIcon,
-} from "../Icons";
-import { TextField } from "../input/TextField";
-import ViewImageBlock, { EditImage } from "./Image";
-import { textBlockFactory } from "./factories";
-import ViewNestedBlock, { EditNested } from "./nested";
-import { type PageBlock, pageBlockSchema } from "./schemas";
-import ViewTextBlock, { EditText } from "./text";
+} from "../../Icons";
+import { TextField } from "../../input/TextField";
+import { textBlockFactory } from "../factories";
+import EditImage from "../image/EditImage";
+import EditNested from "../nested/EditNested";
+import { type PageBlock, pageBlockSchema } from "../schemas";
+import EditText from "../text/EditText";
 
-export default function ViewPage(props: {
-  object: PageBlock;
-}) {
-  return (
-    <div>
-      <h1>{props.object.title}</h1>
-      <HttpStatusCode code={props.object.status || 200} />
-      <p class="text-sm text-gray-600 mb-2">{props.object.description}</p>
-
-      <For each={props.object.blocks}>
-        {(value) => {
-          switch (value.type) {
-            case "text": {
-              return <ViewTextBlock value={value} />;
-            }
-            case "image": {
-              return <ViewImageBlock object={value} />;
-            }
-            case "nested": {
-              return <ViewNestedBlock object={value} />;
-            }
-            default:
-              assertCannotReach(value);
-          }
-        }}
-      </For>
-    </div>
-  );
-}
-
-export function EditPage(props: {
+export default function EditPage(props: {
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
   errors?: Errors;

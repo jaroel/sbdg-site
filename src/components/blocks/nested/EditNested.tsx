@@ -7,12 +7,12 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   DocumentIcon,
-} from "../Icons";
+} from "../../Icons";
 
-import { TextField } from "../input/TextField";
-import { textBlockFactory } from "./factories";
-import type { NestedBlock } from "./schemas";
-import ViewTextBlock, { EditText } from "./text";
+import { TextField } from "../../input/TextField";
+import { textBlockFactory } from "../factories";
+import type { NestedBlock } from "../schemas";
+import EditText from "../text/EditText";
 
 function moveLeft<T>(array: T[], index: number): T[] {
   const head = array.slice(0, index - 1);
@@ -29,7 +29,7 @@ function moveRight<T>(array: T[], index: number): T[] {
   return head.concat([next, current]).concat(tail);
 }
 
-export function EditNested(props: {
+export default function EditNested(props: {
   value: NestedBlock;
   setStore: SetStoreFunction<NestedBlock>;
 }) {
@@ -150,20 +150,5 @@ export function EditNested(props: {
         </div>
       </div>
     </>
-  );
-}
-
-export default function ViewNestedBlock(props: {
-  object: NestedBlock;
-}) {
-  return (
-    <div class="ml-4">
-      <p class="text-xl text-gray-600">{props.object.nestedTitle}</p>
-      <For each={props.object.texts}>
-        {(value) => {
-          return <ViewTextBlock value={value} />;
-        }}
-      </For>
-    </div>
   );
 }

@@ -2,7 +2,7 @@ import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
 import type { ContentObject } from "~/server";
-import ViewPage from "../blocks/page";
+import ViewPage from "../blocks/page/ViewPage";
 
 export default function ContentObjectDefaultView(props: {
   item: ContentObject;
