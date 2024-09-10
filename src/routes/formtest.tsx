@@ -224,7 +224,6 @@ export default function App() {
   return (
     <div class="border m-2">
       <FormBlockEdit value={value} setStore={setStore} />
-      <div>{JSON.stringify({ value })}</div>
     </div>
   );
 }

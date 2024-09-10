@@ -15,19 +15,19 @@ type Option = {
 };
 
 type SelectProps = {
-  name: string;
+  name?: string;
   label?: string | undefined;
   placeholder?: string | undefined;
   options: Option[];
   value: string | undefined;
-  error: string;
+  error?: string;
   required?: boolean | undefined;
   disabled?: boolean | undefined;
   readOnly?: boolean;
-  ref: (element: HTMLSelectElement) => void;
-  onInput: JSX.EventHandler<HTMLSelectElement, InputEvent>;
-  onChange: JSX.EventHandler<HTMLSelectElement, Event>;
-  onBlur: JSX.EventHandler<HTMLSelectElement, FocusEvent>;
+  ref?: (element: HTMLSelectElement) => void;
+  onInput?: JSX.EventHandler<HTMLSelectElement, InputEvent>;
+  onChange?: JSX.EventHandler<HTMLSelectElement, Event>;
+  onBlur?: JSX.EventHandler<HTMLSelectElement, FocusEvent>;
 };
 
 export function Select(props: SelectProps) {

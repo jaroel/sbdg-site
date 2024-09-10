@@ -1,13 +1,10 @@
-import ContentObjectDeleteView from "~/components/content/DeleteView";
+import { lazy } from "solid-js";
 import ContentObjectRoute from "~/components/content/Route";
-import { contentLoadRouteDefinition } from "~/components/content/Route";
 
-export const route = contentLoadRouteDefinition;
+const ContentObjectDeleteView = lazy(
+  () => import("~/components/content/DeleteView"),
+);
 
-export default function Route() {
-  return (
-    <ContentObjectRoute
-      component={(item) => <ContentObjectDeleteView item={item} />}
-    />
-  );
+export default function DeleteRoute() {
+  return <ContentObjectRoute component={ContentObjectDeleteView} />;
 }

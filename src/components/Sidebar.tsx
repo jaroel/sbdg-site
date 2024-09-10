@@ -1,5 +1,6 @@
 import { For } from "solid-js/web";
-import geweer from "~/assets/copy_of_geweersteyr.jpg?w=168&format=avif;webp;jpeg&as=picture";
+// import geweer from "~/assets/copy_of_geweersteyr.jpg?w=168&format=avif;webp;jpeg&as=picture";
+import geweer from "~/assets/copy_of_geweersteyr.jpg?as=picture";
 import Picture from "~/components/Picture";
 import type { ContentObject } from "~/server";
 

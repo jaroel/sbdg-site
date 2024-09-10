@@ -1,103 +1,85 @@
-import { Field, setValue } from "@modular-forms/solid";
 import { For, createEffect, createSignal } from "solid-js";
+import type { SetStoreFunction } from "solid-js/store";
 import { listObjects } from "~/largeobject";
 import Dialog from "../Dialog";
-import type { BlockEditFormProps } from "../content/mapping";
 import Button from "../input/Button";
 import { SelectFieldValueFallback } from "../input/Select";
 import { TextField } from "../input/TextField";
 import type { ImageBlock } from "./schemas";
 
-export function EditImage(props: BlockEditFormProps) {
+export function EditImage(props: {
+  value: ImageBlock;
+  setStore: SetStoreFunction<ImageBlock>;
+}) {
   const [oids, setOids] = createSignal<number[]>([]);
   createEffect(async () => setOids(await listObjects()));
   const [open, setOpen] = createSignal(false);
   return (
     <>
-      <Field of={props.form} name={`${props.path}label`}>
-        {(field, fprops) => (
-          <TextField
-            {...fprops}
-            label="Image label"
-            value={field.value}
-            error={field.error}
-          />
-        )}
-      </Field>
-      <Field of={props.form} name={`${props.path}image`}>
-        {(field, fprops) => (
-          <TextField
-            {...fprops}
-            label="Image name?"
-            value={field.value}
-            error={field.error}
-          />
-        )}
-      </Field>
+      <TextField
+        label="Image label"
+        value={props.value.label}
+        onInput={(event) => {
+          props.setStore("label", event.currentTarget.value);
+        }}
+      />
 
-      <Field of={props.form} name={`${props.path}fileId`}>
-        {(field, fprops) => (
-          <div class="flex flex-row space-x-4 mt-2">
-            <div>
-              <SelectFieldValueFallback
-                {...fprops}
-                label="File Id"
-                placeholder="Please select a value"
-                options={() =>
-                  oids().map((oid) => {
-                    return { label: `OID: ${oid}`, value: `id:${oid}` };
-                  })
-                }
-                value={field.value}
-                error={field.error}
-              />
+      <div class="flex flex-row space-x-4 mt-2">
+        <div>
+          <SelectFieldValueFallback
+            label="File Id"
+            placeholder="Please select a value"
+            options={() =>
+              oids().map((oid) => {
+                return { label: `OID: ${oid}`, value: `id:${oid}` };
+              })
+            }
+            value={props.value.fileId}
+            onChange={(event) => {
+              props.setStore("fileId", event.currentTarget.value);
+            }}
+          />
+        </div>
+        <div>
+          <p>Image browser</p>
+          <Dialog title="Choose an image" open={open()} onOpenChange={setOpen}>
+            <div class="">
+              <ul class="flex flex-wrap space-x-2">
+                <For each={oids()}>
+                  {(oid) => (
+                    <li>
+                      <Button
+                        name="routePrefix"
+                        value="default"
+                        onClick={() => {
+                          props.setStore("fileId", `id:${oid}`);
+                          setOpen(false);
+                        }}
+                      >
+                        <img
+                          class="w-40"
+                          src={`/++file++/id:${oid}`}
+                          alt="Preview!"
+                        />
+                      </Button>
+                    </li>
+                  )}
+                </For>
+              </ul>
             </div>
-            <div>
-              <p>Image browser</p>
-              <Dialog
-                title="Choose an image"
-                open={open()}
-                onOpenChange={setOpen}
-              >
-                <div class="">
-                  <ul class="flex flex-wrap space-x-2">
-                    <For each={oids()}>
-                      {(oid) => (
-                        <li>
-                          <Button
-                            name="routePrefix"
-                            value="default"
-                            onClick={() => {
-                              setValue(props.form, field.name, `id:${oid}`);
-                              setOpen(false);
-                            }}
-                          >
-                            <img
-                              class="w-40"
-                              src={`/++file++/id:${oid}`}
-                              alt="Preview!"
-                            />
-                          </Button>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-              </Dialog>
-            </div>
-            {field.value && (
-              <div>
-                <p>Image preview</p>
-                <img
-                  class="w-40"
-                  src={`/++file++/${field.value}`}
-                  alt="Preview!"
-                />
-              </div>
-            )}
+          </Dialog>
+        </div>
+        {false && "field.value" && (
+          <div>
+            <p>Image preview</p>
+            <img
+              class="w-40"
+              src={`/++file++/${props.value.fileId}`}
+              alt="Preview!"
+            />
           </div>
         )}
-      </Field>
+      </div>
     </>
   );
 }

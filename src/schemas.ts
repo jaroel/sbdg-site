@@ -1,6 +1,14 @@
 import { z } from "zod";
 import { contentObjectsTableSchema } from "./db/schemas";
 
+export type ContentViews = z.infer<typeof contentViews>;
+export const contentViews = z.union([
+  z.literal("default"),
+  z.literal("add"),
+  z.literal("edit"),
+  z.literal("delete"),
+]);
+
 export const contentObjectAddSchema = contentObjectsTableSchema
   .omit({
     id: true,
@@ -26,6 +34,10 @@ export const contentObjectEditSchema = contentObjectsTableSchema
   })
   .required({ id: true });
 
+export const contentObjectEditFormSchema = contentObjectEditSchema.extend({
+  routePrefix: contentViews,
+});
+
 export const contentObjectEditRootSchema = contentObjectEditSchema.omit({
   slug: true,
 });
@@ -39,14 +51,22 @@ export const contentObjectDeleteSchema = contentObjectsTableSchema
   })
   .required({ id: true });
 
-export type ContentViews = z.infer<typeof contentViews>;
-export const contentViews = z.union([
-  z.literal("default"),
-  z.literal("add"),
-  z.literal("edit"),
-  z.literal("delete"),
-]);
-
 export const fileAddSchema = z.object({
   someFile: z.instanceof(File),
+});
+
+export type ContentObjectAddFormSchema = z.infer<
+  typeof contentObjectAddFormSchema
+>;
+export const contentObjectAddFormSchema = contentObjectAddSchema.extend({
+  routePrefix: contentViews,
+});
+
+export const contentObjectEditRootFormSchema =
+  contentObjectEditRootSchema.extend({
+    routePrefix: contentViews,
+  });
+
+export const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
+  routePrefix: contentViews,
 });

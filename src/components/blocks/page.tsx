@@ -1,20 +1,22 @@
 import { Button } from "@kobalte/core/button";
-import { Field, FieldArray, insert, move, remove } from "@modular-forms/solid";
 import { HttpStatusCode } from "@solidjs/start";
 import { For } from "solid-js";
-import { EditBlock, ViewBlocks } from "~/components/Blocks";
+import { type SetStoreFunction, createStore } from "solid-js/store";
+import type { Errors } from "~/types";
 import {
-  ArchiveBoxXMarkIcon,
-  ArrowDownIcon,
-  ArrowUpIcon,
+  // ArchiveBoxXMarkIcon,
+  // ArrowDownIcon,
+  // ArrowUpIcon,
   DocumentIcon,
   PictureIcon,
   RectangleStackIcon,
 } from "../Icons";
-import type { BlockEditFormProps } from "../content/mapping";
 import { TextField } from "../input/TextField";
+import ViewImageBlock, { EditImage } from "./Image";
 import { textBlockFactory } from "./factories";
-import type { PageBlock } from "./schemas";
+import ViewNestedBlock, { EditNested } from "./nested";
+import { type PageBlock, pageBlockSchema } from "./schemas";
+import ViewTextBlock, { EditText } from "./text";
 
 export default function ViewPage(props: {
   object: PageBlock;
@@ -24,189 +26,170 @@ export default function ViewPage(props: {
       <h1>{props.object.title}</h1>
       <HttpStatusCode code={props.object.status || 200} />
       <p class="text-sm text-gray-600 mb-2">{props.object.description}</p>
-      <ViewBlocks blocks={props.object.blocks} />
+
+      <For each={props.object.blocks}>
+        {(value) => {
+          switch (value.type) {
+            case "text": {
+              return <ViewTextBlock value={value} />;
+            }
+            case "image": {
+              return <ViewImageBlock object={value} />;
+            }
+            case "nested": {
+              return <ViewNestedBlock object={value} />;
+            }
+            default:
+              assertCannotReach(value);
+          }
+        }}
+      </For>
     </div>
   );
 }
 
-export function EditPage(props: BlockEditFormProps) {
+export function EditPage(props: {
+  value: PageBlock;
+  setStore: SetStoreFunction<PageBlock>;
+  errors?: Errors;
+}) {
   return (
     <>
-      <Field of={props.form} name={`${props.path}title`}>
-        {(field, fprops) => (
-          <>
-            <div class="mx-2 my-4">
-              <TextField
-                {...fprops}
-                label="Page title"
-                value={field.value}
-                error={field.error}
-                required
-              />
-            </div>
-          </>
-        )}
-      </Field>
-      <Field of={props.form} name={`${props.path}description`}>
-        {(field, fprops) => (
-          <>
-            <div class="mx-2 my-4">
-              <TextField
-                {...fprops}
-                label="Page description"
-                value={field.value}
-                error={field.error}
-                required
-                multiline
-              />
-            </div>
-          </>
-        )}
-      </Field>
+      <div class="mx-2 my-4">
+        <TextField
+          label="Page title"
+          value={props.value.title}
+          onInput={(event) => {
+            props.setStore("title", event.currentTarget.value);
+          }}
+          error={props.errors?.title}
+          required
+        />
+      </div>
+      <div class="mx-2 my-4">
+        <TextField
+          label="Page description"
+          value={props.value.description}
+          onInput={(event) => {
+            props.setStore("description", event.currentTarget.value);
+          }}
+          error={props.errors?.description}
+          required
+          multiline
+        />
+      </div>
+      <div class="flex flex-col mx-2 my-4">
+        <label>Page blocks</label>
+        {false && <div class="text-red-500">{"fieldArray.error"}</div>}
+        <div class="space-y-4 mt-2">
+          <For each={props.value.blocks}>
+            {(value) => {
+              switch (value.type) {
+                case "text": {
+                  const [store, setStore] = createStore(value);
+                  return <EditText value={store} setStore={setStore} />;
+                }
+                case "image": {
+                  const [store, setStore] = createStore(value);
+                  return <EditImage value={store} setStore={setStore} />;
+                }
+                case "nested": {
+                  const [store, setStore] = createStore(value);
+                  return <EditNested value={store} setStore={setStore} />;
+                }
+                default:
+                  assertCannotReach(value);
+              }
+            }}
+          </For>
+        </div>
+        <div>
+          <header>Insert a new block!</header>
 
-      <FieldArray of={props.form} name={`${props.path}blocks`}>
-        {(fieldArray) => (
-          <div class="flex flex-col mx-2 my-4">
-            <label>Page blocks</label>
-            {fieldArray.error && (
-              <div class="text-red-500">{fieldArray.error}</div>
-            )}
-            <div class="space-y-4 mt-2">
-              <For each={fieldArray.items}>
-                {(_, index) => (
-                  <div>
-                    <div class="border-b border-orange-300 divide-x flex flex-row">
-                      <div>
+          <div class="border-b border-orange-300 divide-x flex flex-row">
+            <For each={pageBlockSchema.shape.blocks.element.options}>
+              {(option) => {
+                const value = option.shape.type.value;
+                switch (value) {
+                  case "text": {
+                    return (
+                      <div class="px-1">
                         <Button
-                          title="Move item up"
-                          class="size-4 disabled:text-gray-400"
-                          disabled={index() === 0}
-                          onClick={() => {
-                            move(props.form, fieldArray.name, {
-                              from: index(),
-                              to: index() - 1,
-                            });
-                          }}
-                        >
-                          <ArrowUpIcon title="Move item up" />
-                        </Button>
-                        <Button
-                          title="Move item down"
-                          class="size-4 disabled:text-gray-400"
-                          disabled={index() >= fieldArray.items.length - 1}
-                          onClick={() => {
-                            move(props.form, fieldArray.name, {
-                              from: index(),
-                              to: index() + 1,
-                            });
-                          }}
-                        >
-                          <ArrowDownIcon title="Move item down" />
-                        </Button>
-                      </div>
-                      <div class="px-2">
-                        <Button
-                          title="Delete item"
+                          title="Text block"
                           class="size-4 disabled:text-gray-400"
                           onClick={() => {
-                            remove(props.form, fieldArray.name, {
-                              at: index(),
-                            });
-                          }}
-                        >
-                          <ArchiveBoxXMarkIcon title="Remove this block" />
-                        </Button>
-                      </div>
-                      {/* <div class="px-1 space-x-1">
-                        <Button
-                          title="Copy this block"
-                          class="size-4 disabled:text-gray-400"
-                          onClick={() => {
-                            const values = getValues(
-                              props.form,
-                              fieldArray.name,
+                            props.setStore(
+                              "blocks",
+                              props.value.blocks
+                                ? props.value.blocks.length
+                                : 0,
+                              textBlockFactory("New block!"),
                             );
-                            const value = values && values[index()];
-                            value && setCopyBuffer(value);
                           }}
                         >
-                          <ClipboardDocumentIcon title="Copy this block" />
+                          <DocumentIcon title="Insert text block" />
                         </Button>
+                      </div>
+                    );
+                  }
+                  case "image": {
+                    return (
+                      <div class="px-1">
                         <Button
-                          title="Paste block above"
+                          title="Image block"
                           class="size-4 disabled:text-gray-400"
-                          disabled={!copyBuffer()}
                           onClick={() => {
-                            const value = copyBuffer();
-                            value &&
-                              insert(props.form, fieldArray.name, {
-                                at: index(),
-                                value: value,
-                              });
+                            props.setStore(
+                              "blocks",
+                              props.value.blocks
+                                ? props.value.blocks.length
+                                : 0,
+                              {
+                                type: "image",
+                                label: "",
+                                fileId: "",
+                              },
+                            );
                           }}
                         >
-                          <ArrowUpTrayIcon title="Paste block above" />
+                          <PictureIcon title="Insert image block" />
                         </Button>
-                      </div> */}
-                    </div>
-                    <EditBlock
-                      form={props.form}
-                      path={`${fieldArray.name}.${index()}.`}
-                    />
-                  </div>
-                )}
-              </For>
-            </div>
-            <div>
-              <header>Insert a new block</header>
-              <div class="border-b border-orange-300 divide-x flex flex-row">
-                <div class="px-1">
-                  <Button
-                    title="Text block"
-                    class="size-4 disabled:text-gray-400"
-                    onClick={() => {
-                      insert(props.form, fieldArray.name, {
-                        at: fieldArray.items.length,
-                        value: textBlockFactory("text"),
-                      });
-                    }}
-                  >
-                    <DocumentIcon title="Insert text block" />
-                  </Button>
-                </div>
-                <div class="px-1">
-                  <Button
-                    title="Nested block"
-                    class="size-4 disabled:text-gray-400"
-                    onClick={() => {
-                      insert(props.form, fieldArray.name, {
-                        at: fieldArray.items.length,
-                        value: { type: "nested", nestedTitle: "" },
-                      });
-                    }}
-                  >
-                    <RectangleStackIcon title="Insert nested block" />
-                  </Button>
-                </div>
-                <div class="px-1">
-                  <Button
-                    title="Image block"
-                    class="size-4 disabled:text-gray-400"
-                    onClick={() => {
-                      insert(props.form, fieldArray.name, {
-                        at: fieldArray.items.length,
-                        value: { type: "image", label: "", image: "" },
-                      });
-                    }}
-                  >
-                    <PictureIcon title="Insert image block" />
-                  </Button>
-                </div>
-              </div>
-            </div>
+                      </div>
+                    );
+                  }
+                  case "nested": {
+                    return (
+                      <div class="px-1">
+                        <Button
+                          title="Nested block"
+                          class="size-4 disabled:text-gray-400"
+                          onClick={() => {
+                            props.setStore(
+                              "blocks",
+                              props.value.blocks
+                                ? props.value.blocks.length
+                                : 0,
+                              { type: "nested", texts: [] },
+                            );
+                          }}
+                        >
+                          <RectangleStackIcon title="Insert nested block" />
+                        </Button>
+                      </div>
+                    );
+                  }
+                  default:
+                    assertCannotReach(value);
+                }
+              }}
+            </For>
           </div>
-        )}
-      </FieldArray>
+        </div>
+      </div>
     </>
   );
+}
+
+function assertCannotReach(value: never) {
+  throw new Error("Shouldn't reach");
 }

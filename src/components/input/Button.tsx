@@ -7,7 +7,7 @@ type ButtonProps = {
   label?: string;
   value?: string;
   disabled?: boolean;
-  onClick: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
+  onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
 };
 export default function Button(props: ParentProps & ButtonProps) {
   return (

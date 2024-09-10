@@ -1,9 +1,8 @@
-import ContentObjectAddView from "~/components/content/AddView";
+import { lazy } from "solid-js";
 import ContentObjectRoute from "~/components/content/Route";
-import { contentLoadRouteDefinition } from "~/components/content/Route";
 
-export const route = contentLoadRouteDefinition;
+const ContentObjectAddView = lazy(() => import("~/components/content/AddView"));
 
-export default function Route() {
+export default function AddRoute() {
   return <ContentObjectRoute component={ContentObjectAddView} />;
 }

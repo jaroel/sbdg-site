@@ -58,7 +58,7 @@ export type NestedBlock = z.infer<typeof nestedBlockSchema>;
 export const nestedBlockSchema = z.object({
   type: z.literal("nested"),
   nestedTitle: z.string().trim().min(1),
-  texts: z.array(z.discriminatedUnion("type", [textBlockSchema])).optional(),
+  texts: z.array(z.discriminatedUnion("type", [textBlockSchema])),
 });
 
 export type ImageBlock = z.infer<typeof imageBlockSchema>;
@@ -74,13 +74,13 @@ export const pageBlockSchema = z.object({
   status: z.number().optional(),
   title: z.string().trim().min(1),
   description: z.optional(z.string().trim()),
-  blocks: z.array(
-    z.discriminatedUnion("type", [
+  blocks: z
+    .discriminatedUnion("type", [
       textBlockSchema,
       nestedBlockSchema,
       imageBlockSchema,
-    ]),
-  ),
+    ])
+    .array(),
 });
 
 export type BlockType = Block["type"];

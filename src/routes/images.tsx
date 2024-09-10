@@ -1,14 +1,20 @@
-import { createForm, zodForm } from "@modular-forms/solid";
 import { action, useAction, useSubmission } from "@solidjs/router";
 import { For, createEffect, createSignal } from "solid-js";
-import type * as z from "zod";
 import { SidebarGunOnly } from "~/components/Sidebar";
 import Tabs from "~/components/Tabs";
 import Button from "~/components/input/Button";
 import { FileInput } from "~/components/input/FileInput";
 import { listObjects } from "~/largeobject";
-import { fileAddSchema } from "~/schemas";
 import { addFile } from "~/server";
+import type { Errors } from "~/types";
+
+const toErrors = (error: any) => {
+  try {
+    if (Array.isArray(error.cause._errors)) {
+      return error.cause;
+    }
+  } catch {}
+};
 
 function ImageListing() {
   const [oids, setOids] = createSignal<number[]>([]);
@@ -35,50 +41,50 @@ const addFileAction = action(addFile, "addFileAction");
 function FileAddForm() {
   const formSubmission = useSubmission(addFileAction);
   const submitForm = useAction(addFileAction);
-
-  const [form, { Form, Field }] = createForm<z.infer<typeof fileAddSchema>>({
-    validate: zodForm(fileAddSchema),
-    validateOn: "change",
-  });
+  const [formErrors, setFormErrors] = createSignal<Errors | undefined>();
 
   return (
     <div class="p-4">
-      <Form
-        onSubmit={async (_, event) =>
-          submitForm(new FormData(event.currentTarget, event.submitter))
-        }
+      <form
         method="post"
         action={addFileAction}
         encoding="multipart/form-data"
+        onsubmit={async (event) => {
+          event.preventDefault();
+          try {
+            await submitForm(
+              new FormData(event.currentTarget, event.submitter),
+            );
+            setFormErrors(undefined);
+          } catch (error) {
+            setFormErrors(toErrors(error));
+          }
+        }}
         class="w-full"
         classList={{
-          blur: form.submitting || formSubmission.pending,
+          blur: formSubmission.pending,
         }}
+        noValidate
       >
         <div>
-          <Field name="someFile" type="File">
-            {(field, fprops) => (
-              <FileInput
-                {...fprops}
-                label="Upload a new file"
-                error={field.error}
-                required
-              />
-            )}
-          </Field>
+          <FileInput
+            name="someFile"
+            label="Upload a new file"
+            error={formErrors()?.someFile}
+            required
+          />
         </div>
         <div class="py-2 flex items-center justify-end">
           <Button
             type="submit"
-            disabled={form.submitting || formSubmission.pending}
+            disabled={formSubmission.pending}
             name="routePrefix"
             value="default"
-            onClick={console.log}
           >
             Add and view
           </Button>
         </div>
-      </Form>
+      </form>
     </div>
   );
 }

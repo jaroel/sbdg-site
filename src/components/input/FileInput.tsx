@@ -1,18 +1,19 @@
 import { type JSX, Show, createMemo, splitProps } from "solid-js";
+import type { Errors } from "~/types";
 
 type FileInputProps = {
-  ref: (element: HTMLInputElement) => void;
+  ref?: (element: HTMLInputElement) => void;
   name: string;
   value?: File[] | File;
-  onInput: JSX.EventHandler<HTMLInputElement, InputEvent>;
-  onChange: JSX.EventHandler<HTMLInputElement, Event>;
-  onBlur: JSX.EventHandler<HTMLInputElement, FocusEvent>;
+  onInput?: JSX.EventHandler<HTMLInputElement, InputEvent>;
+  onChange?: JSX.EventHandler<HTMLInputElement, Event>;
+  onBlur?: JSX.EventHandler<HTMLInputElement, FocusEvent>;
   accept?: string;
   required?: boolean;
   multiple?: boolean;
   class?: string;
   label?: string;
-  error?: string;
+  error?: Errors;
 };
 
 /**
@@ -57,16 +58,19 @@ export function FileInput(props: FileInputProps) {
             .join(", ")}
         </Show>
         <input
-          {...inputProps}
+          // {...inputProps}
           class="absolute h-full w-full cursor-pointer opacity-0"
           type="file"
           id={props.name}
+          name={props.name}
           aria-invalid={!!props.error}
           aria-errormessage={`${props.name}-error`}
         />
       </label>
 
-      {props.error && <div class="text-red-500">{props.error}</div>}
+      {props.error?._errors && (
+        <div class="text-red-500">{props.error?._errors.join("\n")}</div>
+      )}
     </div>
   );
 }

@@ -1,14 +1,13 @@
-import { createForm, getValue, setValues, zodForm } from "@modular-forms/solid";
-import { action, useAction, useSubmission } from "@solidjs/router";
-import { createEffect, createSignal } from "solid-js";
-import type * as z from "zod";
+import { action, useSubmission } from "@solidjs/router";
+import { createMemo } from "solid-js";
+import { createStore } from "solid-js/store";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
-import { type ContentViews, contentObjectAddSchema } from "~/schemas";
+import type { ContentObjectAddFormSchema } from "~/schemas";
 import { type ContentObject, addContentObject } from "~/server";
+import type { Errors } from "~/types";
 import { AddContentObject } from "../blocks/Object";
-import { textBlockFactory } from "../blocks/factories";
 import Button from "../input/Button";
 
 const addContentObjectAction = action(
@@ -20,29 +19,19 @@ export default function ContentObjectAddView(props: {
   item: ContentObject;
 }) {
   const formSubmission = useSubmission(addContentObjectAction);
-  const submitForm = useAction(addContentObjectAction);
-
-  const [form, { Form }] = createForm<z.infer<typeof contentObjectAddSchema>>({
-    initialValues: {
-      parentId: props.item.id,
-      object: {
-        type: "page",
-        title: "A new page",
-        description: "Please describe this page",
-        blocks: [textBlockFactory("This is a new page")],
-      },
-
-      slug: "new-page",
-    },
-    validate: zodForm(contentObjectAddSchema),
-    validateOn: "change",
+  const formErrors = createMemo<Errors | undefined>(() => {
+    try {
+      if (Array.isArray(formSubmission.error.cause._errors)) {
+        return formSubmission.error.cause;
+      }
+    } catch {}
   });
 
-  createEffect(() => {
-    setValues(form, { parentId: props.item.id });
+  const [store, setStore] = createStore<ContentObjectAddFormSchema["object"]>({
+    type: "page",
+    title: "A new page!",
+    blocks: [],
   });
-
-  const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("edit");
 
   return (
     <>
@@ -50,50 +39,49 @@ export default function ContentObjectAddView(props: {
       <Navbar
         item={props.item}
         pathPrefix="/add"
-        additionalTitle={getValue(form, "object.title")}
+        additionalTitle={store.title}
       />
       <div>
-        <Form
-          onSubmit={async (_, event) => {
-            const formData = new FormData(event.currentTarget, event.submitter);
-            formData.append("routePrefix", routePrefix());
-            await submitForm(formData);
-          }}
+        <form
           method="post"
           action={addContentObjectAction}
           encoding="multipart/form-data"
           class="w-full"
           classList={{
-            blur: form.submitting || formSubmission.pending,
+            blur: formSubmission.pending,
           }}
+          noValidate
         >
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/add" />
             <main class="px-2 bg-white">
-              <AddContentObject form={form} path="" />
+              <AddContentObject
+                parent={props.item}
+                value={store}
+                setStore={setStore}
+                errors={formErrors()}
+              />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
             <Button
               type="submit"
-              disabled={form.submitting || formSubmission.pending}
+              disabled={formSubmission.pending}
               name="routePrefix"
               value="edit"
-              onClick={() => setRoutePrefix("edit")}
             >
               Add and edit
             </Button>
             <Button
               type="submit"
-              disabled={form.submitting || formSubmission.pending}
+              disabled={formSubmission.pending}
               name="routePrefix"
               value="default"
-              onClick={() => setRoutePrefix("default")}
             >
               Add and view
             </Button>
           </div>
-        </Form>
+        </form>
       </div>
     </>
   );

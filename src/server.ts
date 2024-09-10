@@ -1,7 +1,7 @@
 "use server";
 import { Readable } from "node:stream";
-import { cache, redirect } from "@solidjs/router";
-import * as z from "zod";
+import { redirect, reload } from "@solidjs/router";
+
 import { NOTFOUND404PAGE } from "./components/blocks/notfound";
 import { db } from "./db/db";
 import {
@@ -10,26 +10,16 @@ import {
 } from "./db/tables/contentObjects.table";
 import { createLargeObjectFromStream } from "./largeobject";
 import {
-  contentObjectAddSchema,
-  contentObjectDeleteSchema,
-  contentObjectEditRootSchema,
-  contentObjectEditSchema,
-  contentViews,
+  contentObjectAddFormSchema,
+  contentObjectDeleteFormSchema,
+  contentObjectEditFormSchema,
+  contentObjectEditRootFormSchema,
   fileAddSchema,
 } from "./schemas";
-import { parseFormDataAsync } from "./zod-web-api";
+import { parseFormDataAsync, safeParseFormDataAsync } from "./zod-web-api";
 
 export const getContentObjectBySubPath = (subpath: string) =>
-  getContentObjectBySubPathCache(subpath === "/" ? "/" : `/${subpath}`);
-
-export const getContentObjectBySubPathCache = cache(
-  (subpath: string) => fetchContentObject(subpath),
-  "getContentObjectBySubPath",
-);
-
-const contentObjectEditFormSchema = contentObjectEditSchema.extend({
-  routePrefix: contentViews,
-});
+  fetchContentObject(`/${subpath}`);
 
 const routePrefixMapping = {
   default: "",
@@ -39,110 +29,76 @@ const routePrefixMapping = {
 };
 
 export const saveContentObject = async (formData: FormData) => {
-  try {
-    const data = await parseFormDataAsync(
-      formData,
-      contentObjectEditFormSchema,
-    );
-    const contentId = data.id;
-    const parentPath = await db.contentObjects
-      .find(contentId)
-      .parent.get("path");
+  // await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+  const result = await safeParseFormDataAsync(
+    formData,
+    contentObjectEditFormSchema,
+  );
 
-    const newPath = await db.contentObjects
-      .find(data.id)
-      .update({
-        ...data,
-        path: `${parentPath === "/" ? "" : parentPath}/${data.slug}`,
-      })
-      .get("path");
-    throw redirect(routePrefixMapping[data.routePrefix] + newPath);
-  } catch (exception) {
-    if (!(exception instanceof Response)) {
-      console.info("saveContentObject", {
-        type: typeof exception,
-        error: exception,
-      });
-    }
-    if (exception instanceof z.ZodError) {
-      throw new Response(JSON.stringify(exception.errors), {
-        status: 400,
-        statusText: "Too bad, peanut butter",
-      });
-    }
-    throw exception;
+  if (result.error) {
+    console.error({ ...result });
+    const errors = result.error.format();
+    throw new Error("error", { cause: errors });
   }
-};
 
-const contentObjectEditRootFormSchema = contentObjectEditRootSchema.extend({
-  routePrefix: contentViews,
-});
+  const data = result.data;
+  const parentPath = await db.contentObjects.find(data.id).parent.get("path");
+  const path = `${parentPath === "/" ? "" : parentPath}/${data.slug}`;
+  const newPath = await db.contentObjects
+    .find(data.id)
+    .update({ ...data, path })
+    .get("path");
+  if (data.routePrefix === "edit") {
+    throw reload();
+  }
+  throw redirect(routePrefixMapping[data.routePrefix] + newPath);
+};
 
 export const saveContentObjectRoot = async (formData: FormData) => {
-  try {
-    const data = await parseFormDataAsync(
-      formData,
-      contentObjectEditRootFormSchema,
-    );
-    const newPath = await db.contentObjects
-      .find(data.id)
-      .update({
-        ...data,
-        path: "/",
-      })
-      .get("path");
-    throw redirect(routePrefixMapping[data.routePrefix] + newPath);
-  } catch (exception) {
-    if (!(exception instanceof Response)) {
-      console.info("saveContentObjectRoot", {
-        type: typeof exception,
-        error: exception,
-      });
-    }
-    if (exception instanceof z.ZodError) {
-      throw new Response(JSON.stringify(exception.errors), {
-        status: 400,
-        statusText: "Too bad, peanut butter",
-      });
-    }
-    throw exception;
+  const result = await safeParseFormDataAsync(
+    formData,
+    contentObjectEditRootFormSchema,
+  );
+  if (result.error) {
+    console.error({ ...result });
+    const errors = result.error.format();
+    throw new Error("error", { cause: errors });
   }
+
+  const data = result.data;
+  const newPath = await db.contentObjects
+    .find(data.id)
+    .update({ ...data, path: "/" })
+    .get("path");
+  if (data.routePrefix === "edit") {
+    throw reload();
+  }
+  throw redirect(routePrefixMapping[data.routePrefix] + newPath);
 };
 
-const contentObjectAddFormSchema = contentObjectAddSchema.extend({
-  routePrefix: contentViews,
-});
-
 export const addContentObject = async (formData: FormData) => {
-  try {
-    const data = await parseFormDataAsync(formData, contentObjectAddFormSchema);
-    const parentId = data.parentId;
-    const parentPath = await db.contentObjects.find(parentId).get("path");
-    const newPath = await db.contentObjects
-      .create({
-        ...data,
-        parentId: data.parentId,
-        path: parentId
-          ? `${parentPath}/${data.slug}`.replaceAll("//", "/")
-          : "/",
-      })
-      .get("path");
-    throw redirect(routePrefixMapping[data.routePrefix] + newPath);
-  } catch (exception) {
-    if (!(exception instanceof Response)) {
-      console.info("addContentObject", {
-        type: typeof exception,
-        error: exception,
-      });
-    }
-    if (exception instanceof z.ZodError) {
-      throw new Response(JSON.stringify(exception.errors), {
-        status: 400,
-        statusText: "Too bad, peanut butter",
-      });
-    }
-    throw exception;
+  // await new Promise((resolve, reject) => setTimeout(resolve, 100));
+  const result = await safeParseFormDataAsync(
+    formData,
+    contentObjectAddFormSchema,
+  );
+
+  if (result.error) {
+    console.error({ ...result });
+    const errors = result.error.format();
+    throw new Error("error", { cause: errors });
   }
+
+  const data = result.data;
+  const parentId = data.parentId;
+  const parentPath = await db.contentObjects.find(parentId).get("path");
+  const path = parentId
+    ? `${parentPath}/${data.slug}`.replaceAll("//", "/")
+    : "/";
+  const newPath = await db.contentObjects
+    .create({ ...data, parentId: data.parentId, path })
+    .get("path");
+  throw redirect(routePrefixMapping[data.routePrefix] + newPath);
 };
 
 function readableStreamToNodeReadable(readableStream: ReadableStream) {
@@ -168,10 +124,19 @@ function readableStreamToNodeReadable(readableStream: ReadableStream) {
 }
 
 export const addFile = async (formData: FormData) => {
-  const data = await parseFormDataAsync(formData, fileAddSchema);
-  return await createLargeObjectFromStream(
+  // await new Promise((resolve, reject) => setTimeout(resolve, 2000));
+  const result = await safeParseFormDataAsync(formData, fileAddSchema);
+  if (result.error) {
+    console.error({ ...result });
+    const errors = result.error.format();
+    throw new Error("error", { cause: errors });
+  }
+
+  const data = result.data;
+  await createLargeObjectFromStream(
     readableStreamToNodeReadable(data.someFile.stream()),
   );
+  throw reload();
 };
 
 export const fetchDescendants = async (id: number) =>
@@ -193,42 +158,28 @@ export const fetchDescendants = async (id: number) =>
     })
     .order({ path: "ASC" });
 
-const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
-  routePrefix: contentViews,
-});
-
 export const deleteContentObject = async (formData: FormData) => {
-  try {
-    const data = await parseFormDataAsync(
-      formData,
-      contentObjectDeleteFormSchema,
-    );
+  const result = await safeParseFormDataAsync(
+    formData,
+    contentObjectDeleteFormSchema,
+  );
 
-    const parentId = await db.contentObjects
-      .find(data.id)
-      .delete()
-      .get("parentId");
-
-    const parentPath = parentId
-      ? await db.contentObjects.find(parentId).get("path")
-      : "/";
-
-    throw redirect(routePrefixMapping[data.routePrefix] + parentPath);
-  } catch (exception) {
-    if (!(exception instanceof Response)) {
-      console.info("addContentObject", {
-        type: typeof exception,
-        error: exception,
-      });
-    }
-    if (exception instanceof z.ZodError) {
-      throw new Response(JSON.stringify(exception.errors), {
-        status: 400,
-        statusText: "Too bad, peanut butter",
-      });
-    }
-    throw exception;
+  if (result.error) {
+    console.error({ ...result });
+    const errors = result.error.format();
+    throw new Error("error", { cause: errors });
   }
+
+  const data = result.data;
+  const parentId = await db.contentObjects
+    .find(data.id)
+    .delete()
+    .get("parentId");
+
+  const parentPath = parentId
+    ? await db.contentObjects.find(parentId).get("path")
+    : "/";
+  throw redirect(routePrefixMapping[data.routePrefix] + parentPath);
 };
 
 export type ContentObject = Content & {
@@ -239,10 +190,6 @@ export type ContentObject = Content & {
 export const fetchContentObject = async (
   path: string,
 ): Promise<ContentObject | undefined> => {
-  if (path.startsWith("/_") || path.startsWith("/file/")) {
-    return;
-  }
-  console.info("fetchContentObject", { path });
   const result = await db.contentObjects
     .as("outer")
     .where({ path })

@@ -1,143 +1,102 @@
-import { Field } from "@modular-forms/solid";
-import { Show } from "solid-js";
-import { AddBlock, EditBlock } from "../Blocks";
-import type {
-  BlockAddFormProps,
-  BlockDeleteFormProps,
-  BlockEditFormProps,
-} from "../content/mapping";
+import { Show, createSignal } from "solid-js";
+import { type SetStoreFunction, createStore } from "solid-js/store";
+import type { ContentObjectAddFormSchema } from "~/schemas";
+import type { ContentObject } from "~/server";
 import { TextField } from "../input/TextField";
 
-export function AddContentObject(props: BlockAddFormProps) {
+import type { Errors } from "~/types";
+import { EditPage } from "./page";
+
+export function AddContentObject(props: {
+  parent: ContentObject;
+  value: ContentObjectAddFormSchema["object"];
+  setStore: SetStoreFunction<ContentObjectAddFormSchema["object"]>;
+  errors?: Errors;
+}) {
+  const [slug, setSlug] = createSignal("a-new-page");
+
   return (
     <>
-      <Field of={props.form} name={`${props.path}id`} type="number">
-        {(field, fprops) => (
-          <>
-            {field.error && <div class="text-red-500">{field.error}</div>}
-            <input
-              {...fprops}
-              type="hidden"
-              name={field.name}
-              value={field.value}
-            />
-          </>
-        )}
-      </Field>
+      <input type="hidden" name="parentId" value={props.parent.id} />
+      <input type="hidden" name="object" value={JSON.stringify(props.value)} />
+      <div class="flex space-x-2 mx-2 my-4">
+        <TextField
+          label="Slug"
+          value={slug()}
+          onInput={(event) => {
+            setSlug(event.currentTarget.value);
+          }}
+          name="slug"
+          error={props.errors?.slug}
+          required
+        />
+      </div>
 
-      <Field of={props.form} name={`${props.path}parentId`} type="number">
-        {(field, fprops) => (
-          <>
-            {field.error && <div class="text-red-500">{field.error}</div>}
-            <input
-              {...fprops}
-              type="hidden"
-              name={field.name}
-              value={field.value}
-            />
-          </>
-        )}
-      </Field>
-      <Field of={props.form} name={`${props.path}slug`}>
-        {(field, fprops) => (
-          <div class="flex space-x-2 mx-2 my-4">
-            <TextField
-              {...fprops}
-              label="Slug"
-              value={field.value}
-              error={field.error}
-              required
-            />
-          </div>
-        )}
-      </Field>
-      <AddBlock form={props.form} path={`${props.path}object.`} />
+      <EditPage {...props} errors={props.errors?.object} />
     </>
   );
 }
 
-export function EditContentObject(
-  props: BlockEditFormProps & { hideSlugField?: boolean },
-) {
+export function EditContentObject(props: {
+  value: ContentObject;
+  setStore: SetStoreFunction<ContentObject>;
+  hideSlugField: boolean;
+  errors?: Errors;
+}) {
+  const [value, setStore] = createStore(props.value.object);
+  const [slug, setSlug] = createSignal(
+    props.value.path.slice(props.value.path.lastIndexOf("/") + 1),
+  );
   return (
-    <>
-      <Field of={props.form} name={`${props.path}id`} type="number">
-        {(field, fprops) => (
-          <>
-            {field.error && <div class="text-red-500">{field.error}</div>}
-            <input
-              {...fprops}
-              type="hidden"
-              name={field.name}
-              value={field.value}
-            />
-          </>
-        )}
-      </Field>
-      <Field of={props.form} name={`${props.path}slug`}>
-        {(field, fprops) => (
-          <Show
-            when={!props.hideSlugField}
-            fallback={
-              <>
-                {field.error && <div class="text-red-500">{field.error}</div>}
-                <input
-                  {...fprops}
-                  type="hidden"
-                  name={field.name}
-                  value={field.value}
-                />
-              </>
-            }
-          >
-            <div class="flex space-x-2 mx-2 my-4">
-              <TextField
-                {...fprops}
-                label="Slug"
-                value={field.value}
-                error={field.error}
-                required
-              />
-            </div>
-          </Show>
-        )}
-      </Field>
-      <EditBlock form={props.form} path={`${props.path}object.`} />
-    </>
+    <div class="border m-2">
+      <Show
+        when={!props.hideSlugField}
+        fallback={<input type="hidden" name="slug" value={slug()} />}
+      >
+        <div class="flex space-x-2 mx-2 my-4">
+          <TextField
+            label="Slug"
+            value={slug()}
+            onInput={(event) => {
+              setSlug(event.currentTarget.value);
+            }}
+            name="slug"
+            error={props.errors?.slug}
+            required
+          />
+        </div>
+      </Show>
+      <input type="hidden" name="id" value={props.value.id} />
+      <input type="hidden" name="object" value={JSON.stringify(value)} />
+      <EditPage
+        value={value}
+        setStore={setStore}
+        errors={props.errors?.object}
+      />
+    </div>
   );
 }
 
-export function DeleteContentObject(props: BlockDeleteFormProps) {
+export function DeleteContentObject(props: {
+  value: ContentObject;
+  errors?: Errors;
+}) {
+  const [value, setValue] = createSignal("");
   return (
     <>
-      <Field of={props.form} name={`${props.path}id`} type="number">
-        {(field, fprops) => (
-          <>
-            {field.error && <div class="text-red-500">{field.error}</div>}
-            <input
-              {...fprops}
-              type="hidden"
-              name={field.name}
-              value={field.value}
-            />
-          </>
-        )}
-      </Field>
+      <input type="hidden" name="id" value={props.value.id} />
 
-      <Field of={props.form} name={`${props.path}confirmation`}>
-        {(field, fprops) => (
-          <div class="flex space-x-2 mx-2 my-4">
-            <TextField
-              {...fprops}
-              label="Confirmation"
-              placeholder="delete me"
-              value={field.value || ""}
-              error={field.error}
-              required
-            />
-          </div>
-        )}
-      </Field>
+      <TextField
+        label="Confirmation"
+        placeholder="delete me"
+        value={value()}
+        onInput={(event) => {
+          setValue(event.currentTarget.value);
+        }}
+        error={props.errors?.confirmation}
+        name="confirmation"
+        required
+      />
     </>
   );
 }

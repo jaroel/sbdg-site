@@ -1,12 +1,11 @@
-import { createForm, getValue, reset, zodForm } from "@modular-forms/solid";
-import { action, useAction, useSubmission } from "@solidjs/router";
-import { Show, createEffect, createSignal } from "solid-js";
-import type * as z from "zod";
+import { action, useSubmission } from "@solidjs/router";
+import { Show, createMemo } from "solid-js";
+import { createStore } from "solid-js/store";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
-import { type ContentViews, contentObjectEditSchema } from "~/schemas";
 import { type ContentObject, saveContentObject } from "~/server";
+import type { Errors } from "~/types";
 import { EditContentObject } from "../blocks/Object";
 import Button from "../input/Button";
 
@@ -15,34 +14,19 @@ const saveContentObjectAction = action(
   "saveContentObjectAction",
 );
 
-const toFormData = (
-  item: ContentObject,
-): z.infer<typeof contentObjectEditSchema> => {
-  return {
-    ...item,
-    slug: item.path.slice(item.path.lastIndexOf("/") + 1),
-  };
-};
-
 export default function ContentObjectEditView(props: {
   item: ContentObject;
 }) {
   const formSubmission = useSubmission(saveContentObjectAction);
-  const submitForm = useAction(saveContentObjectAction);
-
-  const [form, { Form }] = createForm<z.infer<typeof contentObjectEditSchema>>({
-    initialValues: toFormData(props.item),
-    validate: zodForm(contentObjectEditSchema),
-    validateOn: "change",
+  const formErrors = createMemo<Errors | undefined>(() => {
+    try {
+      if (Array.isArray(formSubmission.error.cause._errors)) {
+        return formSubmission.error.cause;
+      }
+    } catch {}
   });
 
-  createEffect(() => {
-    reset(form, {
-      initialValues: toFormData(props.item),
-    });
-  });
-
-  const [routePrefix, setRoutePrefix] = createSignal<ContentViews>("edit");
+  const [value, setStore] = createStore(props.item);
 
   return (
     <>
@@ -50,56 +34,56 @@ export default function ContentObjectEditView(props: {
       <Navbar
         item={props.item}
         pathPrefix="/edit"
-        titleOverride={getValue(form, "object.title")}
+        titleOverride={value.object.title}
       />
       <div>
-        <Form
-          onSubmit={async (values, event) => {
-            const formData = new FormData(event.currentTarget, event.submitter);
-            formData.append("routePrefix", routePrefix());
-            await submitForm(formData);
-          }}
+        <form
           method="post"
           action={saveContentObjectAction}
           encoding="multipart/form-data"
           class="w-full"
           classList={{
-            blur: form.submitting || formSubmission.pending,
-            "border border-red-600": form.invalid,
+            blur: formSubmission.pending,
+            "border border-red-600": false && "form.invalid",
           }}
+          noValidate
         >
           <div class="flex space-x-2 mx-2 my-4">
             <Sidebar item={props.item} pathPrefix="/edit" />
             <main class="w-full px-2 bg-white">
-              <EditContentObject form={form} path="" />
+              <EditContentObject
+                value={value}
+                setStore={setStore}
+                errors={formErrors()}
+                hideSlugField={false}
+              />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
-            <Show when={form.response.message}>
+            <Show when={formErrors()?._errors.length}>
               <div class="border-b border-red-600 text-red-500 filter grayscale-0">
-                Validation failure: {JSON.stringify(form.response)}. Call Roel.
+                Validation failure: {JSON.stringify(formErrors()?._errors)}.
+                Call Roel.
               </div>
             </Show>
             <Button
               type="submit"
-              disabled={form.submitting || formSubmission.pending}
+              disabled={formSubmission.pending}
               name="routePrefix"
               value="edit"
-              onClick={() => setRoutePrefix("edit")}
             >
-              Save
+              Save and edit
             </Button>
             <Button
               type="submit"
-              disabled={form.submitting || formSubmission.pending}
+              disabled={formSubmission.pending}
               name="routePrefix"
               value="default"
-              onClick={() => setRoutePrefix("default")}
             >
               Save and view
             </Button>
           </div>
-        </Form>
+        </form>
       </div>
     </>
   );

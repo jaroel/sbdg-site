@@ -1,22 +1,26 @@
-import { Show } from "solid-js";
-import ContentObjectEditRootView from "~/components/content/EditRootView";
-import ContentObjectEditView from "~/components/content/EditView";
+import { Show, lazy } from "solid-js";
 import ContentObjectRoute from "~/components/content/Route";
-import { contentLoadRouteDefinition } from "~/components/content/Route";
 
-export const route = contentLoadRouteDefinition;
+const ContentObjectEditView = lazy(
+  () => import("~/components/content/EditView"),
+);
+const ContentObjectEditRootView = lazy(
+  () => import("~/components/content/EditRootView"),
+);
 
-export default function Route() {
+export default function EditRoute() {
   return (
-    <ContentObjectRoute
-      component={(props) => (
-        <Show
-          when={props.item.path !== "/"}
-          fallback={<ContentObjectEditRootView {...props} />}
-        >
-          <ContentObjectEditView {...props} />
-        </Show>
-      )}
-    />
+    <>
+      <ContentObjectRoute
+        component={(props) => (
+          <Show
+            when={props.item.path !== "/"}
+            fallback={<ContentObjectEditRootView {...props} />}
+          >
+            <ContentObjectEditView {...props} />
+          </Show>
+        )}
+      />
+    </>
   );
 }

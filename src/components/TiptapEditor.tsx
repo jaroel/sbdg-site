@@ -1,17 +1,11 @@
 import { ToggleButton } from "@kobalte/core/toggle-button";
 import { ToggleGroup } from "@kobalte/core/toggle-group";
-import {
-  type FieldElementProps,
-  type FieldStore,
-  type FormStore,
-  getValue,
-  setValue,
-} from "@modular-forms/solid";
 import type { Editor } from "@tiptap/core";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
 import StarterKit from "@tiptap/starter-kit";
 import type { JSX } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
+import type { SetStoreFunction } from "solid-js/store";
 import {
   createEditorTransaction,
   createTiptapEditor,
@@ -19,6 +13,7 @@ import {
   useEditorJSON,
 } from "solid-tiptap";
 import { isDeepStrictEqual } from "~/lib";
+import type { TextBlock } from "./blocks/schemas";
 
 function ParagraphIcon(
   props: JSX.IntrinsicElements["svg"] & { title: string },
@@ -300,9 +295,8 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
 }
 
 export default function TiptapEditor(props: {
-  field: FieldStore<any, any>;
-  fprops: FieldElementProps<any, any>;
-  form: FormStore<any, any>;
+  value: TextBlock;
+  setStore: SetStoreFunction<TextBlock>;
 }) {
   const [container, setContainer] = createSignal<HTMLDivElement>();
   const [menu, setMenu] = createSignal<HTMLDivElement>();
@@ -334,27 +328,24 @@ export default function TiptapEditor(props: {
 function Ding(props: {
   container: HTMLDivElement;
   menu: HTMLDivElement;
-  field: FieldStore<any, any>;
-  fprops: FieldElementProps<any, any>;
-  form: FormStore<any, any>;
+  value: TextBlock;
+  setStore: SetStoreFunction<TextBlock>;
 }) {
-  const editor = createTiptapEditor(() => {
-    return {
-      element: props.container,
-      extensions: [
-        StarterKit,
-        BubbleMenu.configure({
-          element: props.menu,
-        }),
-      ],
-      editorProps: {
-        attributes: {
-          class: "p-2 focus:outline-none prose max-w-full",
-        },
+  const editor = createTiptapEditor(() => ({
+    element: props.container,
+    extensions: [
+      StarterKit,
+      BubbleMenu.configure({
+        element: props.menu,
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class: "p-2 focus:outline-none prose max-w-full",
       },
-      content: getValue(props.form, props.field.name),
-    };
-  });
+    },
+    content: props.value.text,
+  }));
   return (
     <Show when={editor()}>
       {(editor) => <WithEditor {...props} editor={editor()} />}
@@ -363,20 +354,19 @@ function Ding(props: {
 }
 
 function WithEditor(props: {
-  field: FieldStore<any, any>;
-  fprops: FieldElementProps<any, any>;
-  form: FormStore<any, any>;
+  value: TextBlock;
+  setStore: SetStoreFunction<TextBlock>;
   editor: Editor;
 }) {
   const editorJSON = useEditorJSON(() => props.editor);
   const isFocused = useEditorIsFocused(() => props.editor);
 
   createEffect(() => {
+    // XXX is this setup still needed?
     const editorContent = editorJSON();
     if (editorContent && !isFocused()) {
-      const fieldValue = getValue(props.form, props.field.name);
-      if (!isDeepStrictEqual(fieldValue, editorContent)) {
-        setValue(props.form, props.field.name, editorContent);
+      if (!isDeepStrictEqual(props.value.text, editorContent)) {
+        props.setStore(editorContent);
       }
     }
   });

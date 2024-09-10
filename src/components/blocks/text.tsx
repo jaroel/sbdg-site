@@ -1,8 +1,8 @@
-import { Field } from "@modular-forms/solid";
 import type { Component } from "solid-js";
+import type { SetStoreFunction } from "solid-js/store";
 import { Dynamic, For, Show } from "solid-js/web";
 import TiptapEditor from "../TiptapEditor";
-import type { BlockEditFormProps } from "../content/mapping";
+
 import type {
   TextBlock,
   TiptapDoc,
@@ -13,22 +13,16 @@ import type {
   TiptapText,
 } from "./schemas";
 
-export function EditText(props: BlockEditFormProps) {
+export function EditText(props: {
+  value: TextBlock;
+  setStore: SetStoreFunction<TextBlock>;
+}) {
   return (
     <>
-      <Field of={props.form} name={`${props.path}text`}>
-        {(field, fprops) => (
-          <>
-            {field.error && <div class="text-red-500">{field.error}</div>}
-            <input
-              type="hidden"
-              name={field.name}
-              value={JSON.stringify(field.value)}
-            />
-            <TiptapEditor field={field} form={props.form} fprops={fprops} />
-          </>
-        )}
-      </Field>
+      {false && "field.error" && (
+        <div class="text-red-500">{"field.error"}</div>
+      )}
+      <TiptapEditor {...props} />
     </>
   );
 }
@@ -89,11 +83,11 @@ function RenderTiptapElement(props: {
 }
 
 export default function ViewTextBlock(props: {
-  object: TextBlock;
+  value: TextBlock;
 }) {
   return (
     <>
-      <RenderTiptapElement element={props.object.text} />
+      <RenderTiptapElement element={props.value.text} />
     </>
   );
 }
