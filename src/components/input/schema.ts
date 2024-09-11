@@ -39,11 +39,3 @@ export const tiptapDocSchema = z.object({
   type: z.literal("doc"),
   content: z.array(z.discriminatedUnion("type", [tiptapParagraphSchema])),
 });
-
-export type TiptapElementType = TiptapElement["type"];
-export type TiptapElement = z.infer<typeof tiptapElementSchema>;
-export const tiptapElementSchema = z.union([
-  tiptapDocSchema,
-  tiptapParagraphSchema,
-  tiptapTextSchema,
-]);

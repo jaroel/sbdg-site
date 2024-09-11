@@ -1,27 +1,33 @@
-import type { Component } from "solid-js";
-import { Dynamic, For, Show } from "solid-js/web";
+import { For } from "solid-js/web";
 import type {
   TiptapDoc,
-  TiptapElement,
-  TiptapElementType,
   TiptapMarkType,
   TiptapParagraph,
   TiptapText,
 } from "../../input/schema";
 import type { TextBlock } from "../schemas";
 
+const hasMark = (marks: TiptapText["marks"], type: TiptapMarkType) =>
+  marks?.map((item) => item.type === type).filter(Boolean).length !== 0;
+
 function RenderText(props: {
   element: TiptapText;
 }) {
-  const hasMark = (type: TiptapMarkType) =>
-    props.element.marks?.map((item) => item.type === type).filter(Boolean)
-      .length !== 0;
-
   return (
-    <Show when={props.element.marks?.length} fallback={props.element.text}>
-      {hasMark("bold") && <strong>{props.element.text}</strong>}
-      {hasMark("italic") && <em>{props.element.text}</em>}
-    </Show>
+    <>
+      {!props.element.marks?.length && props.element.text}
+      {!!props.element.marks?.length && (
+        <>
+          {" "}
+          {hasMark(props.element.marks, "bold") && (
+            <strong>{props.element.text}</strong>
+          )}
+          {hasMark(props.element.marks, "italic") && (
+            <em>{props.element.text}</em>
+          )}
+        </>
+      )}
+    </>
   );
 }
 
@@ -30,47 +36,25 @@ function RenderParagraph(props: {
 }) {
   return (
     <p>
-      <RenderElements elements={props.element.content} />
+      <For each={props.element.content}>
+        {(value) => <RenderText element={value} />}
+      </For>
     </p>
   );
 }
 
-function renderDoc(props: {
+function RenderDoc(props: {
   element: TiptapDoc;
 }) {
-  return <RenderElements elements={props.element.content} />;
-}
-
-function RenderElements(props: {
-  elements: TiptapElement[];
-}) {
   return (
-    <For each={props.elements}>
-      {(value) => <RenderTiptapElement element={value} />}
+    <For each={props.element.content}>
+      {(value) => <RenderParagraph element={value} />}
     </For>
-  );
-}
-
-export const viewTiptapElement: Record<TiptapElementType, Component<any>> = {
-  text: RenderText,
-  doc: renderDoc,
-  paragraph: RenderParagraph,
-};
-
-function RenderTiptapElement(props: {
-  element: TiptapElement;
-}) {
-  return (
-    <Dynamic component={viewTiptapElement[props.element.type]} {...props} />
   );
 }
 
 export default function ViewTextBlock(props: {
   value: TextBlock;
 }) {
-  return (
-    <>
-      <RenderTiptapElement element={props.value.text} />
-    </>
-  );
+  return <RenderDoc element={props.value.text} />;
 }
