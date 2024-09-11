@@ -21,7 +21,11 @@ function ImageListing() {
   createEffect(async () => setOids(await listObjects()));
   return (
     <div class="p-4">
-      <p>Listing of uploaded files</p>
+      <p>
+        {oids().length
+          ? "Listing of uploaded files"
+          : "Sorry, no images uploaded."}
+      </p>
 
       <div class="flex flex-wrap gap-2">
         <For each={oids()}>
@@ -81,7 +85,7 @@ function FileAddForm() {
             name="routePrefix"
             value="default"
           >
-            Add and view
+            Upload image
           </Button>
         </div>
       </form>

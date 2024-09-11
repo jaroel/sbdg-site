@@ -30,62 +30,65 @@ export default function EditImageBlock(props: {
         error={props.errors?.label}
       />
 
-      <div class="flex flex-row space-x-4 mt-2">
-        <div>
-          <SelectFieldValueFallback
-            label="File Id"
-            placeholder="Please select a value"
-            options={() =>
-              oids().map((oid) => {
-                return { label: `OID: ${oid}`, value: `id:${oid}` };
-              })
-            }
-            value={props.value.fileId}
-            onChange={(event) => {
-              props.setStore("fileId", event.currentTarget.value);
-            }}
-          />
-        </div>
-        <div>
+      {oids().length === 0 && (
+        <div class="text-gray-600">
           <p>Image browser</p>
-          <Dialog title="Choose an image" open={open()} onOpenChange={setOpen}>
-            <div class="">
-              <ul class="flex flex-wrap space-x-2">
-                <For each={oids()}>
-                  {(oid) => (
-                    <li>
-                      <Button
-                        name="routePrefix"
-                        value="default"
-                        onClick={() => {
-                          props.setStore("fileId", `id:${oid}`);
-                          setOpen(false);
-                        }}
-                      >
-                        <img
-                          class="w-40"
-                          src={`/++file++/id:${oid}`}
-                          alt="Preview!"
-                        />
-                      </Button>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </div>
-          </Dialog>
+          <p>Sorry, no images uploaded.</p>
         </div>
-        {false && "field.value" && (
+      )}
+
+      {oids().length && (
+        <div class="flex flex-row space-x-4 mt-2">
           <div>
-            <p>Image preview</p>
-            <img
-              class="w-40"
-              src={`/++file++/${props.value.fileId}`}
-              alt="Preview!"
+            <SelectFieldValueFallback
+              label="File Id"
+              placeholder="Please select a value"
+              options={() =>
+                oids().map((oid) => {
+                  return { label: `OID: ${oid}`, value: `id:${oid}` };
+                })
+              }
+              value={props.value.fileId}
+              onChange={(event) => {
+                props.setStore("fileId", event.currentTarget.value);
+              }}
             />
           </div>
-        )}
-      </div>
+          <div>
+            <p class="text-gray-600">Image browser</p>
+            <Dialog
+              title="Choose an image"
+              open={open()}
+              onOpenChange={setOpen}
+            >
+              <div class="">
+                <ul class="flex flex-wrap space-x-2">
+                  <For each={oids()}>
+                    {(oid) => (
+                      <li>
+                        <Button
+                          name="routePrefix"
+                          value="default"
+                          onClick={() => {
+                            props.setStore("fileId", `id:${oid}`);
+                            setOpen(false);
+                          }}
+                        >
+                          <img
+                            class="w-40"
+                            src={`/++file++/id:${oid}`}
+                            alt="Preview!"
+                          />
+                        </Button>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </div>
+            </Dialog>
+          </div>
+        </div>
+      )}
     </>
   );
 }
