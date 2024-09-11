@@ -1,8 +1,12 @@
 import { ToggleButton } from "@kobalte/core/toggle-button";
 import { ToggleGroup } from "@kobalte/core/toggle-group";
 import type { Editor } from "@tiptap/core";
+import Bold from "@tiptap/extension-bold";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
-import StarterKit from "@tiptap/starter-kit";
+import Document from "@tiptap/extension-document";
+import Italic from "@tiptap/extension-italic";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
 import type { JSX } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
@@ -185,7 +189,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         >
           <ParagraphIcon title="Paragraph" class="w-full h-full m-1" />
         </Control>
-        <Control
+        {/* <Control
           key="heading-1"
           class="font-bold"
           editor={props.editor}
@@ -208,7 +212,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           title="Heading 2"
         >
           H2
-        </Control>
+        </Control> */}
       </ToggleGroup>
       <Separator />
       <ToggleGroup class="flex space-x-1">
@@ -230,7 +234,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         >
           I
         </Control>
-        <Control
+        {/* <Control
           key="strike"
           class="line-through"
           editor={props.editor}
@@ -288,7 +292,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           title="Code Block"
         >
           <CodeBlockIcon title="Code Block" class="w-full h-full m-1" />
-        </Control>
+        </Control> */}
       </ToggleGroup>
     </div>
   );
@@ -334,7 +338,11 @@ function Ding(props: {
   const editor = createTiptapEditor(() => ({
     element: props.container,
     extensions: [
-      StarterKit,
+      Document,
+      Paragraph,
+      Text,
+      Bold,
+      Italic,
       BubbleMenu.configure({
         element: props.menu,
       }),
