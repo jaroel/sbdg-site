@@ -7,7 +7,6 @@ export const db = orchidORM(
     ...config.database,
     connectRetry: true,
     log: false,
-    autoPreparedStatements: true,
   },
   {
     contentObjects: ContentObjectsTable,
