@@ -1,14 +1,14 @@
 import type { Component } from "solid-js";
 import { Dynamic, For, Show } from "solid-js/web";
 import type {
-  TextBlock,
   TiptapDoc,
   TiptapElement,
   TiptapElementType,
   TiptapMarkType,
   TiptapParagraph,
   TiptapText,
-} from "../schemas";
+} from "../../input/schema";
+import type { TextBlock } from "../schemas";
 
 function RenderText(props: {
   element: TiptapText;

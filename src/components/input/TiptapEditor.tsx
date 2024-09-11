@@ -18,7 +18,7 @@ import {
 } from "solid-tiptap";
 import { isDeepStrictEqual } from "~/lib";
 import type { Errors } from "~/types";
-import type { TextBlock } from "./blocks/schemas";
+import type { TiptapDoc } from "./schema";
 
 function ParagraphIcon(
   props: JSX.IntrinsicElements["svg"] & { title: string },
@@ -37,97 +37,97 @@ function ParagraphIcon(
   );
 }
 
-function CodeIcon(
-  props: JSX.IntrinsicElements["svg"] & { title: string },
-): JSX.Element {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      stroke="none"
-      {...props}
-    >
-      <title>{props.title}</title>
-      <path d="M8.293 6.293 2.586 12l5.707 5.707 1.414-1.414L5.414 12l4.293-4.293zm7.414 11.414L21.414 12l-5.707-5.707-1.414 1.414L18.586 12l-4.293 4.293z" />
-    </svg>
-  );
-}
+// function CodeIcon(
+//   props: JSX.IntrinsicElements["svg"] & { title: string },
+// ): JSX.Element {
+//   return (
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       fill="currentColor"
+//       viewBox="0 0 24 24"
+//       stroke="none"
+//       {...props}
+//     >
+//       <title>{props.title}</title>
+//       <path d="M8.293 6.293 2.586 12l5.707 5.707 1.414-1.414L5.414 12l4.293-4.293zm7.414 11.414L21.414 12l-5.707-5.707-1.414 1.414L18.586 12l-4.293 4.293z" />
+//     </svg>
+//   );
+// }
 
-function CodeBlockIcon(
-  props: JSX.IntrinsicElements["svg"] & { title: string },
-): JSX.Element {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      stroke="none"
-      {...props}
-    >
-      <title>{props.title}</title>
-      <path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z" />
-      <path d="M9.293 9.293 5.586 13l3.707 3.707 1.414-1.414L8.414 13l2.293-2.293zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414L18.414 13z" />
-    </svg>
-  );
-}
+// function CodeBlockIcon(
+//   props: JSX.IntrinsicElements["svg"] & { title: string },
+// ): JSX.Element {
+//   return (
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       fill="currentColor"
+//       viewBox="0 0 24 24"
+//       stroke="none"
+//       {...props}
+//     >
+//       <title>{props.title}</title>
+//       <path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z" />
+//       <path d="M9.293 9.293 5.586 13l3.707 3.707 1.414-1.414L8.414 13l2.293-2.293zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414L18.414 13z" />
+//     </svg>
+//   );
+// }
 
-function OrderedListIcon(
-  props: JSX.IntrinsicElements["svg"] & { title: string },
-): JSX.Element {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      stroke="none"
-      {...props}
-    >
-      <title>{props.title}</title>
-      <path
-        fill-rule="evenodd"
-        d="M2.003 2.5a.5.5 0 00-.723-.447l-1.003.5a.5.5 0 00.446.895l.28-.14V6H.5a.5.5 0 000 1h2.006a.5.5 0 100-1h-.503V2.5zM5 3.25a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 3.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 8.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5a.75.75 0 01-.75-.75zM.924 10.32l.003-.004a.851.851 0 01.144-.153A.66.66 0 011.5 10c.195 0 .306.068.374.146a.57.57 0 01.128.376c0 .453-.269.682-.8 1.078l-.035.025C.692 11.98 0 12.495 0 13.5a.5.5 0 00.5.5h2.003a.5.5 0 000-1H1.146c.132-.197.351-.372.654-.597l.047-.035c.47-.35 1.156-.858 1.156-1.845 0-.365-.118-.744-.377-1.038-.268-.303-.658-.484-1.126-.484-.48 0-.84.202-1.068.392a1.858 1.858 0 00-.348.384l-.007.011-.002.004-.001.002-.001.001a.5.5 0 00.851.525zM.5 10.055l-.427-.26.427.26z"
-      />
-    </svg>
-  );
-}
+// function OrderedListIcon(
+//   props: JSX.IntrinsicElements["svg"] & { title: string },
+// ): JSX.Element {
+//   return (
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       viewBox="0 0 16 16"
+//       fill="currentColor"
+//       stroke="none"
+//       {...props}
+//     >
+//       <title>{props.title}</title>
+//       <path
+//         fill-rule="evenodd"
+//         d="M2.003 2.5a.5.5 0 00-.723-.447l-1.003.5a.5.5 0 00.446.895l.28-.14V6H.5a.5.5 0 000 1h2.006a.5.5 0 100-1h-.503V2.5zM5 3.25a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 3.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5A.75.75 0 015 8.25zm0 5a.75.75 0 01.75-.75h8.5a.75.75 0 010 1.5h-8.5a.75.75 0 01-.75-.75zM.924 10.32l.003-.004a.851.851 0 01.144-.153A.66.66 0 011.5 10c.195 0 .306.068.374.146a.57.57 0 01.128.376c0 .453-.269.682-.8 1.078l-.035.025C.692 11.98 0 12.495 0 13.5a.5.5 0 00.5.5h2.003a.5.5 0 000-1H1.146c.132-.197.351-.372.654-.597l.047-.035c.47-.35 1.156-.858 1.156-1.845 0-.365-.118-.744-.377-1.038-.268-.303-.658-.484-1.126-.484-.48 0-.84.202-1.068.392a1.858 1.858 0 00-.348.384l-.007.011-.002.004-.001.002-.001.001a.5.5 0 00.851.525zM.5 10.055l-.427-.26.427.26z"
+//       />
+//     </svg>
+//   );
+// }
 
-function BulletListIcon(
-  props: JSX.IntrinsicElements["svg"] & { title: string },
-): JSX.Element {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      stroke="none"
-      {...props}
-    >
-      <title>{props.title}</title>
-      <path
-        fill-rule="evenodd"
-        d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"
-      />
-    </svg>
-  );
-}
+// function BulletListIcon(
+//   props: JSX.IntrinsicElements["svg"] & { title: string },
+// ): JSX.Element {
+//   return (
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       viewBox="0 0 16 16"
+//       fill="currentColor"
+//       stroke="none"
+//       {...props}
+//     >
+//       <title>{props.title}</title>
+//       <path
+//         fill-rule="evenodd"
+//         d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"
+//       />
+//     </svg>
+//   );
+// }
 
-function BlockquoteIcon(
-  props: JSX.IntrinsicElements["svg"] & { title: string },
-): JSX.Element {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      stroke="none"
-      {...props}
-    >
-      <title>{props.title}</title>
-      <path d="M20.309 17.708C22.196 15.66 22.006 13.03 22 13V5a1 1 0 0 0-1-1h-6c-1.103 0-2 .897-2 2v7a1 1 0 0 0 1 1h3.078a2.89 2.89 0 0 1-.429 1.396c-.508.801-1.465 1.348-2.846 1.624l-.803.16V20h1c2.783 0 4.906-.771 6.309-2.292zm-11.007 0C11.19 15.66 10.999 13.03 10.993 13V5a1 1 0 0 0-1-1h-6c-1.103 0-2 .897-2 2v7a1 1 0 0 0 1 1h3.078a2.89 2.89 0 0 1-.429 1.396c-.508.801-1.465 1.348-2.846 1.624l-.803.16V20h1c2.783 0 4.906-.771 6.309-2.292z" />
-    </svg>
-  );
-}
+// function BlockquoteIcon(
+//   props: JSX.IntrinsicElements["svg"] & { title: string },
+// ): JSX.Element {
+//   return (
+//     <svg
+//       xmlns="http://www.w3.org/2000/svg"
+//       viewBox="0 0 24 24"
+//       fill="currentColor"
+//       stroke="none"
+//       {...props}
+//     >
+//       <title>{props.title}</title>
+//       <path d="M20.309 17.708C22.196 15.66 22.006 13.03 22 13V5a1 1 0 0 0-1-1h-6c-1.103 0-2 .897-2 2v7a1 1 0 0 0 1 1h3.078a2.89 2.89 0 0 1-.429 1.396c-.508.801-1.465 1.348-2.846 1.624l-.803.16V20h1c2.783 0 4.906-.771 6.309-2.292zm-11.007 0C11.19 15.66 10.999 13.03 10.993 13V5a1 1 0 0 0-1-1h-6c-1.103 0-2 .897-2 2v7a1 1 0 0 0 1 1h3.078a2.89 2.89 0 0 1-.429 1.396c-.508.801-1.465 1.348-2.846 1.624l-.803.16V20h1c2.783 0 4.906-.771 6.309-2.292z" />
+//     </svg>
+//   );
+// }
 
 function Separator() {
   return (
@@ -304,8 +304,8 @@ function hasRequiredError(errors?: Errors) {
 }
 
 export default function TiptapEditor(props: {
-  value: TextBlock;
-  setStore: SetStoreFunction<TextBlock>;
+  value: TiptapDoc;
+  setStore: SetStoreFunction<TiptapDoc>;
   errors?: Errors;
 }) {
   const [container, setContainer] = createSignal<HTMLDivElement>();
@@ -354,8 +354,8 @@ export default function TiptapEditor(props: {
 function Ding(props: {
   container: HTMLDivElement;
   menu: HTMLDivElement;
-  value: TextBlock;
-  setStore: SetStoreFunction<TextBlock>;
+  value: TiptapDoc;
+  setStore: SetStoreFunction<TiptapDoc>;
 }) {
   const editor = createTiptapEditor(() => ({
     element: props.container,
@@ -374,7 +374,7 @@ function Ding(props: {
         class: "p-2 focus:outline-none prose max-w-full",
       },
     },
-    content: props.value.text,
+    content: props.value,
   }));
   return (
     <Show when={editor()}>
@@ -384,8 +384,8 @@ function Ding(props: {
 }
 
 function WithEditor(props: {
-  value: TextBlock;
-  setStore: SetStoreFunction<TextBlock>;
+  value: TiptapDoc;
+  setStore: SetStoreFunction<TiptapDoc>;
   editor: Editor;
 }) {
   const editorJSON = useEditorJSON(() => props.editor);
@@ -394,8 +394,8 @@ function WithEditor(props: {
   createEffect(() => {
     const editorContent = editorJSON();
     if (editorContent && !isFocused()) {
-      if (!isDeepStrictEqual(props.value.text, editorContent)) {
-        props.setStore("text", editorContent);
+      if (!isDeepStrictEqual(props.value, editorContent)) {
+        props.setStore(editorContent);
       }
     }
   });
