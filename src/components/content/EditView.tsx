@@ -25,7 +25,6 @@ export default function ContentObjectEditView(props: {
       }
     } catch {}
   });
-
   const [value, setStore] = createStore(props.item);
 
   return (
@@ -44,7 +43,6 @@ export default function ContentObjectEditView(props: {
           class="w-full"
           classList={{
             blur: formSubmission.pending,
-            "border border-red-600": false && "form.invalid",
           }}
           noValidate
         >

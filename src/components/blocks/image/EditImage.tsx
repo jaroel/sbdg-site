@@ -1,27 +1,33 @@
 import { For, createEffect, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { listObjects } from "~/largeobject";
+import type { Errors } from "~/types";
 import Dialog from "../../Dialog";
 import Button from "../../input/Button";
 import { SelectFieldValueFallback } from "../../input/Select";
 import { TextField } from "../../input/TextField";
 import type { ImageBlock } from "../schemas";
 
-export default function EditImage(props: {
+export default function EditImageBlock(props: {
   value: ImageBlock;
   setStore: SetStoreFunction<ImageBlock>;
+  errors?: Errors;
 }) {
   const [oids, setOids] = createSignal<number[]>([]);
   createEffect(async () => setOids(await listObjects()));
   const [open, setOpen] = createSignal(false);
   return (
     <>
+      {props.errors?._errors && (
+        <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
+      )}
       <TextField
         label="Image label"
         value={props.value.label}
         onInput={(event) => {
           props.setStore("label", event.currentTarget.value);
         }}
+        error={props.errors?.label}
       />
 
       <div class="flex flex-row space-x-4 mt-2">

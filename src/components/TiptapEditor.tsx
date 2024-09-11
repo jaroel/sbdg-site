@@ -17,6 +17,7 @@ import {
   useEditorJSON,
 } from "solid-tiptap";
 import { isDeepStrictEqual } from "~/lib";
+import type { Errors } from "~/types";
 import type { TextBlock } from "./blocks/schemas";
 
 function ParagraphIcon(
@@ -298,34 +299,55 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
   );
 }
 
+function hasRequiredError(errors?: Errors) {
+  return errors !== undefined;
+}
+
 export default function TiptapEditor(props: {
   value: TextBlock;
   setStore: SetStoreFunction<TextBlock>;
+  errors?: Errors;
 }) {
   const [container, setContainer] = createSignal<HTMLDivElement>();
   const [menu, setMenu] = createSignal<HTMLDivElement>();
 
   return (
-    <div class="flex items-center justify-center w-full border border-gray-200 border-t-0">
-      <div class="flex-1 m-1">
-        <div class="bg-white overflow-y-scroll rounded-lg" ref={setContainer} />
-        <ToggleGroup
-          ref={setMenu}
-          class="bg-blue-400 text-white rounded"
-          // horizontal
-        >
-          <Show when={container()}>
-            {(container) => (
-              <Show when={menu()}>
-                {(menu) => (
-                  <Ding {...props} container={container()} menu={menu()} />
-                )}
-              </Show>
-            )}
-          </Show>
-        </ToggleGroup>
+    <>
+      <div
+        class="flex items-center justify-center w-full border border-gray-200 border-t-0"
+        classList={{
+          "border-red-500": Boolean(props.errors?._errors),
+        }}
+      >
+        <div class="flex-1 m-1">
+          <div
+            class="bg-white overflow-y-scroll rounded-lg"
+            ref={setContainer}
+          />
+          <ToggleGroup
+            ref={setMenu}
+            class="bg-blue-400 text-white rounded"
+            // horizontal
+          >
+            <Show when={container()}>
+              {(container) => (
+                <Show when={menu()}>
+                  {(menu) => (
+                    <Ding {...props} container={container()} menu={menu()} />
+                  )}
+                </Show>
+              )}
+            </Show>
+          </ToggleGroup>
+        </div>
       </div>
-    </div>
+      {props.errors && (
+        <div class="text-red-500">
+          {props.errors._errors.join("\n")}
+          {hasRequiredError(props.errors.content) && "Required"}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -370,11 +392,10 @@ function WithEditor(props: {
   const isFocused = useEditorIsFocused(() => props.editor);
 
   createEffect(() => {
-    // XXX is this setup still needed?
     const editorContent = editorJSON();
     if (editorContent && !isFocused()) {
       if (!isDeepStrictEqual(props.value.text, editorContent)) {
-        props.setStore(editorContent);
+        props.setStore("text", editorContent);
       }
     }
   });

@@ -1,18 +1,17 @@
 import { Button } from "@kobalte/core/button";
-import { For } from "solid-js";
+import { type Accessor, For } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
-
+import type { Errors } from "~/types";
 import {
   ArchiveBoxXMarkIcon,
   ArrowDownIcon,
   ArrowUpIcon,
   DocumentIcon,
 } from "../../Icons";
-
 import { TextField } from "../../input/TextField";
 import { textBlockFactory } from "../factories";
 import type { NestedBlock } from "../schemas";
-import EditText from "../text/EditText";
+import EditTextBlock from "../text/EditText";
 
 function moveLeft<T>(array: T[], index: number): T[] {
   const head = array.slice(0, index - 1);
@@ -30,12 +29,19 @@ function moveRight<T>(array: T[], index: number): T[] {
 }
 
 function BlockToolbar(props: {
-  index: any;
-  value: any;
-  setStore: any;
+  index: Accessor<number>;
+  value: NestedBlock;
+  setStore: SetStoreFunction<NestedBlock>;
+  errors?: Errors;
 }) {
   return (
-    <div class="border-b border-orange-300 divide-x flex flex-row">
+    <div
+      class="border-b divide-x flex flex-row"
+      classList={{
+        "border-red-500": Boolean(props.errors?._errors),
+        "border-orange-300": Boolean(props.errors?._errors) === false,
+      }}
+    >
       <div>
         <Button
           title="Move item up"
@@ -78,27 +84,35 @@ function BlockToolbar(props: {
   );
 }
 
-export default function EditNested(props: {
+export default function EditNestedBlock(props: {
   value: NestedBlock;
   setStore: SetStoreFunction<NestedBlock>;
+  errors?: Errors;
 }) {
   return (
     <>
+      {props.errors?._errors && (
+        <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
+      )}
       <TextField
         label="Nested title"
         value={props.value.nestedTitle}
         onInput={(event) => {
           props.setStore("nestedTitle", event.currentTarget.value);
         }}
+        error={props.errors?.nestedTitle}
       />
       <div class="flex flex-col m-4">
         <label class="text-gray-600">Nested texts</label>
-        {false && "fieldArray.error" && (
-          <div class="text-red-500">{"fieldArray.error"}</div>
+        {props.errors?.texts && (
+          <div class="text-red-500">
+            {props.errors?.texts?._errors.join("\n")}
+          </div>
         )}
         <div class="space-y-4 mt-2 mb-2">
           <For each={props.value.texts}>
             {(value, index) => {
+              const errors = () => props.errors?.texts?.[index().toString()];
               const [store, setStore] = createStore(value);
               return (
                 <div>
@@ -106,8 +120,13 @@ export default function EditNested(props: {
                     index={index}
                     value={props.value}
                     setStore={props.setStore}
+                    errors={errors()}
                   />
-                  <EditText value={store} setStore={setStore} />
+                  <EditTextBlock
+                    value={store}
+                    setStore={setStore}
+                    errors={errors()}
+                  />
                 </div>
               );
             }}

@@ -2,10 +2,9 @@ import { Show, createSignal } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
 import type { ContentObjectAddFormSchema } from "~/schemas";
 import type { ContentObject } from "~/server";
-import { TextField } from "../input/TextField";
-
 import type { Errors } from "~/types";
-import EditPage from "./page/EditPage";
+import { TextField } from "../input/TextField";
+import EditPageBlock from "./page/EditPage";
 
 export function AddContentObject(props: {
   parent: ContentObject;
@@ -32,7 +31,7 @@ export function AddContentObject(props: {
         />
       </div>
 
-      <EditPage {...props} errors={props.errors?.object} />
+      <EditPageBlock {...props} errors={props.errors?.object} />
     </>
   );
 }
@@ -68,7 +67,7 @@ export function EditContentObject(props: {
       </Show>
       <input type="hidden" name="id" value={props.value.id} />
       <input type="hidden" name="object" value={JSON.stringify(value)} />
-      <EditPage
+      <EditPageBlock
         value={value}
         setStore={setStore}
         errors={props.errors?.object}

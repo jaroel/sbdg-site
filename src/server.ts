@@ -1,7 +1,6 @@
 "use server";
 import { Readable } from "node:stream";
 import { redirect, reload } from "@solidjs/router";
-
 import { NOTFOUND404PAGE } from "./components/blocks/notfound";
 import { db } from "./db/db";
 import {
@@ -16,7 +15,7 @@ import {
   contentObjectEditRootFormSchema,
   fileAddSchema,
 } from "./schemas";
-import { parseFormDataAsync, safeParseFormDataAsync } from "./zod-web-api";
+import { safeParseFormDataAsync } from "./zod-web-api";
 
 export const getContentObjectBySubPath = (subpath: string) =>
   fetchContentObject(`/${subpath}`);

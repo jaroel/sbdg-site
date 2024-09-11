@@ -12,10 +12,10 @@ import {
 } from "../../Icons";
 import { TextField } from "../../input/TextField";
 import { textBlockFactory } from "../factories";
-import EditImage from "../image/EditImage";
-import EditNested from "../nested/EditNested";
+import EditImageBlock from "../image/EditImage";
+import EditNestedBlock from "../nested/EditNested";
 import { type PageBlock, pageBlockSchema } from "../schemas";
-import EditText from "../text/EditText";
+import EditTextBlock from "../text/EditText";
 
 function moveLeft<T>(array: T[], index: number): T[] {
   const head = array.slice(0, index - 1);
@@ -36,9 +36,16 @@ function BlockToolbar(props: {
   index: Accessor<number>;
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
+  errors?: Errors;
 }) {
   return (
-    <div class="border-b border-orange-300 divide-x flex flex-row">
+    <div
+      class="border-b divide-x flex flex-row"
+      classList={{
+        "border-red-500": Boolean(props.errors?._errors),
+        "border-orange-300": Boolean(props.errors?._errors) === false,
+      }}
+    >
       <div>
         <Button
           title="Move item up"
@@ -81,13 +88,16 @@ function BlockToolbar(props: {
   );
 }
 
-export default function EditPage(props: {
+export default function EditPageBlock(props: {
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
   errors?: Errors;
 }) {
   return (
     <>
+      {props.errors?._errors && (
+        <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
+      )}
       <div class="mx-2 my-4">
         <TextField
           label="Page title"
@@ -113,23 +123,39 @@ export default function EditPage(props: {
       </div>
       <div class="flex flex-col mx-2 my-4">
         <label class="text-gray-600">Page blocks</label>
-        {false && <div class="text-red-500">{"fieldArray.error"}</div>}
-
+        {props.errors?.blocks && (
+          <div class="text-red-500">
+            {props.errors?.blocks?._errors.join("\n")}
+          </div>
+        )}
         <div class="space-y-4 mt-2">
           <For each={props.value.blocks}>
             {(value, index) => {
+              const errors = () => props.errors?.blocks?.[index().toString()];
               switch (value.type) {
                 case "text": {
                   const [store, setStore] = createStore(value);
                   return (
-                    <div>
-                      <BlockToolbar
-                        index={index}
-                        value={props.value}
-                        setStore={props.setStore}
-                      />
-                      <EditText value={store} setStore={setStore} />
-                    </div>
+                    <>
+                      <div>
+                        <BlockToolbar
+                          index={index}
+                          value={props.value}
+                          setStore={props.setStore}
+                          errors={errors()}
+                        />
+                        <EditTextBlock
+                          value={store}
+                          setStore={setStore}
+                          errors={errors()}
+                        />
+                      </div>
+                      {errors() && (
+                        <div class="text-red-500">
+                          {errors()?._errors.join("\n")}
+                        </div>
+                      )}
+                    </>
                   );
                 }
                 case "image": {
@@ -140,8 +166,9 @@ export default function EditPage(props: {
                         index={index}
                         value={props.value}
                         setStore={props.setStore}
+                        errors={errors()}
                       />
-                      <EditImage value={store} setStore={setStore} />
+                      <EditImageBlock value={store} setStore={setStore} />
                     </div>
                   );
                 }
@@ -153,8 +180,13 @@ export default function EditPage(props: {
                         index={index}
                         value={props.value}
                         setStore={props.setStore}
+                        errors={errors()}
                       />
-                      <EditNested value={store} setStore={setStore} />
+                      <EditNestedBlock
+                        value={store}
+                        setStore={setStore}
+                        errors={errors()}
+                      />
                     </div>
                   );
                 }
