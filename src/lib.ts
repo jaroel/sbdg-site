@@ -43,15 +43,19 @@ export function mergeErrors(obj1?: Errors, obj2?: Errors): Errors {
     ),
   } as Errors;
 
-  // Merge nested objects
-  for (const key in obj1) {
-    if (key !== "_errors" && obj1[key] && obj2?.[key]) {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      result[key] = mergeErrors(obj1[key]!, obj2?.[key]!);
-    } else if (key !== "_errors" && obj1[key]) {
-      result[key] = obj1[key];
-    } else if (key !== "_errors" && obj2?.[key]) {
-      result[key] = obj2?.[key];
+  const keys = Array.from(new Set([...errorKeys(obj1), ...errorKeys(obj2)]));
+  for (const key of keys) {
+    if (key === "_errors") {
+      continue;
+    }
+    const val1 = obj1?.[key];
+    const val2 = obj2?.[key];
+    if (val1 && val2) {
+      result[key] = mergeErrors(val1, val2);
+    } else if (val1) {
+      result[key] = val1;
+    } else if (val2) {
+      result[key] = val2;
     }
   }
   return result;
