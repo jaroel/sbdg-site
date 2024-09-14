@@ -27,7 +27,9 @@ export default function ContentObjectEditView(props: {
     } catch {}
   });
   const [value, setStore] = createStore(props.item);
-  const errors = () => mergeErrors(props.item.errors, formErrors());
+  const errors = createMemo<Errors>(() =>
+    mergeErrors(props.item.errors, formErrors()),
+  );
 
   return (
     <>
