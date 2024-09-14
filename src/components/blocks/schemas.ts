@@ -21,19 +21,20 @@ export const imageBlockSchema = z.object({
   fileId: z.string().trim().min(1),
 });
 
+export type PageBlockBlocks = z.infer<typeof pageBlockBlocksSchema>;
+const pageBlockBlocksSchema = z.discriminatedUnion("type", [
+  textBlockSchema,
+  nestedBlockSchema,
+  imageBlockSchema,
+]);
+
 export type PageBlock = z.infer<typeof pageBlockSchema>;
 export const pageBlockSchema = z.object({
   type: z.literal("page"),
   status: z.number().optional(),
   title: z.string().trim().min(1),
   description: z.optional(z.string().trim()),
-  blocks: z
-    .discriminatedUnion("type", [
-      textBlockSchema,
-      nestedBlockSchema,
-      imageBlockSchema,
-    ])
-    .array(),
+  blocks: pageBlockBlocksSchema.array(),
 });
 
 export type BlockType = Block["type"];

@@ -62,3 +62,6 @@ export type ContentObject = Pick<
 // export type ContentObjectRowNew = Insertable<ContentObjectsTable>;
 // export type ContentObjectRowUpdate = Updatable<ContentObjectsTable>;
 // export type ContentObjectRowQueryable = Queryable<ContentObjectsTable>;
+
+export const updateSchema = ContentObjectsTable.updateSchema();
+export const outputSchema = ContentObjectsTable.outputSchema();

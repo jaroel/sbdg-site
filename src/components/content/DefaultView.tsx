@@ -15,7 +15,7 @@ export default function ContentObjectDefaultView(props: {
         <div class="flex flex-row space-x-2 mx-2 my-4">
           <Sidebar item={props.item} pathPrefix="" />
           <main class="px-2 bg-white">
-            <ViewPage object={props.item.object} />
+            <ViewPage object={props.item.object} errors={props.item.errors} />
           </main>
         </div>
       </div>

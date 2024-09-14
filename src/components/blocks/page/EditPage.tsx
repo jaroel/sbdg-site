@@ -1,6 +1,7 @@
 import { Button } from "@kobalte/core/button";
-import { type Accessor, For } from "solid-js";
+import { type Accessor, ErrorBoundary, For } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
+import { errorKeys } from "~/lib";
 import type { Errors } from "~/types";
 import {
   ArchiveBoxXMarkIcon,
@@ -14,7 +15,11 @@ import { TextField } from "../../input/TextField";
 import { textBlockFactory } from "../factories";
 import EditImageBlock from "../image/EditImage";
 import EditNestedBlock from "../nested/EditNested";
-import { type PageBlock, pageBlockSchema } from "../schemas";
+import {
+  type PageBlock,
+  type PageBlockBlocks,
+  pageBlockSchema,
+} from "../schemas";
 import EditTextBlock from "../text/EditText";
 
 function moveLeft<T>(array: T[], index: number): T[] {
@@ -132,67 +137,31 @@ export default function EditPageBlock(props: {
           <For each={props.value.blocks}>
             {(value, index) => {
               const errors = () => props.errors?.blocks?.[index().toString()];
-              switch (value.type) {
-                case "text": {
-                  const [store, setStore] = createStore(value);
-                  return (
-                    <>
-                      <div>
-                        <BlockToolbar
-                          index={index}
-                          value={props.value}
-                          setStore={props.setStore}
-                          errors={errors()}
-                        />
-                        <EditTextBlock
-                          value={store}
-                          setStore={setStore}
-                          errors={errors()}
-                        />
+              return (
+                <ErrorBoundary
+                  fallback={() => {
+                    const blockErrors = errors();
+                    return (
+                      <div class="text-red-500">
+                        {blockErrors?._errors.join("\n")}
+                        {errorKeys(blockErrors).map((key) =>
+                          blockErrors?.[key]?._errors.join("\n"),
+                        )}
+                        <p>This value broke:</p>
+                        <pre>{JSON.stringify({ value })}</pre>
                       </div>
-                      {errors() && (
-                        <div class="text-red-500">
-                          {errors()?._errors.join("\n")}
-                        </div>
-                      )}
-                    </>
-                  );
-                }
-                case "image": {
-                  const [store, setStore] = createStore(value);
-                  return (
-                    <div>
-                      <BlockToolbar
-                        index={index}
-                        value={props.value}
-                        setStore={props.setStore}
-                        errors={errors()}
-                      />
-                      <EditImageBlock value={store} setStore={setStore} />
-                    </div>
-                  );
-                }
-                case "nested": {
-                  const [store, setStore] = createStore(value);
-                  return (
-                    <div>
-                      <BlockToolbar
-                        index={index}
-                        value={props.value}
-                        setStore={props.setStore}
-                        errors={errors()}
-                      />
-                      <EditNestedBlock
-                        value={store}
-                        setStore={setStore}
-                        errors={errors()}
-                      />
-                    </div>
-                  );
-                }
-                default:
-                  assertCannotReach(value);
-              }
+                    );
+                  }}
+                >
+                  <BlockItem
+                    value={props.value}
+                    setStore={props.setStore}
+                    index={index}
+                    errors={errors()}
+                    item={value}
+                  />
+                </ErrorBoundary>
+              );
             }}
           </For>
         </div>
@@ -282,6 +251,76 @@ export default function EditPageBlock(props: {
   );
 }
 
+function BlockItem(props: {
+  value: PageBlock;
+  setStore: SetStoreFunction<PageBlock>;
+  index: Accessor<number>;
+  errors?: Errors;
+  item: PageBlockBlocks;
+}) {
+  const errors = () => props.errors?.blocks?.[props.index().toString()];
+  const value = props.item;
+  switch (value.type) {
+    case "text": {
+      const [store, setStore] = createStore(value);
+      return (
+        <>
+          <div>
+            <BlockToolbar
+              index={props.index}
+              value={props.value}
+              setStore={props.setStore}
+              errors={errors()}
+            />
+            <EditTextBlock
+              value={store}
+              setStore={setStore}
+              errors={errors()}
+            />
+          </div>
+          {errors() && (
+            <div class="text-red-500">{errors()?._errors.join("\n")}</div>
+          )}
+        </>
+      );
+    }
+    case "image": {
+      const [store, setStore] = createStore(value);
+      return (
+        <div>
+          <BlockToolbar
+            index={props.index}
+            value={props.value}
+            setStore={props.setStore}
+            errors={errors()}
+          />
+          <EditImageBlock value={store} setStore={setStore} />
+        </div>
+      );
+    }
+    case "nested": {
+      const [store, setStore] = createStore(value);
+      return (
+        <div>
+          <BlockToolbar
+            index={props.index}
+            value={props.value}
+            setStore={props.setStore}
+            errors={errors()}
+          />
+          <EditNestedBlock
+            value={store}
+            setStore={setStore}
+            errors={errors()}
+          />
+        </div>
+      );
+    }
+    default:
+      assertCannotReach(value);
+  }
+}
+
 function assertCannotReach(value: never) {
-  throw new Error("Shouldn't reach");
+  throw new Error("Shouldn't reach", { cause: { value } });
 }

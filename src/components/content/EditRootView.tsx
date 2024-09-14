@@ -4,6 +4,7 @@ import { createStore } from "solid-js/store";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
+import { mergeErrors } from "~/lib";
 import { type ContentObject, saveContentObjectRoot } from "~/server";
 import type { Errors } from "~/types";
 import { EditContentObject } from "../blocks/Object";
@@ -26,6 +27,7 @@ export default function ContentObjectEditRootView(props: {
     } catch {}
   });
   const [value, setStore] = createStore(props.item);
+  const errors = () => mergeErrors(props.item.errors, formErrors());
 
   return (
     <>
@@ -52,16 +54,16 @@ export default function ContentObjectEditRootView(props: {
               <EditContentObject
                 value={value}
                 setStore={setStore}
-                errors={formErrors()}
+                errors={errors()}
                 hideSlugField
               />
             </main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">
-            <Show when={formErrors()?._errors.length}>
+            <Show when={errors()._errors.length}>
               <div class="border-b border-red-600 text-red-500 filter grayscale-0">
-                Validation failure: {JSON.stringify(formErrors()?._errors)}.
-                Call Roel.
+                Validation failure: {JSON.stringify(errors()._errors)}. Call
+                Roel.
               </div>
             </Show>
             <Button

@@ -40,7 +40,7 @@ export function EditContentObject(props: {
   value: ContentObject;
   setStore: SetStoreFunction<ContentObject>;
   hideSlugField: boolean;
-  errors?: Errors;
+  errors: Errors;
 }) {
   const [value, setStore] = createStore(props.value.object);
   const [slug, setSlug] = createSignal(

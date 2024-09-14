@@ -1,3 +1,5 @@
+import type { Errors } from "./types";
+
 export function isDeepStrictEqual(
   obj1: { [x: string]: any } | null,
   obj2: { [x: string]: any } | null,
@@ -33,3 +35,31 @@ export function isDeepStrictEqual(
 
   return false;
 }
+
+export function mergeErrors(obj1?: Errors, obj2?: Errors): Errors {
+  const result = {
+    _errors: Array.from(
+      new Set([...(obj1?._errors || []), ...(obj2?._errors || [])]),
+    ),
+  } as Errors;
+
+  // Merge nested objects
+  for (const key in obj1) {
+    if (key !== "_errors" && obj1[key] && obj2?.[key]) {
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      result[key] = mergeErrors(obj1[key]!, obj2?.[key]!);
+    } else if (key !== "_errors" && obj1[key]) {
+      result[key] = obj1[key];
+    } else if (key !== "_errors" && obj2?.[key]) {
+      result[key] = obj2?.[key];
+    }
+  }
+  return result;
+}
+
+export const errorKeys = (errors?: { _errors: string[] }) => {
+  if (errors) {
+    return Object.keys(errors).filter((value) => value !== "_errors");
+  }
+  return [];
+};

@@ -6,6 +6,8 @@ import { db } from "./db/db";
 import {
   type Content,
   contentFieldnames,
+  outputSchema,
+  updateSchema,
 } from "./db/tables/contentObjects.table";
 import { createLargeObjectFromStream } from "./largeobject";
 import {
@@ -15,6 +17,7 @@ import {
   contentObjectEditRootFormSchema,
   fileAddSchema,
 } from "./schemas";
+import type { Errors } from "./types";
 import { safeParseFormDataAsync } from "./zod-web-api";
 
 export const getContentObjectBySubPath = (subpath: string) =>
@@ -33,10 +36,14 @@ export const saveContentObject = async (formData: FormData) => {
     formData,
     contentObjectEditFormSchema,
   );
-
   if (result.error) {
-    console.error({ ...result });
     const errors = result.error.format();
+    throw new Error("error", { cause: errors });
+  }
+
+  const resultDb = updateSchema.safeParse(result.data);
+  if (resultDb.error) {
+    const errors = resultDb.error.format();
     throw new Error("error", { cause: errors });
   }
 
@@ -59,7 +66,6 @@ export const saveContentObjectRoot = async (formData: FormData) => {
     contentObjectEditRootFormSchema,
   );
   if (result.error) {
-    console.error({ ...result });
     const errors = result.error.format();
     throw new Error("error", { cause: errors });
   }
@@ -81,9 +87,7 @@ export const addContentObject = async (formData: FormData) => {
     formData,
     contentObjectAddFormSchema,
   );
-
   if (result.error) {
-    console.error({ ...result });
     const errors = result.error.format();
     throw new Error("error", { cause: errors });
   }
@@ -126,7 +130,6 @@ export const addFile = async (formData: FormData) => {
   // await new Promise((resolve, reject) => setTimeout(resolve, 2000));
   const result = await safeParseFormDataAsync(formData, fileAddSchema);
   if (result.error) {
-    console.error({ ...result });
     const errors = result.error.format();
     throw new Error("error", { cause: errors });
   }
@@ -164,7 +167,6 @@ export const deleteContentObject = async (formData: FormData) => {
   );
 
   if (result.error) {
-    console.error({ ...result });
     const errors = result.error.format();
     throw new Error("error", { cause: errors });
   }
@@ -184,6 +186,7 @@ export const deleteContentObject = async (formData: FormData) => {
 export type ContentObject = Content & {
   children: Content[];
   parents: Content[];
+  errors?: Errors;
 };
 
 export const fetchContentObject = async (
@@ -227,5 +230,8 @@ export const fetchContentObject = async (
     })
     .order({ path: "ASC" })
     .all();
-  return { ...result, parents };
+
+  const resultDb = outputSchema.safeParse(result);
+  const errors = (resultDb.error?.format() || { _errors: [] }) as Errors;
+  return { ...result, parents, errors };
 };
