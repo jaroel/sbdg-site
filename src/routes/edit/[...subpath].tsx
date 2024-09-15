@@ -13,12 +13,10 @@ export default function EditRoute() {
     <>
       <ContentObjectRoute
         component={(props) => (
-          <Show
-            when={props.item.path !== "/"}
-            fallback={<ContentObjectEditRootView {...props} />}
-          >
-            <ContentObjectEditView {...props} />
-          </Show>
+          <>
+            {!props.item.parentId && <ContentObjectEditRootView {...props} />}
+            {props.item.parentId && <ContentObjectEditView {...props} />}
+          </>
         )}
       />
     </>

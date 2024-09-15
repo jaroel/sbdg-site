@@ -1,19 +1,12 @@
 import { action, useSubmission } from "@solidjs/router";
 import { createMemo } from "solid-js";
 import { createStore } from "solid-js/store";
-import Navbar from "~/components/Navbar";
-import Sidebar from "~/components/Sidebar";
-import Toolbar from "~/components/Toolbar";
 import type { ContentObjectAddFormSchema } from "~/schemas";
 import { type ContentObject, addContentObject } from "~/server";
 import type { Errors } from "~/types";
 import { AddContentObject } from "../blocks/Object";
-import Button from "../input/Button";
-
-const addContentObjectAction = action(
-  addContentObject,
-  "addContentObjectAction",
-);
+import ContentObjectFormView from "./FormView";
+import { addContentObjectAction } from "./actions";
 
 export default function ContentObjectAddView(props: {
   item: ContentObject;
@@ -35,54 +28,26 @@ export default function ContentObjectAddView(props: {
 
   return (
     <>
-      <Toolbar item={props.item} />
-      <Navbar
+      <ContentObjectFormView
         item={props.item}
+        action={addContentObjectAction}
         pathPrefix="/add"
-        additionalTitle={store.title}
-      />
-      <div>
-        <form
-          method="post"
-          action={addContentObjectAction}
-          encoding="multipart/form-data"
-          class="w-full"
-          classList={{
-            blur: formSubmission.pending,
-          }}
-          noValidate
-        >
-          <div class="flex space-x-2 mx-2 my-4">
-            <Sidebar item={props.item} pathPrefix="/add" />
-            <main class="px-2 bg-white">
-              <AddContentObject
-                parent={props.item}
-                value={store}
-                setStore={setStore}
-                errors={formErrors()}
-              />
-            </main>
-          </div>
-          <div class="px-4 py-2 flex items-center justify-end gap-x-6">
-            <Button
-              type="submit"
-              disabled={formSubmission.pending}
-              name="routePrefix"
-              value="edit"
-            >
-              Add and edit
-            </Button>
-            <Button
-              type="submit"
-              disabled={formSubmission.pending}
-              name="routePrefix"
-              value="default"
-            >
-              Add and view
-            </Button>
-          </div>
-        </form>
-      </div>
+        buttonA={{
+          routePrefix: "edit",
+          title: "Add and edit",
+        }}
+        buttonB={{
+          routePrefix: "default",
+          title: "Add and view",
+        }}
+      >
+        <AddContentObject
+          parent={props.item}
+          value={store}
+          setStore={setStore}
+          errors={formErrors()}
+        />
+      </ContentObjectFormView>
     </>
   );
 }
