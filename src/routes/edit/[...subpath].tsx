@@ -1,12 +1,6 @@
-import { Show, lazy } from "solid-js";
+import ContentObjectEditRootView from "~/components/content/EditRootView";
+import ContentObjectEditView from "~/components/content/EditView";
 import ContentObjectRoute from "~/components/content/Route";
-
-const ContentObjectEditView = lazy(
-  () => import("~/components/content/EditView"),
-);
-const ContentObjectEditRootView = lazy(
-  () => import("~/components/content/EditRootView"),
-);
 
 export default function EditRoute() {
   return (
