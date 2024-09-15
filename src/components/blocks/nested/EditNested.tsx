@@ -103,7 +103,7 @@ export default function EditNestedBlock(props: {
         error={props.errors?.nestedTitle}
       />
       <div class="flex flex-col m-4">
-        <label class="text-gray-600">Nested texts</label>
+        <header class="text-gray-600">Nested texts</header>
         {props.errors?.texts && (
           <div class="text-red-500">
             {props.errors?.texts?._errors.join("\n")}
