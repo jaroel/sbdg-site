@@ -42,17 +42,6 @@ export type Content = Pick<
   Selectable<ContentObjectsTable>,
   (typeof contentFieldnames)[number]
 >;
-export const contentMetaFieldnames = [
-  "id",
-  "path",
-  "parentId",
-  "createdAt",
-  "updatedAt",
-] as const;
-export type ContentMetadata = Pick<
-  Content,
-  (typeof contentMetaFieldnames)[number]
->;
 export const contentObjectFieldnames = ["object"] as const;
 export type ContentObject = Pick<
   Content,
