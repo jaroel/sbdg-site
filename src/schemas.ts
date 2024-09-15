@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { contentObjectsTableSchema } from "./db/schemas";
-
 export type ContentViews = z.infer<typeof contentViews>;
 export const contentViews = z.union([
   z.literal("default"),
@@ -9,6 +8,7 @@ export const contentViews = z.union([
   z.literal("delete"),
 ]);
 
+// Add
 export const contentObjectAddSchema = contentObjectsTableSchema
   .omit({
     id: true,
@@ -22,26 +22,31 @@ export const contentObjectAddSchema = contentObjectsTableSchema
   })
   .required({ parentId: true });
 
-export const contentObjectEditSchema = contentObjectsTableSchema
-  .omit({
-    parentId: true,
-    path: true,
-    createdAt: true,
-    updatedAt: true,
-  })
-  .extend({
-    slug: z.string().trim().min(1),
-  })
-  .required({ id: true });
+// Edit
+export const contentObjectEditFormFieldsSchema = z
+  .object({ slug: z.string() })
+  .extend(
+    contentObjectsTableSchema.omit({
+      parentId: true,
+      path: true,
+      createdAt: true,
+      updatedAt: true,
+    }).shape,
+  );
+export const contentObjectEditFormSchema =
+  contentObjectEditFormFieldsSchema.extend({
+    routePrefix: contentViews,
+  });
 
-export const contentObjectEditFormSchema = contentObjectEditSchema.extend({
-  routePrefix: contentViews,
-});
+// Edit root
+export const contentObjectEditRootFormFieldsSchema =
+  contentObjectEditFormFieldsSchema.omit({ slug: true });
+export const contentObjectEditRootFormSchema =
+  contentObjectEditRootFormFieldsSchema.extend({
+    routePrefix: contentViews,
+  });
 
-export const contentObjectEditRootSchema = contentObjectEditSchema.omit({
-  slug: true,
-});
-
+// Delete
 export const contentObjectDeleteSchema = contentObjectsTableSchema
   .pick({
     id: true,
@@ -61,11 +66,6 @@ export type ContentObjectAddFormSchema = z.infer<
 export const contentObjectAddFormSchema = contentObjectAddSchema.extend({
   routePrefix: contentViews,
 });
-
-export const contentObjectEditRootFormSchema =
-  contentObjectEditRootSchema.extend({
-    routePrefix: contentViews,
-  });
 
 export const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
   routePrefix: contentViews,
