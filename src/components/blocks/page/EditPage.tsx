@@ -127,8 +127,8 @@ export default function EditPageBlock(props: {
         />
       </div>
       <div class="flex flex-col mx-2 my-4">
-        <label class="text-gray-600">Page blocks</label>
-        {props.errors?.blocks && (
+        <header class="text-gray-600">Page blocks</header>
+        {props.errors?.blocks?._errors && (
           <div class="text-red-500">
             {props.errors?.blocks?._errors.join("\n")}
           </div>
