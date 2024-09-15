@@ -258,7 +258,6 @@ function BlockItem(props: {
   errors?: Errors;
   item: PageBlockBlocks;
 }) {
-  const errors = () => props.errors?.blocks?.[props.index().toString()];
   const value = props.item;
   switch (value.type) {
     case "text": {
@@ -270,16 +269,16 @@ function BlockItem(props: {
               index={props.index}
               value={props.value}
               setStore={props.setStore}
-              errors={errors()}
+              errors={props.errors}
             />
             <EditTextBlock
               value={store}
               setStore={setStore}
-              errors={errors()}
+              errors={props.errors}
             />
           </div>
-          {errors() && (
-            <div class="text-red-500">{errors()?._errors.join("\n")}</div>
+          {props.errors && (
+            <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
           )}
         </>
       );
@@ -292,9 +291,16 @@ function BlockItem(props: {
             index={props.index}
             value={props.value}
             setStore={props.setStore}
-            errors={errors()}
+            errors={props.errors}
           />
-          <EditImageBlock value={store} setStore={setStore} />
+          {props.errors && (
+            <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
+          )}
+          <EditImageBlock
+            value={store}
+            setStore={setStore}
+            errors={props.errors}
+          />
         </div>
       );
     }
@@ -306,12 +312,12 @@ function BlockItem(props: {
             index={props.index}
             value={props.value}
             setStore={props.setStore}
-            errors={errors()}
+            errors={props.errors}
           />
           <EditNestedBlock
             value={store}
             setStore={setStore}
-            errors={errors()}
+            errors={props.errors}
           />
         </div>
       );
