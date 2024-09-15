@@ -95,19 +95,29 @@ function FileAddForm() {
 
 export default function ImagesView() {
   return (
-    <div>
-      <div class="flex space-x-2 mx-2 my-4">
-        <SidebarGunOnly />
-        <main class="space-y-4 px-2 bg-white">
-          <Tabs
-            label="Image management"
-            items={[
-              { id: "2", title: "Upload", content: () => <FileAddForm /> },
-              { id: "1", title: "Listing", content: () => <ImageListing /> },
-            ]}
-          />
-        </main>
+    <>
+      <div class="text-right bg-blue-100">
+        <a class="mr-4" href="/" title="Go to the home page">
+          home
+        </a>
+        <a class="mr-4" href="/images" title="Manage images">
+          images
+        </a>
       </div>
-    </div>
+      <div>
+        <div class="flex space-x-2 mx-2 my-4">
+          <SidebarGunOnly />
+          <main class="space-y-4 px-2 bg-white">
+            <Tabs
+              label="Image management"
+              items={[
+                { id: "2", title: "Upload", content: () => <FileAddForm /> },
+                { id: "1", title: "Listing", content: () => <ImageListing /> },
+              ]}
+            />
+          </main>
+        </div>
+      </div>
+    </>
   );
 }
