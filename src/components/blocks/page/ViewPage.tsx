@@ -39,12 +39,11 @@ export default function ViewPage(props: {
                 return (
                   <div class="text-red-500">
                     {blockErrors?._errors.join("\n")}
-                    <For each={errorKeys(blockErrors)}>
-                      {(key) => {
-                        const errors = blockErrors?.[key];
-                        return <>{errors?._errors.join("\n")}</>;
-                      }}
-                    </For>
+                    {errorKeys(blockErrors).map((key) =>
+                      blockErrors?.[key]?._errors.join("\n"),
+                    )}
+                    <p>This value broke:</p>
+                    <pre>{JSON.stringify({ value })}</pre>
                   </div>
                 );
               }}
