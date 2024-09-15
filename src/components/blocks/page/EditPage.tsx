@@ -136,31 +136,45 @@ export default function EditPageBlock(props: {
         <div class="space-y-4 mt-2">
           <For each={props.value.blocks}>
             {(value, index) => {
-              const errors = () => props.errors?.blocks?.[index().toString()];
+              const blockErrors = props.errors?.blocks?.[index().toString()];
               return (
-                <ErrorBoundary
-                  fallback={() => {
-                    const blockErrors = errors();
-                    return (
-                      <div class="text-red-500">
-                        {blockErrors?._errors.join("\n")}
-                        {errorKeys(blockErrors).map((key) =>
-                          blockErrors?.[key]?._errors.join("\n"),
-                        )}
-                        <p>This value broke:</p>
-                        <pre>{JSON.stringify({ value })}</pre>
-                      </div>
-                    );
-                  }}
-                >
-                  <BlockItem
-                    value={props.value}
-                    setStore={props.setStore}
-                    index={index}
-                    errors={errors()}
-                    item={value}
-                  />
-                </ErrorBoundary>
+                <div>
+                  <div>
+                    <BlockToolbar
+                      index={index}
+                      value={props.value}
+                      setStore={props.setStore}
+                      errors={props.errors}
+                    />
+                    <ErrorBoundary
+                      fallback={() => {
+                        return (
+                          <div class="text-red-500">
+                            {blockErrors?._errors.join("\n")}
+                            {errorKeys(blockErrors).map((key) =>
+                              blockErrors?.[key]?._errors.join("\n"),
+                            )}
+                            <p>This value broke:</p>
+                            <pre>{JSON.stringify({ value })}</pre>
+                          </div>
+                        );
+                      }}
+                    >
+                      <BlockItem
+                        value={props.value}
+                        setStore={props.setStore}
+                        index={index}
+                        errors={blockErrors}
+                        item={value}
+                      />
+                    </ErrorBoundary>
+                  </div>
+                  {props.errors && (
+                    <div class="text-red-500">
+                      {props.errors?._errors.join("\n")}
+                    </div>
+                  )}
+                </div>
               );
             }}
           </For>
@@ -264,62 +278,32 @@ function BlockItem(props: {
       const [store, setStore] = createStore(value);
       return (
         <>
-          <div>
-            <BlockToolbar
-              index={props.index}
-              value={props.value}
-              setStore={props.setStore}
-              errors={props.errors}
-            />
-            <EditTextBlock
-              value={store}
-              setStore={setStore}
-              errors={props.errors}
-            />
-          </div>
-          {props.errors && (
-            <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
-          )}
+          <EditTextBlock
+            value={store}
+            setStore={setStore}
+            errors={props.errors}
+          />
         </>
       );
     }
     case "image": {
       const [store, setStore] = createStore(value);
       return (
-        <div>
-          <BlockToolbar
-            index={props.index}
-            value={props.value}
-            setStore={props.setStore}
-            errors={props.errors}
-          />
-          {props.errors && (
-            <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
-          )}
-          <EditImageBlock
-            value={store}
-            setStore={setStore}
-            errors={props.errors}
-          />
-        </div>
+        <EditImageBlock
+          value={store}
+          setStore={setStore}
+          errors={props.errors}
+        />
       );
     }
     case "nested": {
       const [store, setStore] = createStore(value);
       return (
-        <div>
-          <BlockToolbar
-            index={props.index}
-            value={props.value}
-            setStore={props.setStore}
-            errors={props.errors}
-          />
-          <EditNestedBlock
-            value={store}
-            setStore={setStore}
-            errors={props.errors}
-          />
-        </div>
+        <EditNestedBlock
+          value={store}
+          setStore={setStore}
+          errors={props.errors}
+        />
       );
     }
     default:
