@@ -12,7 +12,7 @@ export const saveContentObjectAction = action(
 );
 
 export type SaveContentObjectRootAction = typeof saveContentObjectRootAction;
-const saveContentObjectRootAction = action(
+export const saveContentObjectRootAction = action(
   saveContentObjectRoot,
   "saveContentObjectRootAction",
 );

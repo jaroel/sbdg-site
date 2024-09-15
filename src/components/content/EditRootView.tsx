@@ -6,12 +6,12 @@ import type { ContentObject } from "~/server";
 import type { Errors } from "~/types";
 import { EditContentObject } from "../blocks/Object";
 import ContentObjectFormView from "./FormView";
-import { saveContentObjectAction } from "./actions";
+import { saveContentObjectRootAction } from "./actions";
 
 export default function ContentObjectEditRootView(props: {
   item: ContentObject;
 }) {
-  const formSubmission = useSubmission(saveContentObjectAction);
+  const formSubmission = useSubmission(saveContentObjectRootAction);
   const formErrors = createMemo<Errors | undefined>(() => {
     try {
       if (Array.isArray(formSubmission.error.cause._errors)) {
@@ -28,7 +28,7 @@ export default function ContentObjectEditRootView(props: {
     <>
       <ContentObjectFormView
         item={props.item}
-        action={saveContentObjectAction}
+        action={saveContentObjectRootAction}
         pathPrefix="/edit"
         buttonA={{
           routePrefix: "edit",
