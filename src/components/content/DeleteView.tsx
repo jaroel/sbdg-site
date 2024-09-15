@@ -1,32 +1,11 @@
-import { action, useSubmission } from "@solidjs/router";
-import {
-  For,
-  Show,
-  createEffect,
-  createMemo,
-  createResource,
-  createSignal,
-} from "solid-js";
-import Navbar from "~/components/Navbar";
-import Sidebar from "~/components/Sidebar";
-import Toolbar from "~/components/Toolbar";
-import {
-  type ContentObject,
-  deleteContentObject,
-  fetchDescendants,
-} from "~/server";
-import { DeleteContentObject } from "../blocks/Object";
-
+import { createAsync, useSubmission } from "@solidjs/router";
+import { For, Show, createMemo, createSignal } from "solid-js";
+import type { ContentObject } from "~/server";
+import { fetchDescendants } from "~/server";
 import type { Errors } from "~/types";
-import Button from "../input/Button";
+import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
-
-const deleteContentObjectAction = action(
-  deleteContentObject,
-  "deleteContentObjectAction",
-);
-
-const loadDescendants = fetchDescendants;
+import { deleteContentObjectAction } from "./actions";
 
 export default function ContentObjectDeleteView(props: {
   item: ContentObject;
@@ -39,13 +18,8 @@ export default function ContentObjectDeleteView(props: {
       }
     } catch {}
   });
-
-  const [contentId, setContentId] = createSignal<number>();
-  const [descendants] = createResource(contentId, loadDescendants);
-
-  createEffect(() => {
-    setContentId(props.item.id);
-  });
+  const [value, setValue] = createSignal("");
+  const descendants = createAsync(() => fetchDescendants(props.item.id));
 
   return (
     <>
@@ -59,7 +33,18 @@ export default function ContentObjectDeleteView(props: {
           title: "Confirm and delete",
         }}
       >
-        <DeleteContentObject value={props.item} errors={formErrors()} />
+        <input type="hidden" name="id" value={props.item.id} />
+        <TextField
+          label="Confirmation"
+          placeholder="delete me"
+          value={value()}
+          onInput={(event) => {
+            setValue(event.currentTarget.value);
+          }}
+          error={formErrors()?.confirmation}
+          name="confirmation"
+          required
+        />
         <div class="ml-2">
           The following content objects will be deleted after confirmation:
           <ol class="list-decimal list-inside ml-2">

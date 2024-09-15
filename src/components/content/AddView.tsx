@@ -1,10 +1,11 @@
-import { action, useSubmission } from "@solidjs/router";
-import { createMemo } from "solid-js";
+import { useSubmission } from "@solidjs/router";
+import { createMemo, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import type { ContentObjectAddFormSchema } from "~/schemas";
-import { type ContentObject, addContentObject } from "~/server";
+import type { ContentObject } from "~/server";
 import type { Errors } from "~/types";
-import { AddContentObject } from "../blocks/Object";
+import EditPageBlock from "../blocks/page/EditPage";
+import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
 import { addContentObjectAction } from "./actions";
 
@@ -19,12 +20,12 @@ export default function ContentObjectAddView(props: {
       }
     } catch {}
   });
-
   const [store, setStore] = createStore<ContentObjectAddFormSchema["object"]>({
     type: "page",
     title: "A new page!",
     blocks: [],
   });
+  const [slug, setSlug] = createSignal("a-new-page");
 
   return (
     <>
@@ -32,6 +33,7 @@ export default function ContentObjectAddView(props: {
         item={props.item}
         action={addContentObjectAction}
         pathPrefix="/add"
+        additionalTitle={store.title}
         buttonA={{
           routePrefix: "edit",
           title: "Add and edit",
@@ -41,11 +43,24 @@ export default function ContentObjectAddView(props: {
           title: "Add and view",
         }}
       >
-        <AddContentObject
-          parent={props.item}
+        <input type="hidden" name="parentId" value={props.item.id} />
+        <input type="hidden" name="object" value={JSON.stringify(store)} />
+        <div class="flex space-x-2 mx-2 my-4">
+          <TextField
+            label="Slug"
+            value={slug()}
+            onInput={(event) => {
+              setSlug(event.currentTarget.value);
+            }}
+            name="slug"
+            error={formErrors()?.slug}
+            required
+          />
+        </div>
+        <EditPageBlock
           value={store}
           setStore={setStore}
-          errors={formErrors()}
+          errors={formErrors()?.object}
         />
       </ContentObjectFormView>
     </>

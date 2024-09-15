@@ -1,6 +1,6 @@
 import { useSubmission } from "@solidjs/router";
-import { Show, createMemo } from "solid-js";
 import type { FlowProps } from "solid-js";
+import { Show, createMemo } from "solid-js";
 import Navbar from "~/components/Navbar";
 import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
@@ -8,20 +8,14 @@ import { mergeErrors } from "~/lib";
 import type { ContentObject } from "~/server";
 import type { Errors } from "~/types";
 import Button from "../input/Button";
-import type {
-  AddContentObjectAction,
-  SaveContentObjectAction,
-  SaveContentObjectRootAction,
-} from "./actions";
+import type { ContentObjectAction } from "./actions";
 
 export default function ContentObjectFormView(
   props: {
     item: ContentObject;
-    action:
-      | SaveContentObjectAction
-      | SaveContentObjectRootAction
-      | AddContentObjectAction;
+    action: ContentObjectAction;
     pathPrefix: string;
+    titleOverride?: string;
     additionalTitle?: string;
     buttonA: { title: string; routePrefix: string };
     buttonB?: { title: string; routePrefix: string };
@@ -46,7 +40,7 @@ export default function ContentObjectFormView(
       <Navbar
         item={props.item}
         pathPrefix={props.pathPrefix}
-        titleOverride={props.item.object.title}
+        titleOverride={props.titleOverride}
         additionalTitle={props.additionalTitle}
       />
       <div>
@@ -61,7 +55,7 @@ export default function ContentObjectFormView(
           noValidate
         >
           <div class="flex space-x-2 mx-2 my-4">
-            <Sidebar item={props.item} pathPrefix="/edit" />
+            <Sidebar item={props.item} pathPrefix={props.pathPrefix} />
             <main class="w-full px-2 bg-white">{props.children}</main>
           </div>
           <div class="px-4 py-2 flex items-center justify-end gap-x-6">

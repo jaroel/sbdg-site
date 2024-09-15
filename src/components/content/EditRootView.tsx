@@ -4,9 +4,9 @@ import { createStore } from "solid-js/store";
 import { mergeErrors } from "~/lib";
 import type { ContentObject } from "~/server";
 import type { Errors } from "~/types";
-import { EditContentObject } from "../blocks/Object";
 import ContentObjectFormView from "./FormView";
 import { saveContentObjectRootAction } from "./actions";
+import { EditContentObject } from "./EditView";
 
 export default function ContentObjectEditRootView(props: {
   item: ContentObject;
