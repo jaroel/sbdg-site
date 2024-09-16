@@ -9,7 +9,8 @@
     "build:migrations": "vite build --config vite.migrations.mts",
     "db:compiled": "node dist/db/dbScript.mjs",
     "resetdb": "pnpm run db drop && pnpm run db create && pnpm run db up",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@kobalte/core": "^0.13.6",
@@ -45,6 +46,7 @@
     "@types/node": "^22.5.5",
     "@types/pg": "^8.11.10",
     "@types/pg-large-object": "^2.0.7",
+    "@vitest/coverage-v8": "^2.1.1",
     "jsdom": "^25.0.0",
     "orchid-orm-test-factory": "^0.7.51",
     "rollup-plugin-node-externals": "^7.1.3",
