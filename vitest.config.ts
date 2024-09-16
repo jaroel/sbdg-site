@@ -7,5 +7,6 @@ export default defineConfig({
   plugins: [tsconfigPaths(), solid(), imagetools()],
   resolve: {
     conditions: ["development", "browser"],
+    preserveSymlinks: true,
   },
 });
