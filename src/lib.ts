@@ -61,9 +61,5 @@ export function mergeErrors(obj1?: Errors, obj2?: Errors): Errors {
   return result;
 }
 
-export const errorKeys = (errors?: { _errors: string[] }) => {
-  if (errors) {
-    return Object.keys(errors).filter((value) => value !== "_errors");
-  }
-  return [];
-};
+export const errorKeys = (errors?: Errors) =>
+  errors ? Object.keys(errors).filter((value) => value !== "_errors") : [];
