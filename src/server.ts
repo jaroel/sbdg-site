@@ -1,6 +1,7 @@
 "use server";
 import { Readable } from "node:stream";
 import { redirect, reload } from "@solidjs/router";
+import { textBlockFactory } from "./components/blocks/factories";
 import { db } from "./db/db";
 import {
   type Content,
@@ -18,7 +19,6 @@ import {
 } from "./schemas";
 import type { Errors } from "./types";
 import { safeParseFormDataAsync } from "./zod-web-api";
-import { textBlockFactory } from "./components/blocks/factories";
 
 export const getContentObjectBySubPath = (subpath: string) =>
   fetchContentObject(`/${subpath}`);
@@ -209,7 +209,7 @@ export const fetchContentObject = async (
       path: "/",
       object: {
         type: "page",
-        status: 404,
+        status_code: 404,
         title: "Page not found",
         blocks: [textBlockFactory("Sorry :(")],
       },

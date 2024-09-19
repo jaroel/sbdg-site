@@ -31,7 +31,7 @@ const pageBlockBlocksSchema = z.discriminatedUnion("type", [
 export type PageBlock = z.infer<typeof pageBlockSchema>;
 export const pageBlockSchema = z.object({
   type: z.literal("page"),
-  status: z.number().optional(),
+  status_code: z.literal(404).or(z.literal(500)).or(z.literal(200)).optional(),
   title: z.string().trim().min(1),
   description: z.optional(z.string().trim()),
   blocks: pageBlockBlocksSchema.array(),
