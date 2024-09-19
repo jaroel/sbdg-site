@@ -1,7 +1,8 @@
 import { render } from "@solidjs/testing-library";
 import { expect, test } from "vitest";
 import ContentObjectDefaultView from "~/components/content/DefaultView";
-import { contentObjectFactory } from "~/factories";
+import { outputSchema } from "~/db/tables/contentObjects.table";
+import { make } from "~/test-factories";
 
 test("renders", async () => {
   const result = render(() => (
@@ -28,19 +29,19 @@ test("renders", async () => {
 });
 
 test("renders factory item", async () => {
-  const content = contentObjectFactory
-    .set({
-      object: { type: "page", title: "Page title", blocks: [] },
-    })
-    .build();
+  const item = make(outputSchema, {
+    object: { title: "Page title" },
+  });
 
-  const item = {
-    ...contentObjectFactory.schema.parse(content),
-    children: [],
-    parents: [],
-  };
-
-  const result = render(() => <ContentObjectDefaultView item={item} />);
+  const result = render(() => (
+    <ContentObjectDefaultView
+      item={{
+        ...item,
+        children: [],
+        parents: [],
+      }}
+    />
+  ));
   const heading = result.getByRole("heading", { level: 1 });
   expect(heading).toHaveTextContent("Page title");
 });
