@@ -1,5 +1,5 @@
-import { action, useAction, useSubmission } from "@solidjs/router";
-import { For, createEffect, createSignal } from "solid-js";
+import { action, createAsync, useAction, useSubmission } from "@solidjs/router";
+import { For, createSignal } from "solid-js";
 import { SidebarGunOnly } from "~/components/Sidebar";
 import Tabs from "~/components/Tabs";
 import Button from "~/components/input/Button";
@@ -17,8 +17,8 @@ const toErrors = (error: any) => {
 };
 
 function ImageListing() {
-  const [oids, setOids] = createSignal<number[]>([]);
-  createEffect(async () => setOids(await listObjects()));
+  const oids = createAsync(listObjects, { initialValue: [] });
+
   return (
     <div class="p-4">
       <p>
@@ -111,8 +111,8 @@ export default function ImagesView() {
             <Tabs
               label="Image management"
               items={[
-                { id: "2", title: "Upload", content: () => <FileAddForm /> },
                 { id: "1", title: "Listing", content: () => <ImageListing /> },
+                { id: "2", title: "Upload", content: () => <FileAddForm /> },
               ]}
             />
           </main>

@@ -1,4 +1,5 @@
-import { For, createEffect, createSignal } from "solid-js";
+import { createAsync } from "@solidjs/router";
+import { For, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { listObjects } from "~/largeobject";
 import type { Errors } from "~/types";
@@ -13,8 +14,10 @@ export default function EditImageBlock(props: {
   setStore: SetStoreFunction<ImageBlock>;
   errors?: Errors;
 }) {
-  const [oids, setOids] = createSignal<number[]>([]);
-  createEffect(async () => setOids(await listObjects()));
+  const oids = createAsync(() => listObjects(), {
+    initialValue: [],
+  });
+
   const [open, setOpen] = createSignal(false);
   return (
     <>
