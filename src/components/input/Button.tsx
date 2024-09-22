@@ -17,7 +17,7 @@ export default function Button(props: ParentProps & ButtonProps) {
       type={props.type || "button"}
       classList={{ "bg-indigo-600 shadow-sm": props.type === "submit" }}
     >
-      {props.children}
+      {props.children ?? props.label}
     </Kobalte>
   );
 }
