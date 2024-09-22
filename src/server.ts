@@ -9,6 +9,7 @@ import {
 } from "./db/tables/contentObjects.table";
 import { createLargeObjectFromStream } from "./largeobject";
 import {
+  type ContentViews,
   contentObjectAddFormSchema,
   contentObjectDeleteFormSchema,
   contentObjectEditFormSchema,
@@ -21,7 +22,7 @@ import { toRecord } from "./zod-web-api";
 export const getContentObjectBySubPath = (subpath: string) =>
   fetchContentObject(`/${subpath}`);
 
-const routePrefixMapping = {
+const routePrefixMapping: Record<ContentViews, string> = {
   default: "",
   add: "/add",
   edit: "/edit",
