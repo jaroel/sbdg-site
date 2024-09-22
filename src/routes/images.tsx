@@ -7,14 +7,6 @@ import { FileInput } from "~/components/input/FileInput";
 import { listObjects } from "~/largeobject";
 import { addFile } from "~/server";
 
-const toErrors = (error: any) => {
-  try {
-    if (Array.isArray(error.cause._errors)) {
-      return error.cause;
-    }
-  } catch {}
-};
-
 function ImageListing() {
   const oids = createAsync(listObjects, { initialValue: [] });
 
