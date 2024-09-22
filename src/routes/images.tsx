@@ -2,6 +2,7 @@ import { action, createAsync, useAction, useSubmission } from "@solidjs/router";
 import { For, createMemo } from "solid-js";
 import { SidebarGunOnly } from "~/components/Sidebar";
 import Tabs from "~/components/Tabs";
+import Toolbar from "~/components/Toolbar";
 import Button from "~/components/input/Button";
 import { FileInput } from "~/components/input/FileInput";
 import { listObjects } from "~/largeobject";
@@ -86,14 +87,7 @@ function FileAddForm() {
 export default function ImagesView() {
   return (
     <>
-      <div class="text-right bg-blue-100">
-        <a class="mr-4" href="/" title="Go to the home page">
-          home
-        </a>
-        <a class="mr-4" href="/images" title="Manage images">
-          images
-        </a>
-      </div>
+      <Toolbar />
       <div>
         <div class="flex space-x-2 mx-2 my-4">
           <SidebarGunOnly />
