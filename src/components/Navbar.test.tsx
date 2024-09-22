@@ -7,15 +7,17 @@ test("renders", async () => {
     <Navbar
       pathPrefix="/"
       item={{
-        id: -1,
-        parentId: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        path: "/",
-        object: {
-          type: "page",
-          title: "Page title",
-          blocks: [],
+        content: {
+          id: -1,
+          parentId: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          path: "/",
+          object: {
+            type: "page",
+            title: "Page title",
+            blocks: [],
+          },
         },
         parents: [],
         children: [],

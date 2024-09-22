@@ -19,7 +19,9 @@ export default function ContentObjectDeleteView(props: {
     } catch {}
   });
   const [value, setValue] = createSignal("");
-  const descendants = createAsync(() => fetchDescendants(props.item.id));
+  const descendants = createAsync(() =>
+    fetchDescendants(props.item.content.id),
+  );
 
   return (
     <>
@@ -33,7 +35,7 @@ export default function ContentObjectDeleteView(props: {
           title: "Confirm and delete",
         }}
       >
-        <input type="hidden" name="id" value={props.item.id} />
+        <input type="hidden" name="id" value={props.item.content.id} />
         <TextField
           label="Confirmation"
           placeholder="delete me"
@@ -50,8 +52,8 @@ export default function ContentObjectDeleteView(props: {
           <ol class="list-decimal list-inside ml-2">
             <li>
               <ul class="inline-flex flex-col">
-                <li>{props.item.object.title}</li>
-                <li class="text-slate-300">{props.item.path}</li>
+                <li>{props.item.content.object.title}</li>
+                <li class="text-slate-300">{props.item.content.path}</li>
               </ul>
             </li>
             <Show when={descendants() === undefined}>

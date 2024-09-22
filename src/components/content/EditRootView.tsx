@@ -3,26 +3,23 @@ import { createMemo } from "solid-js";
 import { createStore } from "solid-js/store";
 import { mergeErrors } from "~/lib";
 import type { ContentObject } from "~/server";
-import type { Errors } from "~/types";
+import { EditContentObject } from "./EditView";
 import ContentObjectFormView from "./FormView";
 import { saveContentObjectRootAction } from "./actions";
-import { EditContentObject } from "./EditView";
 
 export default function ContentObjectEditRootView(props: {
   item: ContentObject;
 }) {
   const formSubmission = useSubmission(saveContentObjectRootAction);
-  const formErrors = createMemo<Errors | undefined>(() => {
+  const formErrors = createMemo(() => {
     try {
-      if (Array.isArray(formSubmission.error.cause._errors)) {
-        return formSubmission.error.cause;
+      if (Array.isArray(formSubmission.result?._errors)) {
+        return formSubmission.result;
       }
     } catch {}
   });
   const [value, setStore] = createStore(props.item);
-  const errors = createMemo<Errors>(() =>
-    mergeErrors(props.item.errors, formErrors()),
-  );
+  const errors = createMemo(() => mergeErrors(props.item.errors, formErrors()));
 
   return (
     <>

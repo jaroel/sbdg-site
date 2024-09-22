@@ -37,13 +37,13 @@ export default function Navbar(props: {
             )}
           </For>
           {!props.additionalTitle && (
-            <li>{props.titleOverride ?? props.item.object.title}</li>
+            <li>{props.titleOverride ?? props.item.content.object.title}</li>
           )}
           {props.additionalTitle && (
             <>
               <li>
-                <a href={props.pathPrefix + props.item.path}>
-                  {props.titleOverride ?? props.item.object.title}
+                <a href={props.pathPrefix + props.item.content.path}>
+                  {props.titleOverride ?? props.item.content.object.title}
                 </a>
               </li>
               <svg

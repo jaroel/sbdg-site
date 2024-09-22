@@ -8,8 +8,12 @@ export default function EditRoute() {
       <ContentObjectRoute
         component={(props) => (
           <>
-            {!props.item.parentId && <ContentObjectEditRootView {...props} />}
-            {props.item.parentId && <ContentObjectEditView {...props} />}
+            {!props.item.content.parentId && (
+              <ContentObjectEditRootView {...props} />
+            )}
+            {props.item.content.parentId && (
+              <ContentObjectEditView {...props} />
+            )}
           </>
         )}
       />

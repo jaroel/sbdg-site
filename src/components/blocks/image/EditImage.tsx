@@ -1,8 +1,8 @@
 import { createAsync } from "@solidjs/router";
 import { For, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
+import type { ZodFormattedError } from "zod";
 import { listObjects } from "~/largeobject";
-import type { Errors } from "~/types";
 import Dialog from "../../Dialog";
 import Button from "../../input/Button";
 import { SelectFieldValueFallback } from "../../input/Select";
@@ -12,7 +12,7 @@ import type { ImageBlock } from "../schemas";
 export default function EditImageBlock(props: {
   value: ImageBlock;
   setStore: SetStoreFunction<ImageBlock>;
-  errors?: Errors;
+  errors?: ZodFormattedError<ImageBlock>;
 }) {
   const oids = createAsync(() => listObjects(), {
     initialValue: [],

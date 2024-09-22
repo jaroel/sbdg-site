@@ -1,7 +1,7 @@
 import { HttpStatusCode } from "@solidjs/start";
-import { ErrorBoundary, For } from "solid-js";
-import { errorKeys } from "~/lib";
-import type { Errors } from "~/types";
+import { ErrorBoundary, For, Show } from "solid-js";
+import type { ZodFormattedError, z } from "zod";
+import type { contentObjectSchema } from "~/schemas";
 import ViewImageBlock from "../image/ViewImage";
 import ViewNestedBlock from "../nested/ViewNested";
 import type { PageBlock, PageBlockBlocks } from "../schemas";
@@ -9,7 +9,7 @@ import ViewTextBlock from "../text/ViewText";
 
 export default function ViewPage(props: {
   object: PageBlock;
-  errors?: Errors;
+  errors?: ZodFormattedError<z.infer<typeof contentObjectSchema>>["content"];
 }) {
   return (
     <div>
@@ -20,6 +20,7 @@ export default function ViewPage(props: {
       {props.errors && (
         <div class="text-red-500">
           {props.errors._errors.join("\n")}
+
           {props.errors.createdAt?._errors.join("\n")}
           {props.errors.id?._errors.join("\n")}
           {props.errors.parentId?._errors.join("\n")}
@@ -35,16 +36,19 @@ export default function ViewPage(props: {
           return (
             <ErrorBoundary
               fallback={() => {
-                const blockErrors = props.errors?.object?.blocks?.[index()];
+                const blockErrors = () =>
+                  props.errors?.object?.blocks?.[index()];
                 return (
-                  <div class="text-red-500">
-                    {blockErrors?._errors.join("\n")}
-                    {errorKeys(blockErrors).map((key) =>
-                      blockErrors?.[key]?._errors.join("\n"),
+                  <Show when={blockErrors()}>
+                    {(errors) => (
+                      <div class="text-red-500">
+                        {errors()._errors.join("\n")}
+                        {errors().type?._errors.join("\n")}
+                        <p>This value broke:</p>
+                        <pre>{JSON.stringify({ value })}</pre>
+                      </div>
                     )}
-                    <p>This value broke:</p>
-                    <pre>{JSON.stringify({ value })}</pre>
-                  </div>
+                  </Show>
                 );
               }}
             >

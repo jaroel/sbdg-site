@@ -8,15 +8,17 @@ test("renders", async () => {
   const result = render(() => (
     <ContentObjectDefaultView
       item={{
-        id: -1,
-        parentId: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        path: "/",
-        object: {
-          type: "page",
-          title: "Page title",
-          blocks: [],
+        content: {
+          id: -1,
+          parentId: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          path: "/",
+          object: {
+            type: "page",
+            title: "Page title",
+            blocks: [],
+          },
         },
         parents: [],
         children: [],
@@ -36,7 +38,7 @@ test("renders factory item", async () => {
   const result = render(() => (
     <ContentObjectDefaultView
       item={{
-        ...item,
+        content: item,
         children: [],
         parents: [],
       }}

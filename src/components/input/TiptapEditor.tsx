@@ -16,8 +16,8 @@ import {
   useEditorIsFocused,
   useEditorJSON,
 } from "solid-tiptap";
+import type { ZodFormattedError } from "zod";
 import { isDeepStrictEqual } from "~/lib";
-import type { Errors } from "~/types";
 import type { TiptapDoc } from "./schema";
 
 function ParagraphIcon(
@@ -299,14 +299,10 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
   );
 }
 
-function hasRequiredError(errors?: Errors) {
-  return errors !== undefined;
-}
-
 export default function TiptapEditor(props: {
   value: TiptapDoc;
   setStore: SetStoreFunction<TiptapDoc>;
-  errors?: Errors;
+  errors?: ZodFormattedError<TiptapDoc>;
 }) {
   const [container, setContainer] = createSignal<HTMLDivElement>();
   const [menu, setMenu] = createSignal<HTMLDivElement>();
@@ -344,7 +340,7 @@ export default function TiptapEditor(props: {
       {props.errors && (
         <div class="text-red-500">
           {props.errors._errors.join("\n")}
-          {hasRequiredError(props.errors.content) && "Required"}
+          {props.errors.content !== undefined && "Required"}
         </div>
       )}
     </>

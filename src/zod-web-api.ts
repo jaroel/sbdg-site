@@ -211,7 +211,7 @@ function containsFormData(request: Request) {
   return contentType && contentType.includes("multipart/form-data");
 }
 
-function toRecord(
+export function toRecord(
   payload: FormData | URLSearchParams,
   record: Record<string, any> = {},
 ) {
@@ -282,7 +282,7 @@ function setValue(
     const next = paths[index + 1];
     const newValue =
       index !== lastIndex
-        ? pointer[key] ?? (typeof next === "number" ? [] : {})
+        ? (pointer[key] ?? (typeof next === "number" ? [] : {}))
         : valueFn(pointer[key]);
 
     pointer[key] = newValue;

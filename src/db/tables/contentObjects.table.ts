@@ -1,5 +1,5 @@
 // import type { Insertable, Queryable, Updatable } from "orchid-orm";
-import type { Selectable } from "orchid-orm";
+import type { z } from "zod";
 import { BaseTable } from "../baseTable";
 import { contentObjectBlockSchema } from "../schemas";
 
@@ -30,27 +30,20 @@ export class ContentObjectsTable extends BaseTable {
   };
 }
 
-export const contentFieldnames = [
-  "id",
-  "path",
-  "parentId",
-  "createdAt",
-  "updatedAt",
-  "object",
-] as const;
-export type Content = Pick<
-  Selectable<ContentObjectsTable>,
-  (typeof contentFieldnames)[number]
->;
-export const contentObjectFieldnames = ["object"] as const;
-export type ContentObject = Pick<
-  Content,
-  (typeof contentObjectFieldnames)[number]
->;
-
 // export type ContentObjectRowNew = Insertable<ContentObjectsTable>;
 // export type ContentObjectRowUpdate = Updatable<ContentObjectsTable>;
 // export type ContentObjectRowQueryable = Queryable<ContentObjectsTable>;
 
 export const updateSchema = ContentObjectsTable.updateSchema();
 export const outputSchema = ContentObjectsTable.outputSchema();
+
+export const contentSchema = outputSchema.pick({
+  id: true,
+  path: true,
+  parentId: true,
+  createdAt: true,
+  updatedAt: true,
+  object: true,
+});
+export type Content = z.infer<typeof contentSchema>;
+export const contentFieldnames = contentSchema.keyof();

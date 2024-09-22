@@ -1,5 +1,5 @@
 import { type JSX, Show, createMemo, splitProps } from "solid-js";
-import type { Errors } from "~/types";
+import type { ZodFormattedError } from "zod";
 
 type FileInputProps = {
   ref?: (element: HTMLInputElement) => void;
@@ -13,7 +13,7 @@ type FileInputProps = {
   multiple?: boolean;
   class?: string;
   label?: string;
-  error?: Errors;
+  error?: ZodFormattedError<any>;
 };
 
 /**

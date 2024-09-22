@@ -1,6 +1,6 @@
 import { createAsync, useParams } from "@solidjs/router";
 import type { JSXElement } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import { Dynamic, Show } from "solid-js/web";
 import { type ContentObject, getContentObjectBySubPath } from "~/server";
 
 export default function ContentObjectRoute(props: {
@@ -13,7 +13,8 @@ export default function ContentObjectRoute(props: {
   });
 
   return (
-    // biome-ignore lint/style/noNonNullAssertion: <explanation>
-    <>{data() && <Dynamic component={props.component} item={data()!} />}</>
+    <Show when={data()}>
+      {(data) => <Dynamic component={props.component} item={data()} />}
+    </Show>
   );
 }

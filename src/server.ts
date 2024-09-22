@@ -4,10 +4,8 @@ import { redirect, reload } from "@solidjs/router";
 import { textBlockFactory } from "./components/blocks/factories";
 import { db } from "./db/db";
 import {
-  type Content,
   contentFieldnames,
   outputSchema,
-  updateSchema,
 } from "./db/tables/contentObjects.table";
 import { createLargeObjectFromStream } from "./largeobject";
 import {
@@ -15,10 +13,10 @@ import {
   contentObjectDeleteFormSchema,
   contentObjectEditFormSchema,
   contentObjectEditRootFormSchema,
+  contentObjectSchema,
   fileAddSchema,
 } from "./schemas";
-import type { Errors } from "./types";
-import { safeParseFormDataAsync } from "./zod-web-api";
+import { toRecord } from "./zod-web-api";
 
 export const getContentObjectBySubPath = (subpath: string) =>
   fetchContentObject(`/${subpath}`);
@@ -32,19 +30,9 @@ const routePrefixMapping = {
 
 export const saveContentObject = async (formData: FormData) => {
   // await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-  const result = await safeParseFormDataAsync(
-    formData,
-    contentObjectEditFormSchema,
-  );
+  const result = contentObjectEditFormSchema.safeParse(toRecord(formData));
   if (result.error) {
-    const errors = result.error.format();
-    throw new Error("error", { cause: errors });
-  }
-
-  const resultDb = updateSchema.safeParse(result.data);
-  if (resultDb.error) {
-    const errors = resultDb.error.format();
-    throw new Error("error", { cause: errors });
+    return result.error.format();
   }
 
   const data = result.data;
@@ -61,13 +49,9 @@ export const saveContentObject = async (formData: FormData) => {
 };
 
 export const saveContentObjectRoot = async (formData: FormData) => {
-  const result = await safeParseFormDataAsync(
-    formData,
-    contentObjectEditRootFormSchema,
-  );
+  const result = contentObjectEditRootFormSchema.safeParse(toRecord(formData));
   if (result.error) {
-    const errors = result.error.format();
-    throw new Error("error", { cause: errors });
+    return result.error.format();
   }
 
   const data = result.data;
@@ -83,13 +67,9 @@ export const saveContentObjectRoot = async (formData: FormData) => {
 
 export const addContentObject = async (formData: FormData) => {
   // await new Promise((resolve, reject) => setTimeout(resolve, 100));
-  const result = await safeParseFormDataAsync(
-    formData,
-    contentObjectAddFormSchema,
-  );
+  const result = contentObjectAddFormSchema.safeParse(toRecord(formData));
   if (result.error) {
-    const errors = result.error.format();
-    throw new Error("error", { cause: errors });
+    return result.error.format();
   }
 
   const data = result.data;
@@ -128,10 +108,9 @@ function readableStreamToNodeReadable(readableStream: ReadableStream) {
 
 export const addFile = async (formData: FormData) => {
   // await new Promise((resolve, reject) => setTimeout(resolve, 2000));
-  const result = await safeParseFormDataAsync(formData, fileAddSchema);
+  const result = fileAddSchema.safeParse(toRecord(formData));
   if (result.error) {
-    const errors = result.error.format();
-    throw new Error("error", { cause: errors });
+    return result.error.format();
   }
 
   const data = result.data;
@@ -161,14 +140,9 @@ export const fetchDescendants = async (id: number) =>
     .order({ path: "ASC" });
 
 export const deleteContentObject = async (formData: FormData) => {
-  const result = await safeParseFormDataAsync(
-    formData,
-    contentObjectDeleteFormSchema,
-  );
-
+  const result = contentObjectDeleteFormSchema.safeParse(toRecord(formData));
   if (result.error) {
-    const errors = result.error.format();
-    throw new Error("error", { cause: errors });
+    return result.error.format();
   }
 
   const data = result.data;
@@ -183,60 +157,61 @@ export const deleteContentObject = async (formData: FormData) => {
   throw redirect(routePrefixMapping[data.routePrefix] + parentPath);
 };
 
-export type ContentObject = Content & {
-  children: Content[];
-  parents: Content[];
-  errors?: Errors;
-};
+export type ContentObject = Awaited<ReturnType<typeof fetchContentObject>>;
 
-export const fetchContentObject = async (
-  path: string,
-): Promise<ContentObject | undefined> => {
-  const result = await db.contentObjects
+export const fetchContentObject = async (path: string) => {
+  const content = await db.contentObjects
     .as("outer")
     .where({ path })
-    .select(...contentFieldnames, {
+    .select(...contentFieldnames.options, {
       children: (q) => q.children,
     })
     .takeOptional();
 
-  if (result === undefined)
-    return {
-      id: -1,
-      parentId: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      path: "/",
-      object: {
-        type: "page",
-        status_code: 404,
-        title: "Page not found",
-        blocks: [textBlockFactory("Sorry :(")],
+  if (content === undefined)
+    return contentObjectSchema.parse({
+      content: {
+        id: -1,
+        parentId: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        path: "/",
+        object: {
+          type: "page",
+          status_code: 404,
+          title: "Page not found",
+          blocks: [textBlockFactory("Sorry :(")],
+        },
       },
       parents: [],
       children: [],
-    };
+      errors: undefined,
+    });
 
   const parents = await db.$queryBuilder
     .withRecursive(
       "parents",
-      db.contentObjects.select(...contentFieldnames).find(result.id),
+      db.contentObjects.select(...contentFieldnames.options).find(content.id),
       (q) =>
         q
           .from(db.contentObjects)
-          .select(...contentFieldnames)
+          .select(...contentFieldnames.options)
           .join("parents", "parents.parentId", "id"),
     )
     .from("parents")
     .where({
       id: {
-        not: result.id,
+        not: content.id,
       },
     })
     .order({ path: "ASC" })
     .all();
 
-  const resultDb = outputSchema.safeParse(result);
-  const errors = (resultDb.error?.format() || { _errors: [] }) as Errors;
-  return { ...result, parents, errors };
+  const value = {
+    content,
+    parents,
+    children: content.children,
+    errors: outputSchema.safeParse(content).error?.format(),
+  };
+  return value;
 };

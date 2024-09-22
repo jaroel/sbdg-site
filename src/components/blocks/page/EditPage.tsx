@@ -1,8 +1,7 @@
 import { Button } from "@kobalte/core/button";
 import { type Accessor, ErrorBoundary, For } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
-import { errorKeys } from "~/lib";
-import type { Errors } from "~/types";
+import type { ZodFormattedError } from "zod";
 import {
   ArchiveBoxXMarkIcon,
   ArrowDownIcon,
@@ -41,7 +40,7 @@ function BlockToolbar(props: {
   index: Accessor<number>;
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
-  errors?: Errors;
+  errors?: ZodFormattedError<PageBlock>;
 }) {
   return (
     <div
@@ -96,7 +95,7 @@ function BlockToolbar(props: {
 export default function EditPageBlock(props: {
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
-  errors?: Errors;
+  errors?: ZodFormattedError<PageBlock>;
 }) {
   return (
     <>
@@ -136,7 +135,7 @@ export default function EditPageBlock(props: {
         <div class="space-y-4 mt-2">
           <For each={props.value.blocks}>
             {(value, index) => {
-              const blockErrors = props.errors?.blocks?.[index().toString()];
+              const blockErrors = () => props.errors?.blocks?.[index()];
               return (
                 <div>
                   <div>
@@ -150,10 +149,8 @@ export default function EditPageBlock(props: {
                       fallback={() => {
                         return (
                           <div class="text-red-500">
-                            {blockErrors?._errors.join("\n")}
-                            {errorKeys(blockErrors).map((key) =>
-                              blockErrors?.[key]?._errors.join("\n"),
-                            )}
+                            <p>blockErrors:</p>
+                            <pre>{JSON.stringify(blockErrors())}</pre>
                             <p>This value broke:</p>
                             <pre>{JSON.stringify({ value })}</pre>
                           </div>
@@ -164,7 +161,7 @@ export default function EditPageBlock(props: {
                         value={props.value}
                         setStore={props.setStore}
                         index={index}
-                        errors={blockErrors}
+                        errors={blockErrors()}
                         item={value}
                       />
                     </ErrorBoundary>
@@ -269,7 +266,7 @@ function BlockItem(props: {
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
   index: Accessor<number>;
-  errors?: Errors;
+  errors?: ZodFormattedError<PageBlock>;
   item: PageBlockBlocks;
 }) {
   const value = props.item;

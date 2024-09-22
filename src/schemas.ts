@@ -1,5 +1,7 @@
 import { z } from "zod";
+import type { ZodFormattedError } from "zod";
 import { contentObjectsTableSchema } from "./db/schemas";
+import { contentSchema } from "./db/tables/contentObjects.table";
 export type ContentViews = z.infer<typeof contentViews>;
 export const contentViews = z.union([
   z.literal("default"),
@@ -69,4 +71,12 @@ export const contentObjectAddFormSchema = contentObjectAddSchema.extend({
 
 export const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
   routePrefix: contentViews,
+});
+
+// View
+export const contentObjectSchema = z.object({
+  content: contentSchema,
+  children: contentSchema.array(),
+  parents: contentSchema.array(),
+  errors: z.custom<ZodFormattedError<typeof contentSchema>>().optional(),
 });

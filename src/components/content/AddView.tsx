@@ -3,7 +3,6 @@ import { createMemo, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import type { ContentObjectAddFormSchema } from "~/schemas";
 import type { ContentObject } from "~/server";
-import type { Errors } from "~/types";
 import EditPageBlock from "../blocks/page/EditPage";
 import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
@@ -13,7 +12,7 @@ export default function ContentObjectAddView(props: {
   item: ContentObject;
 }) {
   const formSubmission = useSubmission(addContentObjectAction);
-  const formErrors = createMemo<Errors | undefined>(() => {
+  const formErrors = createMemo(() => {
     try {
       if (Array.isArray(formSubmission.error.cause._errors)) {
         return formSubmission.error.cause;
@@ -43,7 +42,7 @@ export default function ContentObjectAddView(props: {
           title: "Add and view",
         }}
       >
-        <input type="hidden" name="parentId" value={props.item.id} />
+        <input type="hidden" name="parentId" value={props.item.content.id} />
         <input type="hidden" name="object" value={JSON.stringify(store)} />
         <div class="flex space-x-2 mx-2 my-4">
           <TextField

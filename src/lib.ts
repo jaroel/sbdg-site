@@ -1,4 +1,4 @@
-import type { Errors } from "./types";
+import type { AnyZodObject, ZodFormattedError } from "zod";
 
 export function isDeepStrictEqual(
   obj1: { [x: string]: any } | null,
@@ -36,14 +36,19 @@ export function isDeepStrictEqual(
   return false;
 }
 
-export function mergeErrors(obj1?: Errors, obj2?: Errors): Errors {
+export function mergeErrors<T1 extends AnyZodObject, T2 extends AnyZodObject>(
+  obj1?: ZodFormattedError<T1>,
+  obj2?: ZodFormattedError<T2>,
+) {
   const result = {
     _errors: Array.from(
       new Set([...(obj1?._errors || []), ...(obj2?._errors || [])]),
     ),
-  } as Errors;
+  } as ZodFormattedError<T1 | T2>;
 
-  const keys = Array.from(new Set([...errorKeys(obj1), ...errorKeys(obj2)]));
+  const keys = Array.from(
+    new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]),
+  );
   for (const key of keys) {
     if (key === "_errors") {
       continue;
@@ -60,6 +65,3 @@ export function mergeErrors(obj1?: Errors, obj2?: Errors): Errors {
   }
   return result;
 }
-
-export const errorKeys = (errors?: Errors) =>
-  errors ? Object.keys(errors).filter((value) => value !== "_errors") : [];

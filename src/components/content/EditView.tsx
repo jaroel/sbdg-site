@@ -1,10 +1,9 @@
 import { useSubmission } from "@solidjs/router";
-import { createMemo, createSignal, Show } from "solid-js";
+import { Show, createMemo, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { createStore } from "solid-js/store";
 import { mergeErrors } from "~/lib";
 import type { ContentObject } from "~/server";
-import type { Errors } from "~/types";
 import EditPageBlock from "../blocks/page/EditPage";
 import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
@@ -14,17 +13,15 @@ export default function ContentObjectEditView(props: {
   item: ContentObject;
 }) {
   const formSubmission = useSubmission(saveContentObjectAction);
-  const formErrors = createMemo<Errors | undefined>(() => {
+  const formErrors = createMemo(() => {
     try {
-      if (Array.isArray(formSubmission.error.cause._errors)) {
-        return formSubmission.error.cause;
+      if (Array.isArray(formSubmission.result?._errors)) {
+        return formSubmission.result;
       }
     } catch {}
   });
   const [value, setStore] = createStore(props.item);
-  const errors = createMemo<Errors>(() =>
-    mergeErrors(props.item.errors, formErrors()),
-  );
+  const errors = createMemo(() => mergeErrors(props.item.errors, formErrors()));
 
   return (
     <>
@@ -32,7 +29,7 @@ export default function ContentObjectEditView(props: {
         item={props.item}
         action={saveContentObjectAction}
         pathPrefix="/edit"
-        titleOverride={props.item.object.title}
+        titleOverride={props.item.content.object.title}
         buttonA={{
           routePrefix: "edit",
           title: "Save and edit",
@@ -57,11 +54,13 @@ export function EditContentObject(props: {
   value: ContentObject;
   setStore: SetStoreFunction<ContentObject>;
   hideSlugField: boolean;
-  errors: Errors;
+  errors: Awaited<ReturnType<typeof saveContentObjectAction>>;
 }) {
-  const [value, setStore] = createStore(props.value.object);
+  const [value, setStore] = createStore(props.value.content.object);
   const [slug, setSlug] = createSignal(
-    props.value.path.slice(props.value.path.lastIndexOf("/") + 1),
+    props.value.content.path.slice(
+      props.value.content.path.lastIndexOf("/") + 1,
+    ),
   );
   return (
     <div>
@@ -77,17 +76,17 @@ export function EditContentObject(props: {
               setSlug(event.currentTarget.value);
             }}
             name="slug"
-            error={props.errors?.slug}
+            error={props.errors.slug}
             required
           />
         </div>
       </Show>
-      <input type="hidden" name="id" value={props.value.id} />
+      <input type="hidden" name="id" value={props.value.content.id} />
       <input type="hidden" name="object" value={JSON.stringify(value)} />
       <EditPageBlock
         value={value}
         setStore={setStore}
-        errors={props.errors?.object}
+        errors={props.errors.object}
       />
     </div>
   );

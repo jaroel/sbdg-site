@@ -1,11 +1,5 @@
 import type { z } from "zod";
 
-export type Errors = {
-  _errors: string[];
-} & {
-  [key: string]: Errors;
-};
-
 export type SomeZodObject = z.ZodObject<z.infer<z.ZodTypeAny>>;
 export type Override<S extends SomeZodObject> =
   | string
