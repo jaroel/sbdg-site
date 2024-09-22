@@ -1,12 +1,11 @@
 import { action, createAsync, useAction, useSubmission } from "@solidjs/router";
-import { For, createSignal } from "solid-js";
+import { For, createMemo } from "solid-js";
 import { SidebarGunOnly } from "~/components/Sidebar";
 import Tabs from "~/components/Tabs";
 import Button from "~/components/input/Button";
 import { FileInput } from "~/components/input/FileInput";
 import { listObjects } from "~/largeobject";
 import { addFile } from "~/server";
-import type { Errors } from "~/types";
 
 const toErrors = (error: any) => {
   try {
@@ -43,9 +42,15 @@ function ImageListing() {
 const addFileAction = action(addFile, "addFileAction");
 
 function FileAddForm() {
-  const formSubmission = useSubmission(addFileAction);
   const submitForm = useAction(addFileAction);
-  const [formErrors, setFormErrors] = createSignal<Errors | undefined>();
+  const formSubmission = useSubmission(addFileAction);
+  const formErrors = createMemo(() => {
+    try {
+      if (Array.isArray(formSubmission.result?._errors)) {
+        return formSubmission.result;
+      }
+    } catch {}
+  });
 
   return (
     <div class="p-4">
@@ -55,14 +60,7 @@ function FileAddForm() {
         encoding="multipart/form-data"
         onsubmit={async (event) => {
           event.preventDefault();
-          try {
-            await submitForm(
-              new FormData(event.currentTarget, event.submitter),
-            );
-            setFormErrors(undefined);
-          } catch (error) {
-            setFormErrors(toErrors(error));
-          }
+          await submitForm(new FormData(event.currentTarget, event.submitter));
         }}
         class="w-full"
         classList={{

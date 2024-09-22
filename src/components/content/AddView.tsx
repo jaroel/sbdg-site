@@ -14,8 +14,8 @@ export default function ContentObjectAddView(props: {
   const formSubmission = useSubmission(addContentObjectAction);
   const formErrors = createMemo(() => {
     try {
-      if (Array.isArray(formSubmission.error.cause._errors)) {
-        return formSubmission.error.cause;
+      if (Array.isArray(formSubmission.result?._errors)) {
+        return formSubmission.result;
       }
     } catch {}
   });

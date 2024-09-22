@@ -6,7 +6,6 @@ import Sidebar from "~/components/Sidebar";
 import Toolbar from "~/components/Toolbar";
 import { mergeErrors } from "~/lib";
 import type { ContentObject } from "~/server";
-import type { Errors } from "~/types";
 import Button from "../input/Button";
 import type { ContentObjectAction } from "./actions";
 
@@ -22,17 +21,15 @@ export default function ContentObjectFormView(
   } & FlowProps,
 ) {
   const formSubmission = useSubmission(props.action);
-  const formErrors = createMemo<Errors | undefined>(() => {
+  const formErrors = createMemo(() => {
     try {
-      if (Array.isArray(formSubmission.error.cause._errors)) {
-        return formSubmission.error.cause;
+      if (Array.isArray(formSubmission.result?._errors)) {
+        return formSubmission.result;
       }
     } catch {}
   });
 
-  const errors = createMemo<Errors>(() =>
-    mergeErrors(props.item.errors, formErrors()),
-  );
+  const errors = createMemo(() => mergeErrors(props.item.errors, formErrors()));
 
   return (
     <>

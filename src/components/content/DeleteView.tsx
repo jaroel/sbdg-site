@@ -2,7 +2,6 @@ import { createAsync, useSubmission } from "@solidjs/router";
 import { For, Show, createMemo, createSignal } from "solid-js";
 import type { ContentObject } from "~/server";
 import { fetchDescendants } from "~/server";
-import type { Errors } from "~/types";
 import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
 import { deleteContentObjectAction } from "./actions";
@@ -11,10 +10,10 @@ export default function ContentObjectDeleteView(props: {
   item: ContentObject;
 }) {
   const formSubmission = useSubmission(deleteContentObjectAction);
-  const formErrors = createMemo<Errors | undefined>(() => {
+  const formErrors = createMemo(() => {
     try {
-      if (Array.isArray(formSubmission.error.cause._errors)) {
-        return formSubmission.error.cause;
+      if (Array.isArray(formSubmission.result?._errors)) {
+        return formSubmission.result;
       }
     } catch {}
   });
