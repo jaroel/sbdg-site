@@ -8,7 +8,7 @@ import { EditContentObject } from "./EditView";
 
 test("renders ContentObjectEditView", () => {
   const item = {
-    content: make(outputSchema, { object: { title: "Page Title" } }),
+    content: make(outputSchema, { object: { title: "Some text" } }),
     children: [],
     parents: [],
   };
@@ -25,5 +25,5 @@ test("renders ContentObjectEditView", () => {
     />
   ));
 
-  expect(getByLabelText("Page title")).toHaveValue("Page Title");
+  expect(getByLabelText("Page title")).toHaveValue("Some text");
 });
