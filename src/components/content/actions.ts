@@ -6,19 +6,16 @@ import {
   saveContentObjectRoot,
 } from "~/server";
 
-type SaveContentObjectAction = typeof saveContentObjectAction;
 export const saveContentObjectAction = action(
   saveContentObject,
   "saveContentObjectAction",
 );
 
-type SaveContentObjectRootAction = typeof saveContentObjectRootAction;
 export const saveContentObjectRootAction = action(
   saveContentObjectRoot,
   "saveContentObjectRootAction",
 );
 
-type AddContentObjectAction = typeof addContentObjectAction;
 export const addContentObjectAction = action(
   addContentObject,
   "addContentObjectAction",
@@ -30,6 +27,7 @@ export const deleteContentObjectAction = action(
 );
 
 export type ContentObjectAction =
-  | SaveContentObjectAction
-  | SaveContentObjectRootAction
-  | AddContentObjectAction;
+  | typeof saveContentObjectAction
+  | typeof saveContentObjectRootAction
+  | typeof addContentObjectAction
+  | typeof deleteContentObjectAction;
