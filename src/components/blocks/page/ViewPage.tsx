@@ -5,6 +5,7 @@ import type { contentObjectSchema } from "~/schemas";
 import ViewImageBlock from "../image/ViewImage";
 import ViewNestedBlock from "../nested/ViewNested";
 import type { PageBlock, PageBlockBlocks } from "../schemas";
+import ViewTableBlock from "../table/ViewTable";
 import ViewTextBlock from "../text/ViewText";
 
 export default function ViewPage(props: {
@@ -39,16 +40,12 @@ export default function ViewPage(props: {
                 const blockErrors = () =>
                   props.errors?.object?.blocks?.[index()];
                 return (
-                  <Show when={blockErrors()}>
-                    {(errors) => (
-                      <div class="text-red-500">
-                        {errors()._errors.join("\n")}
-                        {errors().type?._errors.join("\n")}
-                        <p>This value broke:</p>
-                        <pre>{JSON.stringify({ value })}</pre>
-                      </div>
-                    )}
-                  </Show>
+                  <div class="text-red-500">
+                    <p>blockErrors:</p>
+                    <pre>{JSON.stringify(blockErrors())}</pre>
+                    <p>This value broke:</p>
+                    <pre>{JSON.stringify({ value })}</pre>
+                  </div>
                 );
               }}
             >
@@ -72,6 +69,9 @@ function BlockItem(props: { value: PageBlockBlocks }) {
     }
     case "nested": {
       return <ViewNestedBlock object={value} />;
+    }
+    case "table": {
+      return <ViewTableBlock object={value} />;
     }
     default:
       assertCannotReach(value);

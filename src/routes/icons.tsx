@@ -9,6 +9,7 @@ import {
   DocumentIcon,
   PictureIcon,
   RectangleStackIcon,
+  TableCellsIcon,
   XMarkIcon,
 } from "~/components/Icons";
 import { SidebarGunOnly } from "~/components/Sidebar";
@@ -110,6 +111,13 @@ function Icons() {
               <XMarkIcon title="XMarkIcon" />
             </td>
             <td>Close icon in Dialog component</td>
+          </tr>
+          <tr>
+            <td>TableCellsIcon</td>
+            <td>
+              <TableCellsIcon title="TableCellsIcon" />
+            </td>
+            <td>Table block</td>
           </tr>
         </tbody>
       </table>

@@ -9,6 +9,7 @@ import {
   DocumentIcon,
   PictureIcon,
   RectangleStackIcon,
+  TableCellsIcon,
 } from "../../Icons";
 import { TextField } from "../../input/TextField";
 import { textBlockFactory } from "../factories";
@@ -19,6 +20,7 @@ import {
   type PageBlockBlocks,
   pageBlockSchema,
 } from "../schemas";
+import EditTableBlock from "../table/EditTable";
 import EditTextBlock from "../text/EditText";
 
 function moveLeft<T>(array: T[], index: number): T[] {
@@ -250,6 +252,35 @@ export default function EditPageBlock(props: {
                       </div>
                     );
                   }
+                  case "table": {
+                    return (
+                      <div class="px-1">
+                        <Button
+                          title="Table block"
+                          class="size-4 disabled:text-gray-400"
+                          onClick={() => {
+                            props.setStore(
+                              "blocks",
+                              props.value.blocks
+                                ? props.value.blocks.length
+                                : 0,
+                              {
+                                type: "table",
+                                label: "",
+                                content: [
+                                  ["Col A", "Col B"],
+                                  ["Row 1 A", "B"],
+                                  ["Row 2 A", "B"],
+                                ],
+                              },
+                            );
+                          }}
+                        >
+                          <TableCellsIcon title="Insert table block" />
+                        </Button>
+                      </div>
+                    );
+                  }
                   default:
                     assertCannotReach(value);
                 }
@@ -297,6 +328,16 @@ function BlockItem(props: {
       const [store, setStore] = createStore(value);
       return (
         <EditNestedBlock
+          value={store}
+          setStore={setStore}
+          errors={props.errors}
+        />
+      );
+    }
+    case "table": {
+      const [store, setStore] = createStore(value);
+      return (
+        <EditTableBlock
           value={store}
           setStore={setStore}
           errors={props.errors}

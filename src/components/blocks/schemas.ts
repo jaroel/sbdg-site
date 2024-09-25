@@ -21,11 +21,19 @@ export const imageBlockSchema = z.object({
   fileId: z.string().trim().min(1),
 });
 
+export type TableBlock = z.infer<typeof tableBlockSchema>;
+export const tableBlockSchema = z.object({
+  type: z.literal("table"),
+  label: z.string().trim().min(1),
+  content: z.array(z.string().trim().array().min(1)).min(1),
+});
+
 export type PageBlockBlocks = z.infer<typeof pageBlockBlocksSchema>;
 const pageBlockBlocksSchema = z.discriminatedUnion("type", [
   textBlockSchema,
   nestedBlockSchema,
   imageBlockSchema,
+  tableBlockSchema,
 ]);
 
 export type PageBlock = z.infer<typeof pageBlockSchema>;
