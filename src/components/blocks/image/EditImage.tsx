@@ -1,5 +1,5 @@
 import { createAsync } from "@solidjs/router";
-import { For, createSignal } from "solid-js";
+import { ErrorBoundary, For, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import type { ZodFormattedError } from "zod";
 import { listObjects } from "~/largeobject";
@@ -8,6 +8,7 @@ import Button from "../../input/Button";
 import { SelectFieldValueFallback } from "../../input/Select";
 import { TextField } from "../../input/TextField";
 import type { ImageBlock } from "../schemas";
+import ViewImageBlock from "./ViewImage";
 
 export default function EditImageBlock(props: {
   value: ImageBlock;
@@ -92,6 +93,18 @@ export default function EditImageBlock(props: {
           </div>
         </div>
       )}
+      <div class="border border-slate-100 my-4 p-2">
+        <ErrorBoundary
+          fallback={() => (
+            <div class="text-red-500">
+              <p>This value broke the preview:</p>
+              <pre>{JSON.stringify(props.value)}</pre>
+            </div>
+          )}
+        >
+          <ViewImageBlock object={props.value} />
+        </ErrorBoundary>
+      </div>
     </>
   );
 }

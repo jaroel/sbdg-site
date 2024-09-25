@@ -4,7 +4,7 @@ export default function ViewImageBlock(props: {
   object: ImageBlock;
 }) {
   return (
-    <div class="ml-4">
+    <div class="">
       <p class="text-xl text-gray-600">{props.object.label}</p>
       {props.object.fileId && (
         <img
