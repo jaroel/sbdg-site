@@ -1,10 +1,14 @@
-import { createAsync, useSubmission } from "@solidjs/router";
+import { action, createAsync, useSubmission } from "@solidjs/router";
 import { For, Show, createMemo, createSignal } from "solid-js";
 import type { ContentObject } from "~/server";
-import { fetchDescendants } from "~/server";
+import { deleteContentObject, fetchDescendants } from "~/server";
 import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
-import { deleteContentObjectAction } from "./actions";
+
+export const deleteContentObjectAction = action(
+  deleteContentObject,
+  "deleteContentObjectAction",
+);
 
 export default function ContentObjectDeleteView(props: {
   item: ContentObject;

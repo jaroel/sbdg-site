@@ -7,7 +7,16 @@ import Toolbar from "~/components/Toolbar";
 import { mergeErrors } from "~/lib";
 import type { ContentObject } from "~/server";
 import Button from "../input/Button";
-import type { ContentObjectAction } from "./actions";
+import type { addContentObjectAction } from "./AddView";
+import type { deleteContentObjectAction } from "./DeleteView";
+import type { saveContentObjectRootAction } from "./EditRootView";
+import type { saveContentObjectAction } from "./EditView";
+
+export type ContentObjectAction =
+  | typeof saveContentObjectAction
+  | typeof saveContentObjectRootAction
+  | typeof addContentObjectAction
+  | typeof deleteContentObjectAction;
 
 export default function ContentObjectFormView(
   props: {

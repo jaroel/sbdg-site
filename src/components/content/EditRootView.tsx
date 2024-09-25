@@ -1,11 +1,15 @@
-import { useSubmission } from "@solidjs/router";
+import { action, useSubmission } from "@solidjs/router";
 import { createMemo } from "solid-js";
 import { createStore } from "solid-js/store";
 import { mergeErrors } from "~/lib";
-import type { ContentObject } from "~/server";
+import { type ContentObject, saveContentObjectRoot } from "~/server";
 import { EditContentObject } from "./EditView";
 import ContentObjectFormView from "./FormView";
-import { saveContentObjectRootAction } from "./actions";
+
+export const saveContentObjectRootAction = action(
+  saveContentObjectRoot,
+  "saveContentObjectRootAction",
+);
 
 export default function ContentObjectEditRootView(props: {
   item: ContentObject;

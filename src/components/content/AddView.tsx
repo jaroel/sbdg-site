@@ -1,12 +1,16 @@
-import { useSubmission } from "@solidjs/router";
+import { action, useSubmission } from "@solidjs/router";
 import { createMemo, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import type { ContentObjectAddFormSchema } from "~/schemas";
-import type { ContentObject } from "~/server";
+import { type ContentObject, addContentObject } from "~/server";
 import EditPageBlock from "../blocks/page/EditPage";
 import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
-import { addContentObjectAction } from "./actions";
+
+export const addContentObjectAction = action(
+  addContentObject,
+  "addContentObjectAction",
+);
 
 export default function ContentObjectAddView(props: {
   item: ContentObject;

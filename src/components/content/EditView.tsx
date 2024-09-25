@@ -1,13 +1,17 @@
-import { useSubmission } from "@solidjs/router";
+import { action, useSubmission } from "@solidjs/router";
 import { Show, createMemo, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { createStore } from "solid-js/store";
 import { mergeErrors } from "~/lib";
-import type { ContentObject } from "~/server";
+import { type ContentObject, saveContentObject } from "~/server";
 import EditPageBlock from "../blocks/page/EditPage";
 import { TextField } from "../input/TextField";
 import ContentObjectFormView from "./FormView";
-import { saveContentObjectAction } from "./actions";
+
+export const saveContentObjectAction = action(
+  saveContentObject,
+  "saveContentObjectAction",
+);
 
 export default function ContentObjectEditView(props: {
   item: ContentObject;
