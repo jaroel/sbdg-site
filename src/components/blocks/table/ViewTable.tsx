@@ -1,4 +1,3 @@
-import { For, Show, createMemo } from "solid-js";
 import type { TableBlock } from "../schemas";
 
 export default function ViewTableBlock(props: {

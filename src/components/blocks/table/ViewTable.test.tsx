@@ -1,18 +1,24 @@
-import { getRoles, render } from "@solidjs/testing-library";
-import { assert, expect, test } from "vitest";
+import { render } from "@solidjs/testing-library";
+import { expect, test } from "vitest";
 import ViewTableBlock from "./ViewTable";
 
 test("renders", async () => {
-  const content = `Klassering schut. no.  Voornaam
-1 1234  D.J.
-2 5678  N.`;
-
+  const header = ["Col A", "Col B"];
+  const data = [
+    ["Row 1 - A", "Row 1 - B"],
+    ["Row 2 - A", "Row 2 - B"],
+  ];
   const result = render(() => (
-    <ViewTableBlock object={{ type: "table", label: "Label", content }} />
+    <ViewTableBlock
+      object={{ type: "table", label: "Label", content: [header, ...data] }}
+    />
   ));
 
-  // console.log(getRoles(result.container));
-
   expect(result.getByRole("caption")).toHaveTextContent("Label");
-  expect(result.getAllByRole("columnheader")).toBe;
+  expect(
+    result.getAllByRole("columnheader").map((el) => el.textContent),
+  ).toEqual(header);
+  expect(result.getAllByRole("cell").map((el) => el.textContent)).toEqual(
+    data.flat(),
+  );
 });
