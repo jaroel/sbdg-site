@@ -1,5 +1,7 @@
 import { textBlockFactory } from "../components/blocks/factories";
 import { db } from "./db";
+import uitslagenPage from "./example/uitslagen.json";
+import { contentObjectBlockSchema } from "./schemas";
 
 export const seed = async () => {
   const root = await db.contentObjects.create({
@@ -77,12 +79,7 @@ export const seed = async () => {
   await db.contentObjects.create({
     parentId: persoonlijkGemiddelde.id,
     path: "/persoonlijk-gemiddelde/2023-2024",
-    object: {
-      type: "page",
-      title: "Persoonlijk gemiddelde - 2023-2024",
-      blocks: [textBlockFactory("dada"), textBlockFactory("dada")],
-      description: "Persoonlijke resultaten seizoen 2023 / 2024",
-    },
+    object: contentObjectBlockSchema.parse(uitslagenPage),
   });
 
   await db.contentObjects.create({
