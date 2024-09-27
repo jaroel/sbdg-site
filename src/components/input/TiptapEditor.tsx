@@ -2,13 +2,12 @@ import { ToggleButton } from "@kobalte/core/toggle-button";
 import { ToggleGroup } from "@kobalte/core/toggle-group";
 import type { Editor } from "@tiptap/core";
 import Bold from "@tiptap/extension-bold";
-import BubbleMenu from "@tiptap/extension-bubble-menu";
 import Document from "@tiptap/extension-document";
 import Italic from "@tiptap/extension-italic";
 import Link from "@tiptap/extension-link";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
-import type { Accessor, JSX, Setter } from "solid-js";
+import type { JSX } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import {
@@ -137,10 +136,8 @@ function Control(props: ControlProps): JSX.Element {
   return (
     <ToggleButton
       defaultPressed={false}
-      class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none`}
-      classList={{
-        "text-color-600 bg-white bg-opacity-25": flag(),
-      }}
+      class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none ui-pressed:border`}
+      pressed={flag()}
       title={props.title}
       onChange={props.onChange}
     >
@@ -151,20 +148,20 @@ function Control(props: ControlProps): JSX.Element {
 
 interface ToolbarProps {
   editor: Editor;
-  open: Accessor<boolean>;
-  setOpen: Setter<boolean>;
-  setSelected: Setter<string>;
-  selected: Accessor<string>;
 }
 
 function ToolbarContents(props: ToolbarProps): JSX.Element {
+  const [selected, setSelected] = createSignal("");
+  const [open, setOpen] = createSignal(false);
+
   createEffect(() => {
-    if (props.selected()) {
+    if (selected()) {
       props.editor
         .chain()
         .focus()
         .extendMarkRange("link")
-        .setLink({ href: props.selected() })
+        .setLink({ href: selected() })
+        .focus()
         .run();
     }
   });
@@ -226,12 +223,21 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         >
           I
         </Control>
+        <Separator />
+        <InternalLink
+          path="/"
+          parent="home"
+          open={open}
+          setOpen={setOpen}
+          selected={selected}
+          setSelected={setSelected}
+        />
         <Control
           key="link"
           class="link"
           editor={props.editor}
           onChange={() => {
-            props.setOpen(!props.open());
+            setOpen(!open());
           }}
           title="Link"
         >
@@ -323,7 +329,6 @@ export default function TiptapEditor(props: {
   errors?: ZodFormattedError<TiptapDoc>;
 }) {
   const [container, setContainer] = createSignal<HTMLDivElement>();
-  const [menu, setMenu] = createSignal<HTMLDivElement>();
 
   return (
     <>
@@ -338,21 +343,9 @@ export default function TiptapEditor(props: {
             class="bg-white overflow-y-scroll rounded-lg"
             ref={setContainer}
           />
-          <ToggleGroup
-            ref={setMenu}
-            class="bg-blue-400 text-white rounded"
-            // horizontal
-          >
-            <Show when={container()}>
-              {(container) => (
-                <Show when={menu()}>
-                  {(menu) => (
-                    <Ding {...props} container={container()} menu={menu()} />
-                  )}
-                </Show>
-              )}
-            </Show>
-          </ToggleGroup>
+          <Show when={container()}>
+            {(container) => <Ding {...props} container={container()} />}
+          </Show>
         </div>
       </div>
 
@@ -374,7 +367,6 @@ export default function TiptapEditor(props: {
 
 function Ding(props: {
   container: HTMLDivElement;
-  menu: HTMLDivElement;
   value: TiptapDoc;
   setStore: SetStoreFunction<TiptapDoc>;
 }) {
@@ -390,12 +382,6 @@ function Ding(props: {
         openOnClick: false,
         autolink: true,
         defaultProtocol: "https",
-      }),
-      BubbleMenu.configure({
-        element: props.menu,
-        tippyOptions: {
-          zIndex: 40, // Dialog uses z-index: 50
-        },
       }),
     ],
     editorProps: {
@@ -428,26 +414,9 @@ function WithEditor(props: {
       }
     }
   });
-  const [selected, setSelected] = createSignal("");
-  const [open, setOpen] = createSignal(false);
-
   return (
     <>
-      <InternalLink
-        path="/"
-        parent="home"
-        open={open}
-        setOpen={setOpen}
-        selected={selected}
-        setSelected={setSelected}
-      />
-      <ToolbarContents
-        editor={props.editor}
-        open={open}
-        setOpen={setOpen}
-        selected={selected}
-        setSelected={setSelected}
-      />
+      <ToolbarContents editor={props.editor} />
     </>
   );
 }

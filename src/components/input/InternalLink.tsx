@@ -1,5 +1,5 @@
 import { createAsync } from "@solidjs/router";
-import { type Accessor, For, type Setter, Show, createSignal } from "solid-js";
+import { type Accessor, For, type Setter, Show } from "solid-js";
 import { fetchDescendants } from "~/server";
 import "~/components/Tabs.css";
 import Dialog from "~/components/Dialog";
@@ -22,6 +22,7 @@ export default function InternalLink(props: {
             title="Select page to link to"
             open={props.open()}
             onOpenChange={props.setOpen}
+            omitTrigger
           >
             <div class="">
               <ul class="flex flex-wrap gap-y-4 gap-x-4 my-2">
