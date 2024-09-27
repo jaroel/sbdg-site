@@ -36,6 +36,7 @@ export default function InternalLink(props: {
                         onClick={() => {
                           props.setSelected(descendant.path);
                         }}
+                        checked={props.selected() === descendant.path}
                         class="text-black border cursor-pointer"
                       />
 

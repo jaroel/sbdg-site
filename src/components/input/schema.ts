@@ -13,7 +13,7 @@ const tiptapMarkItalicSchema = z.object({
 });
 
 export type TiptapMarkLink = z.infer<typeof tiptapMarkLinkSchema>;
-const tiptapMarkLinkSchema = z.object({
+export const tiptapMarkLinkSchema = z.object({
   type: z.literal("link"),
   attrs: z.object({
     href: z.string().trim(),
@@ -22,16 +22,6 @@ const tiptapMarkLinkSchema = z.object({
     class: z.string().trim().optional().nullable(),
   }),
 });
-
-// {
-//   "type": "link",
-//   "attrs": {
-//     "href": "/some-path",
-//     "target": "_blank",
-//     "rel": "noopener noreferrer nofollow",
-//     "class": null
-//   }
-// }
 
 export type TiptapMarkType = z.infer<typeof tiptapMarkSchema>["type"];
 export type TiptapMark = z.infer<typeof tiptapMarkSchema>;

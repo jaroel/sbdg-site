@@ -20,7 +20,7 @@ import type { ZodFormattedError } from "zod";
 import { isDeepStrictEqual } from "~/lib";
 import { BoldIcon, LinkIcon, LinkSlashIcon, ParagraphIcon } from "../Icons";
 import InternalLink from "./InternalLink";
-import type { TiptapDoc } from "./schema";
+import { type TiptapDoc, tiptapMarkLinkSchema } from "./schema";
 
 function Separator() {
   return (
@@ -59,7 +59,6 @@ function Control(props: ControlProps): JSX.Element {
         class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none ui-pressed:border ui-disabled:text-gray-300`}
         pressed={flag()}
         title={props.title}
-        onClick={console.log}
         onChange={props.onChange}
         disabled={selection().empty}
       >
@@ -141,6 +140,10 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           class="link"
           editor={props.editor}
           onChange={() => {
+            const attrs = tiptapMarkLinkSchema.shape.attrs.safeParse(
+              props.editor.getAttributes("link"),
+            );
+            setSelected(attrs.data?.href || "");
             setOpen(!open());
           }}
           title="Link"
