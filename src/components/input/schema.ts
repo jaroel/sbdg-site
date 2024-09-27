@@ -45,7 +45,7 @@ export type TiptapText = z.infer<typeof tiptapTextSchema>;
 const tiptapTextSchema = z
   .object({
     type: z.literal("text"),
-    text: z.string().trim().min(1),
+    text: z.string().min(1),
     marks: z.array(tiptapMarkSchema).optional(),
   })
   .strict();
@@ -53,7 +53,7 @@ const tiptapTextSchema = z
 export type TiptapParagraph = z.infer<typeof tiptapParagraphSchema>;
 const tiptapParagraphSchema = z.object({
   type: z.literal("paragraph"),
-  content: z.array(z.discriminatedUnion("type", [tiptapTextSchema])),
+  content: tiptapTextSchema.array(),
 });
 
 export type TiptapDoc = z.infer<typeof tiptapDocSchema>;
