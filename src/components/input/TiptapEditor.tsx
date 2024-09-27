@@ -230,6 +230,11 @@ function EditorComp(props: {
         openOnClick: false,
         autolink: true,
         defaultProtocol: "https",
+        HTMLAttributes: {
+          class: "underline underline-offset-2 decoration-slate-400",
+          rel: null,
+          target: null,
+        },
       }),
     ],
     editorProps: {

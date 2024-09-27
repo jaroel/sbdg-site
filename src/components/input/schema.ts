@@ -16,9 +16,9 @@ export type TiptapMarkLink = z.infer<typeof tiptapMarkLinkSchema>;
 export const tiptapMarkLinkSchema = z.object({
   type: z.literal("link"),
   attrs: z.object({
-    href: z.string().trim(),
-    target: z.string().trim(),
-    rel: z.string().trim(),
+    href: z.string().trim().min(1),
+    target: z.string().trim().optional().nullable(),
+    rel: z.string().trim().optional().nullable(),
     class: z.string().trim().optional().nullable(),
   }),
 });
