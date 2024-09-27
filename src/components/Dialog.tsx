@@ -2,10 +2,14 @@ import { type DialogRootProps, Dialog as Kobalte } from "@kobalte/core/dialog";
 import "./Dialog.css";
 import { XMarkIcon } from "./Icons";
 
-export default function Dialog(props: DialogRootProps & { title: string }) {
+export default function Dialog(
+  props: DialogRootProps & { title: string; omitTrigger?: boolean },
+) {
   return (
     <Kobalte {...props} modal>
-      <Kobalte.Trigger class="dialog__trigger">Open</Kobalte.Trigger>
+      {!props.omitTrigger && (
+        <Kobalte.Trigger class="dialog__trigger">Open</Kobalte.Trigger>
+      )}
       <Kobalte.Portal>
         <Kobalte.Overlay class="dialog__overlay" />
         <div class="dialog__positioner">
