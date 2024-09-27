@@ -5,9 +5,10 @@ import Bold from "@tiptap/extension-bold";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
 import Document from "@tiptap/extension-document";
 import Italic from "@tiptap/extension-italic";
+import Link from "@tiptap/extension-link";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
-import type { JSX } from "solid-js";
+import type { Accessor, JSX, Setter } from "solid-js";
 import { Show, createEffect, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import {
@@ -18,28 +19,11 @@ import {
 } from "solid-tiptap";
 import type { ZodFormattedError } from "zod";
 import { isDeepStrictEqual } from "~/lib";
+import { BoldIcon, LinkIcon, LinkSlashIcon, ParagraphIcon } from "../Icons";
+import InternalLink from "./InternalLink";
 import type { TiptapDoc } from "./schema";
 
-function ParagraphIcon(
-  props: JSX.IntrinsicElements["svg"] & { title: string },
-): JSX.Element {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      stroke="none"
-      {...props}
-    >
-      <title>{props.title}</title>
-      <path d="M9 16h2v4h2V6h2v14h2V6h3V4H9c-3.309 0-6 2.691-6 6s2.691 6 6 6zM9 6h2v8H9c-2.206 0-4-1.794-4-4s1.794-4 4-4z" />
-    </svg>
-  );
-}
-
-// function CodeIcon(
-//   props: JSX.IntrinsicElements["svg"] & { title: string },
-// ): JSX.Element {
+// function CodeIcon(props: IconProps) {
 //   return (
 //     <svg
 //       xmlns="http://www.w3.org/2000/svg"
@@ -54,9 +38,7 @@ function ParagraphIcon(
 //   );
 // }
 
-// function CodeBlockIcon(
-//   props: JSX.IntrinsicElements["svg"] & { title: string },
-// ): JSX.Element {
+// function CodeBlockIcon(props: IconProps) {
 //   return (
 //     <svg
 //       xmlns="http://www.w3.org/2000/svg"
@@ -72,9 +54,7 @@ function ParagraphIcon(
 //   );
 // }
 
-// function OrderedListIcon(
-//   props: JSX.IntrinsicElements["svg"] & { title: string },
-// ): JSX.Element {
+// function OrderedListIcon(props: IconProps) {
 //   return (
 //     <svg
 //       xmlns="http://www.w3.org/2000/svg"
@@ -92,9 +72,7 @@ function ParagraphIcon(
 //   );
 // }
 
-// function BulletListIcon(
-//   props: JSX.IntrinsicElements["svg"] & { title: string },
-// ): JSX.Element {
+// function BulletListIcon(props: IconProps) {
 //   return (
 //     <svg
 //       xmlns="http://www.w3.org/2000/svg"
@@ -112,9 +90,7 @@ function ParagraphIcon(
 //   );
 // }
 
-// function BlockquoteIcon(
-//   props: JSX.IntrinsicElements["svg"] & { title: string },
-// ): JSX.Element {
+// function BlockquoteIcon(props: IconProps) {
 //   return (
 //     <svg
 //       xmlns="http://www.w3.org/2000/svg"
@@ -175,9 +151,24 @@ function Control(props: ControlProps): JSX.Element {
 
 interface ToolbarProps {
   editor: Editor;
+  open: Accessor<boolean>;
+  setOpen: Setter<boolean>;
+  setSelected: Setter<string>;
+  selected: Accessor<string>;
 }
 
 function ToolbarContents(props: ToolbarProps): JSX.Element {
+  createEffect(() => {
+    if (props.selected()) {
+      props.editor
+        .chain()
+        .focus()
+        .extendMarkRange("link")
+        .setLink({ href: props.selected() })
+        .run();
+    }
+  });
+
   return (
     <div class="p-2 flex space-x-1">
       <ToggleGroup class="flex space-x-1">
@@ -224,7 +215,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           onChange={() => props.editor.chain().focus().toggleBold().run()}
           title="Bold"
         >
-          B
+          <BoldIcon title="Bold" class="w-full h-full m-1" />
         </Control>
         <Control
           key="italic"
@@ -234,6 +225,33 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           title="Italic"
         >
           I
+        </Control>
+        <Control
+          key="link"
+          class="link"
+          editor={props.editor}
+          onChange={() => {
+            props.setOpen(!props.open());
+          }}
+          title="Link"
+        >
+          <LinkIcon title="Link" class="w-full h-full m-1" />
+        </Control>
+        <Control
+          key="link"
+          class="link"
+          editor={props.editor}
+          onChange={() => {
+            props.editor
+              .chain()
+              .focus()
+              .extendMarkRange("link")
+              .unsetLink()
+              .run();
+          }}
+          title="Unlink"
+        >
+          <LinkSlashIcon title="Unlink" class="w-full h-full m-1" />
         </Control>
         {/* <Control
           key="strike"
@@ -337,10 +355,17 @@ export default function TiptapEditor(props: {
           </ToggleGroup>
         </div>
       </div>
+
       {props.errors && (
         <div class="text-red-500">
           {props.errors._errors.join("\n")}
-          {props.errors.content !== undefined && "Required"}
+          {props.errors.content !== undefined && (
+            <>
+              <pre>{JSON.stringify(props.errors.content, null, 2)}</pre>
+              <pre>{JSON.stringify(props.value.content, null, 2)}</pre>
+              Required
+            </>
+          )}
         </div>
       )}
     </>
@@ -361,8 +386,16 @@ function Ding(props: {
       Text,
       Bold,
       Italic,
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        defaultProtocol: "https",
+      }),
       BubbleMenu.configure({
         element: props.menu,
+        tippyOptions: {
+          zIndex: 40, // Dialog uses z-index: 50
+        },
       }),
     ],
     editorProps: {
@@ -395,5 +428,26 @@ function WithEditor(props: {
       }
     }
   });
-  return <ToolbarContents editor={props.editor} />;
+  const [selected, setSelected] = createSignal("");
+  const [open, setOpen] = createSignal(false);
+
+  return (
+    <>
+      <InternalLink
+        path="/"
+        parent="home"
+        open={open}
+        setOpen={setOpen}
+        selected={selected}
+        setSelected={setSelected}
+      />
+      <ToolbarContents
+        editor={props.editor}
+        open={open}
+        setOpen={setOpen}
+        selected={selected}
+        setSelected={setSelected}
+      />
+    </>
+  );
 }

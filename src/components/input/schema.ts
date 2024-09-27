@@ -12,11 +12,33 @@ const tiptapMarkItalicSchema = z.object({
   attrs: z.optional(z.record(z.any())),
 });
 
+export type TiptapMarkLink = z.infer<typeof tiptapMarkLinkSchema>;
+const tiptapMarkLinkSchema = z.object({
+  type: z.literal("link"),
+  attrs: z.object({
+    href: z.string().trim(),
+    target: z.string().trim(),
+    rel: z.string().trim(),
+    class: z.string().trim().optional().nullable(),
+  }),
+});
+
+// {
+//   "type": "link",
+//   "attrs": {
+//     "href": "/some-path",
+//     "target": "_blank",
+//     "rel": "noopener noreferrer nofollow",
+//     "class": null
+//   }
+// }
+
 export type TiptapMarkType = z.infer<typeof tiptapMarkSchema>["type"];
 export type TiptapMark = z.infer<typeof tiptapMarkSchema>;
 const tiptapMarkSchema = z.discriminatedUnion("type", [
   tiptapMarkBoldSchema,
   tiptapMarkItalicSchema,
+  tiptapMarkLinkSchema,
 ]);
 
 export type TiptapText = z.infer<typeof tiptapTextSchema>;

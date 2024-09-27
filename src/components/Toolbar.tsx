@@ -42,6 +42,9 @@ export default function Toolbar(props: {
       <a class="mr-4" href="/icons" title="View Icons">
         icons
       </a>
+      <a class="mr-4" href="/internalLink" title="View Internal Link">
+        internal link
+      </a>
     </div>
   );
 }
