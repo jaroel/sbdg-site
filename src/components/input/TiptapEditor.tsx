@@ -25,7 +25,7 @@ import { type TiptapDoc, tiptapMarkLinkSchema } from "./schema";
 function Separator() {
   return (
     <div class="flex items-center" aria-hidden="true">
-      <div class="h-full border-l border-gray-300" />
+      <div class="h-4 border-l border-gray-100" />
     </div>
   );
 }
@@ -94,20 +94,8 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
   });
 
   return (
-    <div class="p-2 flex space-x-1">
-      <ToggleGroup class="flex space-x-1 " disabled={selection().empty}>
-        <Control
-          key="paragraph"
-          class="font-bold ui-disabled:text-slate-300"
-          editor={props.editor}
-          onChange={() => props.editor.chain().focus().setParagraph().run()}
-          title="Paragraph"
-        >
-          <ParagraphIcon title="Paragraph" class="w-full h-full m-1" />
-        </Control>
-      </ToggleGroup>
-      <Separator />
-      <ToggleGroup class="flex space-x-1" disabled={selection().empty}>
+    <div class="m-1 flex space-x-2">
+      <ToggleGroup class="flex" disabled={selection().empty}>
         <Control
           key="bold"
           class="font-bol"
@@ -126,7 +114,9 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
         >
           I
         </Control>
-        <Separator />
+      </ToggleGroup>
+      <Separator />
+      <ToggleGroup class="flex" disabled={selection().empty}>
         <InternalLink
           path="/"
           parent="home"
