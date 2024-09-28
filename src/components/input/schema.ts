@@ -1,3 +1,4 @@
+import type { JSX } from "solid-js";
 import { z } from "zod";
 
 export type TiptapMarkBold = z.infer<typeof tiptapMarkBoldSchema>;
@@ -17,9 +18,9 @@ export const tiptapMarkLinkSchema = z.object({
   type: z.literal("link"),
   attrs: z.object({
     href: z.string().trim().min(1),
-    target: z.string().trim().optional().nullable(),
-    rel: z.string().trim().optional().nullable(),
-    class: z.string().trim().optional().nullable(),
+    target: z.literal("_self").or(z.literal("_blank")).optional(),
+    rel: z.string().trim().optional(),
+    class: z.string().trim().optional(),
   }),
 });
 
