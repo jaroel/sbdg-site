@@ -177,10 +177,7 @@ export default function TiptapEditor(props: {
         }}
       >
         <div class="flex-1 m-1">
-          <div
-            class="bg-white overflow-y-scroll rounded-lg"
-            ref={setContainer}
-          />
+          <div class="bg-white overflow-y-scroll" ref={setContainer} />
           <Show when={container()}>
             {(container) => <EditorComp {...props} container={container()} />}
           </Show>
