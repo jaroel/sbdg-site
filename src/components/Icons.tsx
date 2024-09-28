@@ -1,9 +1,14 @@
-export function DocumentIcon(props: { title: string }) {
+import type { JSX } from "solid-js";
+
+export type IconProps = JSX.IntrinsicElements["svg"] & { title: string };
+
+export function DocumentIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path
@@ -15,12 +20,13 @@ export function DocumentIcon(props: { title: string }) {
   );
 }
 
-export function RectangleStackIcon(props: { title: string }) {
+export function RectangleStackIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path d="M5.127 3.502 5.25 3.5h9.5c.041 0 .082 0 .123.002A2.251 2.251 0 0 0 12.75 2h-5.5a2.25 2.25 0 0 0-2.123 1.502ZM1 10.25A2.25 2.25 0 0 1 3.25 8h13.5A2.25 2.25 0 0 1 19 10.25v5.5A2.25 2.25 0 0 1 16.75 18H3.25A2.25 2.25 0 0 1 1 15.75v-5.5ZM3.25 6.5c-.04 0-.082 0-.123.002A2.25 2.25 0 0 1 5.25 5h9.5c.98 0 1.814.627 2.123 1.502a3.819 3.819 0 0 0-.123-.002H3.25Z" />
@@ -28,12 +34,13 @@ export function RectangleStackIcon(props: { title: string }) {
   );
 }
 
-export function ArrowUpTrayIcon(props: { title: string }) {
+export function ArrowUpTrayIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path d="M9.25 13.25a.75.75 0 0 0 1.5 0V4.636l2.955 3.129a.75.75 0 0 0 1.09-1.03l-4.25-4.5a.75.75 0 0 0-1.09 0l-4.25 4.5a.75.75 0 1 0 1.09 1.03L9.25 4.636v8.614Z" />
@@ -42,12 +49,13 @@ export function ArrowUpTrayIcon(props: { title: string }) {
   );
 }
 
-export function ArchiveBoxXMarkIcon(props: { title: string }) {
+export function ArchiveBoxXMarkIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path d="M2 3a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H2Z" />
@@ -60,12 +68,13 @@ export function ArchiveBoxXMarkIcon(props: { title: string }) {
   );
 }
 
-export function ArrowDownIcon(props: { title: string }) {
+export function ArrowDownIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path
@@ -77,12 +86,13 @@ export function ArrowDownIcon(props: { title: string }) {
   );
 }
 
-export function ArrowUpIcon(props: { title: string }) {
+export function ArrowUpIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path
@@ -94,12 +104,13 @@ export function ArrowUpIcon(props: { title: string }) {
   );
 }
 
-export function ClipboardDocumentIcon(props: { title: string }) {
+export function ClipboardDocumentIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path
@@ -112,12 +123,13 @@ export function ClipboardDocumentIcon(props: { title: string }) {
   );
 }
 
-export function PictureIcon(props: { title: string }) {
+export function PictureIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 16 16"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path
@@ -129,7 +141,7 @@ export function PictureIcon(props: { title: string }) {
   );
 }
 
-export function CheckIcon(props: { title: string }) {
+export function CheckIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -146,12 +158,13 @@ export function CheckIcon(props: { title: string }) {
   );
 }
 
-export function ChevronUpDownIcon(props: { title: string }) {
+export function ChevronUpDownIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path
@@ -163,12 +176,13 @@ export function ChevronUpDownIcon(props: { title: string }) {
   );
 }
 
-export function XMarkIcon(props: { title: string }) {
+export function XMarkIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -176,12 +190,13 @@ export function XMarkIcon(props: { title: string }) {
   );
 }
 
-export function TableCellsIcon(props: { title: string }) {
+export function TableCellsIcon(props: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
+      {...props}
     >
       <title>{props.title}</title>
       <path
@@ -189,6 +204,72 @@ export function TableCellsIcon(props: { title: string }) {
         d="M.99 5.24A2.25 2.25 0 0 1 3.25 3h13.5A2.25 2.25 0 0 1 19 5.25l.01 9.5A2.25 2.25 0 0 1 16.76 17H3.26A2.267 2.267 0 0 1 1 14.74l-.01-9.5Zm8.26 9.52v-.625a.75.75 0 0 0-.75-.75H3.25a.75.75 0 0 0-.75.75v.615c0 .414.336.75.75.75h5.373a.75.75 0 0 0 .627-.74Zm1.5 0a.75.75 0 0 0 .627.74h5.373a.75.75 0 0 0 .75-.75v-.615a.75.75 0 0 0-.75-.75H11.5a.75.75 0 0 0-.75.75v.625Zm6.75-3.63v-.625a.75.75 0 0 0-.75-.75H11.5a.75.75 0 0 0-.75.75v.625c0 .414.336.75.75.75h5.25a.75.75 0 0 0 .75-.75Zm-8.25 0v-.625a.75.75 0 0 0-.75-.75H3.25a.75.75 0 0 0-.75.75v.625c0 .414.336.75.75.75H8.5a.75.75 0 0 0 .75-.75ZM17.5 7.5v-.625a.75.75 0 0 0-.75-.75H11.5a.75.75 0 0 0-.75.75V7.5c0 .414.336.75.75.75h5.25a.75.75 0 0 0 .75-.75Zm-8.25 0v-.625a.75.75 0 0 0-.75-.75H3.25a.75.75 0 0 0-.75.75V7.5c0 .414.336.75.75.75H8.5a.75.75 0 0 0 .75-.75Z"
         clip-rule="evenodd"
       />
+    </svg>
+  );
+}
+
+export function LinkIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      {...props}
+    >
+      <title>{props.title}</title>
+      <path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z" />
+      <path d="M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z" />
+    </svg>
+  );
+}
+
+export function LinkSlashIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      {...props}
+    >
+      <title>{props.title}</title>
+      <path
+        fill-rule="evenodd"
+        d="M2.22 2.22a.75.75 0 0 1 1.06 0l4.46 4.46c.128-.178.272-.349.432-.508l3-3a4 4 0 0 1 5.657 5.656l-1.225 1.225a.75.75 0 1 1-1.06-1.06l1.224-1.225a2.5 2.5 0 0 0-3.536-3.536l-3 3a2.504 2.504 0 0 0-.406.533l2.59 2.59a2.49 2.49 0 0 0-.79-1.254.75.75 0 1 1 .977-1.138 3.997 3.997 0 0 1 1.306 3.886l4.871 4.87a.75.75 0 1 1-1.06 1.061l-5.177-5.177-.006-.005-4.134-4.134a.65.65 0 0 1-.005-.006L2.22 3.28a.75.75 0 0 1 0-1.06Zm3.237 7.727a.75.75 0 0 1 0 1.06l-1.225 1.225a2.5 2.5 0 0 0 3.536 3.536l1.879-1.879a.75.75 0 1 1 1.06 1.06L8.83 16.83a4 4 0 0 1-5.657-5.657l1.224-1.225a.75.75 0 0 1 1.06 0Z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  );
+}
+
+export function BoldIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      {...props}
+    >
+      <title>{props.title}</title>
+      <path
+        fill-rule="evenodd"
+        d="M4 3a1 1 0 0 1 1-1h6a4.5 4.5 0 0 1 3.274 7.587A4.75 4.75 0 0 1 11.25 18H5a1 1 0 0 1-1-1V3Zm2.5 5.5v-4H11a2 2 0 1 1 0 4H6.5Zm0 2.5v4.5h4.75a2.25 2.25 0 0 0 0-4.5H6.5Z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  );
+}
+
+export function ParagraphIcon(props: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+      stroke="none"
+      {...props}
+    >
+      <title>{props.title}</title>
+      <path d="M9 16h2v4h2V6h2v14h2V6h3V4H9c-3.309 0-6 2.691-6 6s2.691 6 6 6zM9 6h2v8H9c-2.206 0-4-1.794-4-4s1.794-4 4-4z" />
     </svg>
   );
 }

@@ -1,13 +1,18 @@
-import { Tabs as Kobalte } from "@kobalte/core/tabs";
+import { Tabs as Kobalte, type TabsRootOptions } from "@kobalte/core/tabs";
 import { For, type JSX } from "solid-js";
 import "./Tabs.css";
 
 export default function Tabs(props: {
   label: string;
   items: { id: string; title: string; content: () => JSX.Element }[];
+  orientation?: TabsRootOptions["orientation"];
 }) {
   return (
-    <Kobalte aria-label={props.label} class="tabs">
+    <Kobalte
+      aria-label={props.label}
+      class="tabs"
+      orientation={props.orientation}
+    >
       <Kobalte.List class="tabs__list">
         <For each={props.items}>
           {(tab) => (

@@ -1,34 +1,51 @@
+import { Link } from "@kobalte/core/link";
+import type { FlowProps } from "solid-js";
 import { For } from "solid-js/web";
 import type {
   TiptapDoc,
-  TiptapMarkType,
+  TiptapMark,
   TiptapParagraph,
   TiptapText,
 } from "../../input/schema";
 import type { TextBlock } from "../schemas";
 
-const hasMark = (marks: TiptapText["marks"], type: TiptapMarkType) =>
-  marks?.map((item) => item.type === type).filter(Boolean).length !== 0;
+const renderMark = (mark: TiptapMark) => {
+  switch (mark.type) {
+    case "bold":
+      return (props: FlowProps) => (
+        <strong {...mark.attrs}>{props.children}</strong>
+      );
+    case "italic":
+      return (props: FlowProps) => <em {...mark.attrs}>{props.children}</em>;
+    case "link":
+      return (props: FlowProps) => (
+        <Link
+          href={mark.attrs.href}
+          // https://docs.solidjs.com/solid-router/reference/components/a#soft-navigation
+          target={mark.attrs.target === "_self" ? undefined : mark.attrs.target}
+          class="underline underline-offset-2 decoration-slate-400"
+        >
+          {props.children}
+        </Link>
+      );
+  }
+};
+
+function renderMarks(element: TiptapText) {
+  const markRenderers = element.marks
+    ?.toSorted((a, b) => (a.type === "link" ? 1 : -1))
+    ?.map(renderMark);
+  const renderMarks = markRenderers?.reduce(
+    (previousValue, currentValue) => (value) =>
+      previousValue({ children: currentValue(value) }),
+  );
+  return renderMarks ? renderMarks({ children: element.text }) : element.text;
+}
 
 function RenderText(props: {
   element: TiptapText;
 }) {
-  return (
-    <>
-      {!props.element.marks?.length && props.element.text}
-      {!!props.element.marks?.length && (
-        <>
-          {" "}
-          {hasMark(props.element.marks, "bold") && (
-            <strong>{props.element.text}</strong>
-          )}
-          {hasMark(props.element.marks, "italic") && (
-            <em>{props.element.text}</em>
-          )}
-        </>
-      )}
-    </>
-  );
+  return <>{renderMarks(props.element)}</>;
 }
 
 function RenderParagraph(props: {
