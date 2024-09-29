@@ -219,7 +219,6 @@ function EditorComp(props: {
         defaultProtocol: "https",
         HTMLAttributes: {
           class: "underline underline-offset-2 decoration-slate-400",
-          // rel: undefined,
           // https://docs.solidjs.com/solid-router/reference/components/a#soft-navigation
           target: "_self",
         },
