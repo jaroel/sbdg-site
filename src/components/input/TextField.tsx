@@ -33,7 +33,9 @@ export function TextField(props: TextFieldProps) {
       validationState={props.error ? "invalid" : "valid"}
     >
       <Show when={props.label}>
-        <Kobalte.Label class="block text-gray-600">{props.label}</Kobalte.Label>
+        <Kobalte.Label class="text-gray-600 cursor-pointer">
+          {props.label}
+        </Kobalte.Label>
       </Show>
       <Show
         when={props.multiline}
