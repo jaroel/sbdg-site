@@ -21,6 +21,7 @@ const renderMark = (mark: TiptapMark) => {
       return (props: FlowProps) => (
         <Link
           href={mark.attrs.href}
+          rel={mark.attrs.rel}
           // https://docs.solidjs.com/solid-router/reference/components/a#soft-navigation
           target={mark.attrs.target === "_self" ? undefined : mark.attrs.target}
           class="underline underline-offset-2 decoration-slate-400"

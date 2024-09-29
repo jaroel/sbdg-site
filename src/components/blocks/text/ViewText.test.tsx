@@ -24,7 +24,7 @@ test("renders mark Italic", async () => {
   expect(result.getByText("Some text", { selector: "em" })).toBe;
 });
 
-test("renders mark Link", async () => {
+test("renders mark Link target _self", async () => {
   const result = render(() => (
     <ViewTextBlock
       value={textBlockFactory("Some text", {
@@ -32,7 +32,7 @@ test("renders mark Link", async () => {
         attrs: {
           href: "/some-path",
           rel: "rel",
-          target: "",
+          target: "_self",
         },
       })}
     />
@@ -41,7 +41,48 @@ test("renders mark Link", async () => {
   const link = result.getByText("Some text", { selector: "a" });
   expect(link).toHaveAttribute("href", "/some-path");
   expect(link).toHaveAttribute("rel", "rel");
-  expect(link).toHaveAttribute("target", "");
+  // https://docs.solidjs.com/solid-router/reference/components/a#soft-navigation
+  expect(link).not.toHaveAttribute("target");
+});
+
+test("renders mark Link target _blank", async () => {
+  const result = render(() => (
+    <ViewTextBlock
+      value={textBlockFactory("Some text", {
+        type: "link",
+        attrs: {
+          href: "/some-path",
+          rel: "rel",
+          target: "_blank",
+        },
+      })}
+    />
+  ));
+
+  const link = result.getByText("Some text", { selector: "a" });
+  expect(link).toHaveAttribute("href", "/some-path");
+  expect(link).toHaveAttribute("rel", "rel");
+  expect(link).toHaveAttribute("target", "_blank");
+});
+
+test("renders mark Link no target", async () => {
+  const result = render(() => (
+    <ViewTextBlock
+      value={textBlockFactory("Some text", {
+        type: "link",
+        attrs: {
+          href: "/some-path",
+          rel: "rel",
+          // target: [...],
+        },
+      })}
+    />
+  ));
+
+  const link = result.getByText("Some text", { selector: "a" });
+  expect(link).toHaveAttribute("href", "/some-path");
+  expect(link).toHaveAttribute("rel", "rel");
+  expect(link).not.toHaveAttribute("target");
 });
 
 test("renders mark Link last", async () => {
@@ -55,7 +96,7 @@ test("renders mark Link last", async () => {
           attrs: {
             href: "/some-path",
             rel: "rel",
-            target: "",
+            target: "_blank",
           },
         },
       ])}
