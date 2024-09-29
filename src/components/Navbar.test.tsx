@@ -2,7 +2,7 @@ import { render } from "@solidjs/testing-library";
 import { expect, test } from "vitest";
 import Navbar from "~/components/Navbar";
 
-test("renders", async () => {
+test("renders Navbar", async () => {
   const { getByText } = render(() => (
     <Navbar
       pathPrefix="/"

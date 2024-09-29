@@ -4,7 +4,7 @@ import ContentObjectDefaultView from "~/components/content/DefaultView";
 import { outputSchema } from "~/db/tables/contentObjects.table";
 import { make } from "~/test-factories";
 
-test("renders", async () => {
+test("renders ContentObjectDefaultView", async () => {
   const result = render(() => (
     <ContentObjectDefaultView
       item={{

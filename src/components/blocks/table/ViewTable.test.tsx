@@ -2,7 +2,7 @@ import { render } from "@solidjs/testing-library";
 import { expect, test } from "vitest";
 import ViewTableBlock from "./ViewTable";
 
-test("renders", async () => {
+test("renders ViewTableBlock", async () => {
   const header = ["Col A", "Col B"];
   const data = [
     ["Row 1 - A", "Row 1 - B"],
