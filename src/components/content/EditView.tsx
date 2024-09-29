@@ -33,7 +33,7 @@ export default function ContentObjectEditView(props: {
         item={props.item}
         action={saveContentObjectAction}
         pathPrefix="/edit"
-        titleOverride={props.item.content.object.title}
+        titleOverride={value.content.object.title}
         buttonA={{
           routePrefix: "edit",
           title: "Save and edit",

@@ -31,6 +31,7 @@ export default function ContentObjectEditRootView(props: {
         item={props.item}
         action={saveContentObjectRootAction}
         pathPrefix="/edit"
+        titleOverride={value.content.object.title}
         buttonA={{
           routePrefix: "edit",
           title: "Save and edit",
