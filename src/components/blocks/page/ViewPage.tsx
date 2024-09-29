@@ -14,7 +14,9 @@ export default function ViewPage(props: {
 }) {
   return (
     <div>
-      <h1>{props.object.title}</h1>
+      <h1 class="text-2xl mt-2 mb-4 underline underline-offset-8 decoration-blue-400">
+        {props.object.title}
+      </h1>
       <HttpStatusCode code={props.object.status_code || 200} />
       <p class="text-sm text-gray-600 mb-2">{props.object.description}</p>
 
