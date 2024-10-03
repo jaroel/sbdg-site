@@ -8,7 +8,9 @@ import { EditContentObject } from "./EditView";
 
 test("renders ContentObjectEditView", () => {
   const item = {
-    content: make(outputSchema, { object: { title: "Some text" } }),
+    content: make(outputSchema, {
+      object: { title: "Some text" },
+    }),
     children: [],
     parents: [],
   };
@@ -26,4 +28,52 @@ test("renders ContentObjectEditView", () => {
   ));
 
   expect(getByLabelText("Page title")).toHaveValue("Some text");
+});
+
+test("renders ContentObjectEditView slug shown", () => {
+  const item = {
+    content: make(outputSchema, {
+      path: "/the/end/is/the/slug_value",
+    }),
+    children: [],
+    parents: [],
+  };
+
+  const data = contentObjectSchema.parse(item);
+  const [value, setStore] = createStore(data);
+
+  const { getByLabelText } = render(() => (
+    <EditContentObject
+      value={value}
+      setStore={setStore}
+      errors={{ _errors: [] }}
+      hideSlugField={false}
+    />
+  ));
+
+  expect(getByLabelText("Slug")).toHaveValue("slug_value");
+});
+
+test("renders ContentObjectEditView slug hidden", () => {
+  const item = {
+    content: make(outputSchema, {
+      path: "/the/end/is/the/slug_value",
+    }),
+    children: [],
+    parents: [],
+  };
+
+  const data = contentObjectSchema.parse(item);
+  const [value, setStore] = createStore(data);
+
+  const { findByLabelText } = render(() => (
+    <EditContentObject
+      value={value}
+      setStore={setStore}
+      errors={{ _errors: [] }}
+      hideSlugField={true}
+    />
+  ));
+
+  expect(findByLabelText("Slug")).not.toBe;
 });
