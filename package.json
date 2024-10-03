@@ -9,6 +9,7 @@
     "build:migrations": "vite build --config vite.migrations.mts",
     "db:compiled": "node dist/db/dbScript.mjs",
     "resetdb": "pnpm run db drop && pnpm run db create && pnpm run db up",
+    "resetreseeddb": "pnpm run resetdb && pnpm run db seed",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
