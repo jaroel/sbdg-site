@@ -9,3 +9,5 @@ export const BaseTable = createBaseTable({
     timestamp: (precision?: number) => t.timestamp(precision).asDate(),
   }),
 });
+
+export const { sql } = BaseTable;

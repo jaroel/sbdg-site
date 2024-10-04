@@ -1,4 +1,5 @@
 import type { AnyZodObject, ZodFormattedError } from "zod";
+import { Content } from "./db/tables/contentObjects.table";
 
 export function isDeepStrictEqual(
   obj1: { [x: string]: any } | null,

@@ -5,7 +5,8 @@ import { contentObjectBlockSchema } from "./schemas";
 
 export const seed = async () => {
   const root = await db.contentObjects.create({
-    path: "/",
+    parentPath: "/",
+    slug: "",
     object: {
       type: "page",
       title: "Welkom",
@@ -55,7 +56,8 @@ export const seed = async () => {
 
   const persoonlijkGemiddelde = await db.contentObjects.create({
     parentId: root.id,
-    path: "/persoonlijk-gemiddelde",
+    parentPath: "/",
+    slug: "persoonlijk-gemiddelde",
     object: {
       type: "page",
       title: "Persoonlijk gemiddelde",
@@ -78,13 +80,15 @@ export const seed = async () => {
 
   await db.contentObjects.create({
     parentId: persoonlijkGemiddelde.id,
-    path: "/persoonlijk-gemiddelde/2023-2024",
+    parentPath: "/persoonlijk-gemiddelde/",
+    slug: "2023-2024",
     object: contentObjectBlockSchema.parse(uitslagenPage),
   });
 
   await db.contentObjects.create({
     parentId: root.id,
-    path: "/uitslagen",
+    parentPath: "/",
+    slug: "uitslagen",
     object: {
       type: "page",
       title: "Uitslagen",
@@ -94,7 +98,8 @@ export const seed = async () => {
 
   await db.contentObjects.create({
     parentId: root.id,
-    path: "/bestuur",
+    parentPath: "/",
+    slug: "bestuur",
     object: {
       type: "page",
       title: "Bestuur",
@@ -123,7 +128,8 @@ export const seed = async () => {
 
   await db.contentObjects.create({
     parentId: root.id,
-    path: "/oude-ijsselstreek",
+    parentPath: "/",
+    slug: "oude-ijsselstreek",
     object: {
       type: "page",
       title: 'Kampioenschap gemeente "Oude IJsselstreek"',

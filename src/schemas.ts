@@ -14,7 +14,7 @@ export const contentViews = z.union([
 export const contentObjectAddSchema = contentObjectsTableSchema
   .omit({
     id: true,
-    path: true,
+    parentPath: true,
     createdAt: true,
     updatedAt: true,
   })
@@ -30,7 +30,7 @@ export const contentObjectEditFormFieldsSchema = z
   .extend(
     contentObjectsTableSchema.omit({
       parentId: true,
-      path: true,
+      parentPath: true,
       createdAt: true,
       updatedAt: true,
     }).shape,
@@ -74,9 +74,12 @@ export const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
 });
 
 // View
+
+const fullCntentSchema = contentSchema.extend({ path: z.string().readonly() });
+
 export const contentObjectSchema = z.object({
-  content: contentSchema,
-  children: contentSchema.array(),
-  parents: contentSchema.array(),
-  errors: z.custom<ZodFormattedError<typeof contentSchema>>().optional(),
+  content: fullCntentSchema,
+  children: fullCntentSchema.array(),
+  parents: fullCntentSchema.array(),
+  errors: z.custom<ZodFormattedError<typeof fullCntentSchema>>().optional(),
 });

@@ -40,15 +40,15 @@ export const saveContentObject = async (formData: FormData) => {
   const { currentPath, parentPath } = await db.contentObjects
     .find(data.id)
     .select({
-      currentPath: "path",
-      parentPath: (q) => q.parent.get("path"),
+      currentPath: "parentPath",
+      parentPath: (q) => q.parent.get("parentPath"),
     })
     .take();
   const path = `${parentPath === "/" ? "" : parentPath}/${data.slug}`;
   const newPath = await db.contentObjects
     .find(data.id)
-    .update({ ...data, path })
-    .get("path");
+    .update({ ...data, parentPath })
+    .get("parentPath");
   if (data.routePrefix === "edit" && currentPath === newPath) {
     throw reload();
   }
@@ -64,8 +64,8 @@ export const saveContentObjectRoot = async (formData: FormData) => {
   const data = result.data;
   const newPath = await db.contentObjects
     .find(data.id)
-    .update({ ...data, path: "/" })
-    .get("path");
+    .update({ ...data, parentPath: "/" })
+    .get("parentPath");
   if (data.routePrefix === "edit") {
     throw reload();
   }
@@ -81,13 +81,13 @@ export const addContentObject = async (formData: FormData) => {
 
   const data = result.data;
   const parentId = data.parentId;
-  const parentPath = await db.contentObjects.find(parentId).get("path");
+  const parentPath = await db.contentObjects.find(parentId).get("parentPath");
   const path = parentId
     ? `${parentPath}/${data.slug}`.replaceAll("//", "/")
     : "/";
   const newPath = await db.contentObjects
-    .create({ ...data, parentId: data.parentId, path })
-    .get("path");
+    .create({ ...data, parentId: data.parentId, parentPath })
+    .get("parentPath");
   throw redirect(routePrefixMapping[data.routePrefix] + newPath);
 };
 
@@ -131,11 +131,13 @@ export const fetchDescendants = async (id: number) =>
   db.$queryBuilder
     .withRecursive(
       "parents",
-      db.contentObjects.select("id", "path", "parentId", "object").find(id),
+      db.contentObjects
+        .select("id", "parentPath", "parentId", "object")
+        .find(id),
       (q) =>
         q
           .from(db.contentObjects)
-          .select("id", "path", "parentId", "object")
+          .select("id", "parentPath", "parentId", "object")
           .join("parents", "parents.id", "parentId"),
     )
     .from("parents")
@@ -144,7 +146,7 @@ export const fetchDescendants = async (id: number) =>
         not: id,
       },
     })
-    .order({ path: "ASC" });
+    .order({ parentPath: "ASC" });
 
 export const deleteContentObject = async (formData: FormData) => {
   const result = contentObjectDeleteFormSchema.safeParse(toRecord(formData));
@@ -159,7 +161,7 @@ export const deleteContentObject = async (formData: FormData) => {
     .get("parentId");
 
   const parentPath = parentId
-    ? await db.contentObjects.find(parentId).get("path")
+    ? await db.contentObjects.find(parentId).get("parentPath")
     : "/";
   throw redirect(routePrefixMapping[data.routePrefix] + parentPath);
 };
@@ -167,12 +169,17 @@ export const deleteContentObject = async (formData: FormData) => {
 export type ContentObject = Awaited<ReturnType<typeof fetchContentObject>>;
 
 export const fetchContentObject = async (path: string) => {
+  const index = path.lastIndexOf("/");
+  const slug = path.slice(index + 1);
+  const parentPath = path.slice(0, index + 1);
+
   const content = await db.contentObjects
     .as("outer")
-    .where({ path })
-    .select(...contentFieldnames.options, {
-      children: (q) => q.children,
+    .where({ slug, parentPath })
+    .select(...contentFieldnames.options, "path", {
+      children: (q) => q.children.select(...contentFieldnames.options, "path"),
     })
+    .select("path")
     .takeOptional();
 
   if (content === undefined)
@@ -182,6 +189,7 @@ export const fetchContentObject = async (path: string) => {
         parentId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
+        parentPath: "/",
         path: "/",
         object: {
           type: "page",
@@ -195,23 +203,32 @@ export const fetchContentObject = async (path: string) => {
       errors: undefined,
     });
 
-  const parents = await db.$queryBuilder
-    .withRecursive(
-      "parents",
-      db.contentObjects.select(...contentFieldnames.options).find(content.id),
-      (q) =>
-        q
-          .from(db.contentObjects)
-          .select(...contentFieldnames.options)
-          .join("parents", "parents.parentId", "id"),
+  const parents = await db.contentObjects
+    .as("paths")
+    .select("id", "path")
+    .join(
+      db.$queryBuilder
+        .withRecursive(
+          "parents",
+          db.contentObjects
+            .select(...contentFieldnames.options)
+            .find(content.id),
+          (q) =>
+            q
+              .from(db.contentObjects)
+              .select(...contentFieldnames.options)
+              .join("parents", "parents.parentId", "id"),
+        )
+        .from("parents")
+        .where({
+          id: {
+            not: content.id,
+          },
+        }),
+      "id",
+      "paths.id",
     )
-    .from("parents")
-    .where({
-      id: {
-        not: content.id,
-      },
-    })
-    .order({ path: "ASC" })
+    .select(...contentFieldnames.options, "path")
     .all();
 
   const value = {
