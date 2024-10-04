@@ -37,19 +37,17 @@ export const saveContentObject = async (formData: FormData) => {
   }
 
   const data = result.data;
-  const { currentPath, parentPath } = await db.contentObjects
+  const { currentPath } = await db.contentObjects
     .find(data.id)
     .select({
-      currentPath: "parentPath",
-      parentPath: (q) => q.parent.get("parentPath"),
+      currentPath: "path",
     })
     .take();
-  const path = `${parentPath === "/" ? "" : parentPath}/${data.slug}`;
   const newPath = await db.contentObjects
     .find(data.id)
-    .update({ ...data, parentPath })
-    .get("parentPath");
-  if (data.routePrefix === "edit" && currentPath === newPath) {
+    .update({ ...data })
+    .get("path");
+  if (data.routePrefix === "edit" && currentPath === data.slug) {
     throw reload();
   }
   throw redirect(routePrefixMapping[data.routePrefix] + newPath);
@@ -64,8 +62,8 @@ export const saveContentObjectRoot = async (formData: FormData) => {
   const data = result.data;
   const newPath = await db.contentObjects
     .find(data.id)
-    .update({ ...data, parentPath: "/" })
-    .get("parentPath");
+    .update({ ...data, parentPath: "/", slug: "" })
+    .get("path");
   if (data.routePrefix === "edit") {
     throw reload();
   }
