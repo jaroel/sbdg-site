@@ -127,25 +127,34 @@ export const addFile = async (formData: FormData) => {
 };
 
 export const fetchDescendants = async (id: number) =>
-  db.$queryBuilder
-    .withRecursive(
-      "parents",
-      db.contentObjects
-        .select("id", "parentPath", "parentId", "object")
-        .find(id),
-      (q) =>
-        q
-          .from(db.contentObjects)
-          .select("id", "parentPath", "parentId", "object")
-          .join("parents", "parents.id", "parentId"),
+  db.contentObjects
+    .as("paths")
+    .select("id", "path")
+    .join(
+      db.$queryBuilder
+        .withRecursive(
+          "children",
+          db.contentObjects
+            .select("id", "parentPath", "parentId", "object")
+            .find(id),
+          (q) =>
+            q
+              .from(db.contentObjects)
+              .select("id", "parentPath", "parentId", "object")
+              .join("children", "children.id", "parentId"),
+        )
+        .from("children")
+        .where({
+          id: {
+            not: id,
+          },
+        }),
+      "id",
+      "paths.id",
     )
-    .from("parents")
-    .where({
-      id: {
-        not: id,
-      },
-    })
-    .order({ parentPath: "ASC" });
+    .select(...contentFieldnames.options, "path")
+    .order({ path: "ASC" })
+    .all();
 
 export const deleteContentObject = async (formData: FormData) => {
   const result = contentObjectDeleteFormSchema.safeParse(toRecord(formData));
