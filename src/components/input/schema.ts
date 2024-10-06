@@ -1,16 +1,15 @@
-import type { JSX } from "solid-js";
 import { z } from "zod";
 
 export type TiptapMarkBold = z.infer<typeof tiptapMarkBoldSchema>;
 const tiptapMarkBoldSchema = z.object({
   type: z.literal("bold"),
-  attrs: z.optional(z.record(z.any())),
+  attrs: z.optional(z.object({})),
 });
 
 export type TiptapMarkItalic = z.infer<typeof tiptapMarkItalicSchema>;
 const tiptapMarkItalicSchema = z.object({
   type: z.literal("italic"),
-  attrs: z.optional(z.record(z.any())),
+  attrs: z.optional(z.object({})),
 });
 
 export type TiptapMarkLink = z.infer<typeof tiptapMarkLinkSchema>;
