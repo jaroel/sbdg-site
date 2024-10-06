@@ -15,6 +15,13 @@ test("make override string", () => {
   expect(data.title).toBe("override");
 });
 
+test("make override sub type", () => {
+  const schema = z.object({ title: z.string().startsWith("/").endsWith("/") });
+  const value = make(schema, { title: "/override/override/" });
+  const data = schema.parse(value);
+  expect(data.title).toBe("/override/override/");
+});
+
 test("make takes overrides faker", () => {
   const schema = z.object({ title: z.string() });
   const value = make(schema, { title: faker.lorem.slug(2) });

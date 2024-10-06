@@ -1,6 +1,11 @@
 import { type GenerateMockOptions, generateMock } from "@anatine/zod-mock";
+import { faker } from "@faker-js/faker";
 import type { AnyZodObject, ZodReadonly, z } from "zod";
 import type { Overrides } from "./types";
+
+export const pathFaker = () => `/${faker.lorem.slug().split("-").join("/")}`;
+export const parentPathFaker = () => `${pathFaker()}/`;
+export const slugFaker = () => faker.lorem.slug();
 
 export function make<T extends AnyZodObject>(
   schema: T,
@@ -29,11 +34,19 @@ export function make<T extends AnyZodObject>(
       stringMap[key] = value;
     }
   }
+
+  const backupMocks = {
+    ZodParentPathString: parentPathFaker,
+    ZodPathString: pathFaker,
+    ZodSlugString: slugFaker,
+  };
   const mergedOptions = {
     ...options,
     stringMap: { ...options?.stringMap, ...stringMap },
+    backupMocks: { ...options?.backupMocks, ...backupMocks },
+    throwOnUnknownType: true,
   };
-  const mockData = generateMock<typeof schema>(schema, mergedOptions);
 
+  const mockData = generateMock<typeof schema>(schema, mergedOptions);
   return schema.parse({ ...mockData, ...replacers }) as z.infer<T>;
 }

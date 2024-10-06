@@ -1,7 +1,7 @@
 import { render } from "@solidjs/testing-library";
 import { expect, test } from "vitest";
 import ContentObjectDefaultView from "~/components/content/DefaultView";
-import { outputSchema } from "~/db/tables/contentObjects.table";
+import { fullContentSchema } from "~/schemas";
 import { make } from "~/test-factories";
 
 test("renders ContentObjectDefaultView", async () => {
@@ -13,7 +13,9 @@ test("renders ContentObjectDefaultView", async () => {
           parentId: null,
           createdAt: new Date(),
           updatedAt: new Date(),
-          path: "/",
+          parentPath: "/some/path/",
+          slug: "slug",
+          path: "/some/path/slug",
           object: {
             type: "page",
             title: "Page title",
@@ -31,7 +33,7 @@ test("renders ContentObjectDefaultView", async () => {
 });
 
 test("renders factory item", async () => {
-  const item = make(outputSchema, {
+  const item = make(fullContentSchema, {
     object: { title: "Page title" },
   });
 

@@ -1,14 +1,13 @@
 import { render } from "@solidjs/testing-library";
 import { createStore } from "solid-js/store";
 import { expect, test } from "vitest";
-import { outputSchema } from "~/db/tables/contentObjects.table";
-import { contentObjectSchema } from "~/schemas";
+import { contentObjectSchema, fullContentSchema } from "~/schemas";
 import { make } from "~/test-factories";
 import { EditContentObject } from "./EditView";
 
 test("renders ContentObjectEditView", () => {
   const item = {
-    content: make(outputSchema, {
+    content: make(fullContentSchema, {
       object: { title: "Some text" },
     }),
     children: [],
@@ -32,8 +31,8 @@ test("renders ContentObjectEditView", () => {
 
 test("renders ContentObjectEditView slug shown", () => {
   const item = {
-    content: make(outputSchema, {
-      path: "/the/end/is/the/slug_value",
+    content: make(fullContentSchema, {
+      slug: "slug_value",
     }),
     children: [],
     parents: [],
@@ -56,8 +55,9 @@ test("renders ContentObjectEditView slug shown", () => {
 
 test("renders ContentObjectEditView slug hidden", () => {
   const item = {
-    content: make(outputSchema, {
-      path: "/the/end/is/the/slug_value",
+    content: make(fullContentSchema, {
+      parentPath: "/the/end/is/the/",
+      slug: "slug_value",
     }),
     children: [],
     parents: [],
