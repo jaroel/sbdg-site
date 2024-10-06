@@ -20,21 +20,18 @@ export const contentObjectAddSchema = contentObjectsTableSchema
   })
   .extend({
     parentId: z.number().min(1),
-    slug: z.string().trim().min(1),
   })
   .required({ parentId: true });
 
 // Edit
-export const contentObjectEditFormFieldsSchema = z
-  .object({ slug: z.string() })
-  .extend(
-    contentObjectsTableSchema.omit({
-      parentId: true,
-      parentPath: true,
-      createdAt: true,
-      updatedAt: true,
-    }).shape,
-  );
+export const contentObjectEditFormFieldsSchema = contentObjectsTableSchema.omit(
+  {
+    parentId: true,
+    parentPath: true,
+    createdAt: true,
+    updatedAt: true,
+  },
+);
 export const contentObjectEditFormSchema =
   contentObjectEditFormFieldsSchema.extend({
     routePrefix: contentViews,

@@ -1,5 +1,5 @@
 import { action, useSubmission } from "@solidjs/router";
-import { Show, createMemo, createSignal } from "solid-js";
+import { Show, createMemo } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { createStore } from "solid-js/store";
 import { mergeErrors } from "~/lib";
@@ -61,23 +61,20 @@ export function EditContentObject(props: {
   errors: Awaited<ReturnType<typeof saveContentObjectAction>>;
 }) {
   const [value, setStore] = createStore(props.value.content.object);
-  const [slug, setSlug] = createSignal(
-    props.value.content.path.slice(
-      props.value.content.path.lastIndexOf("/") + 1,
-    ),
-  );
   return (
     <div>
       <Show
         when={!props.hideSlugField}
-        fallback={<input type="hidden" name="slug" value={slug()} />}
+        fallback={
+          <input type="hidden" name="slug" value={props.value.content.slug} />
+        }
       >
         <div class="flex space-x-2 mx-2 my-4">
           <TextField
             label="Slug"
-            value={slug()}
+            value={props.value.content.slug}
             onInput={(event) => {
-              setSlug(event.currentTarget.value);
+              props.setStore("content", "slug", event.currentTarget.value);
             }}
             name="slug"
             error={props.errors.slug}
