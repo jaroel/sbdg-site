@@ -4,6 +4,11 @@ import uitslagenPage from "./example/uitslagen.json";
 import { contentObjectBlockSchema } from "./schemas";
 
 export const seed = async () => {
+  const admin = await db.users.create({
+    username: "admin",
+    password: "invalid",
+  });
+
   const root = await db.contentObjects.create({
     parentPath: "/",
     slug: "",
