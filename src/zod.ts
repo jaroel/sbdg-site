@@ -1,61 +1,83 @@
 import { faker } from "@faker-js/faker";
-import {
-  type ParseContext,
-  ParseStatus,
-  ZodIssueCode,
-  ZodType,
-  type ZodTypeDef,
-  addIssueToContext,
-  isValid,
-  z,
-} from "zod";
+import { ZodIssueCode, ZodType, type ZodTypeDef, z } from "zod";
+
+// ZodSlugString
+const slugStringSchema = z
+  .string()
+  .min(1)
+  .superRefine((received, ctx) => {
+    const expected = faker.helpers.slugify(received);
+    if (received !== expected) {
+      ctx.addIssue({
+        code: ZodIssueCode.invalid_literal,
+        message: "String is not slugified",
+        received,
+        expected,
+      });
+    }
+  });
+
+interface ZodSlugStringDef extends ZodTypeDef {
+  typeName: "ZodSlugString";
+}
+
+export class ZodSlugString extends ZodType<string, ZodSlugStringDef, string> {
+  _parse(input: z.ParseInput): z.ParseReturnType<string> {
+    return slugStringSchema._parse(input);
+  }
+}
+
+export const slug = () => new ZodSlugString({ typeName: "ZodSlugString" });
 
 // ZodPathString
-const pathString = z
+const pathStringSchema = z
   .string()
   .min(2)
   .startsWith("/")
-  .refine((value) => !value.endsWith("/"));
+  .superRefine((value, ctx) =>
+    value
+      .slice(1)
+      .split("/")
+      .forEach((received, index) => {
+        for (const error of Array.from(
+          slugStringSchema.safeParse(received).error?.issues || [],
+        )) {
+          ctx.addIssue({
+            ...error,
+            message: `Path element ${index}: ${error.message}`,
+          });
+        }
+      }),
+  );
+
 interface ZodPathStringDef extends ZodTypeDef {
-  checks: [];
   typeName: "ZodPathString";
 }
 
 export class ZodPathString extends ZodType<string, ZodPathStringDef, string> {
   _parse(input: z.ParseInput): z.ParseReturnType<string> {
-    const parsed = pathString._parse(input);
-    if (!isValid(parsed)) {
-      return parsed;
-    }
-    const status = new ParseStatus();
-    let ctx: undefined | ParseContext = undefined;
-    for (const [index, received] of parsed.value.split("/").entries()) {
-      const expected = faker.helpers.slugify(received);
-      if (received !== expected) {
-        ctx = this._getOrReturnCtx(input, ctx);
-        addIssueToContext(ctx, {
-          code: ZodIssueCode.custom,
-          message: `Path element ${index} `,
-          params: {
-            index,
-            recevied: received,
-            expected,
-          },
-        });
-        status.dirty();
-      }
-    }
-
-    return { status: status.value, value: input.data };
+    return pathStringSchema._parse(input);
   }
 }
-export const path = () =>
-  new ZodPathString({ checks: [], typeName: "ZodPathString" });
+
+export const path = () => new ZodPathString({ typeName: "ZodPathString" });
 
 // ZodParentPathString
-const parentPathString = z.string().min(3).startsWith("/").endsWith("/");
+const parentPathStringSchema = z
+  .string()
+  .min(3)
+  .startsWith("/")
+  .endsWith("/")
+  .superRefine((value, ctx) => {
+    for (const error of Array.from(
+      pathStringSchema.safeParse(value.slice(0, value.length - 2)).error
+        ?.issues || [],
+    )) {
+      ctx.addIssue(error);
+    }
+  });
+
 interface ZodParentPathStringDef extends ZodTypeDef {
-  checks: [];
   typeName: "ZodParentPathString";
 }
 
@@ -65,64 +87,9 @@ export class ZodParentPathString extends ZodType<
   string
 > {
   _parse(input: z.ParseInput): z.ParseReturnType<string> {
-    const parsed = parentPathString._parse(input);
-    if (!isValid(parsed)) {
-      return parsed;
-    }
-    const status = new ParseStatus();
-    let ctx: undefined | ParseContext = undefined;
-    for (const [index, received] of parsed.value.split("/").entries()) {
-      const expected = faker.helpers.slugify(received);
-      if (received !== expected) {
-        ctx = this._getOrReturnCtx(input, ctx);
-        addIssueToContext(ctx, {
-          code: ZodIssueCode.custom,
-          message: `Path element ${index} `,
-          params: {
-            index,
-            recevied: received,
-            expected,
-          },
-        });
-        status.dirty();
-      }
-    }
-
-    return { status: status.value, value: input.data };
+    return parentPathStringSchema._parse(input);
   }
 }
+
 export const parentPath = () =>
-  new ZodParentPathString({ checks: [], typeName: "ZodParentPathString" });
-
-// ZodSlugString
-const slugString = z.string().min(1);
-interface ZodSlugStringDef extends ZodTypeDef {
-  checks: [];
-  typeName: "ZodSlugString";
-}
-
-export class ZodSlugString extends ZodType<string, ZodSlugStringDef, string> {
-  _parse(input: z.ParseInput): z.ParseReturnType<string> {
-    const parsed = slugString._parse(input);
-    if (!isValid(parsed)) {
-      return parsed;
-    }
-    const status = new ParseStatus();
-    let ctx: undefined | ParseContext = undefined;
-    const received = parsed.value;
-    const expected = faker.helpers.slugify(received);
-    if (received !== expected) {
-      ctx = this._getOrReturnCtx(input, ctx);
-      addIssueToContext(ctx, {
-        code: ZodIssueCode.invalid_literal,
-        received,
-        expected,
-      });
-      status.dirty();
-    }
-
-    return { status: status.value, value: input.data };
-  }
-}
-export const slug = () =>
-  new ZodSlugString({ checks: [], typeName: "ZodSlugString" });
+  new ZodParentPathString({ typeName: "ZodParentPathString" });
