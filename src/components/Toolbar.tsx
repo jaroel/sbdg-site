@@ -1,11 +1,17 @@
+import { createAsync } from "@solidjs/router";
+import { createMemo } from "solid-js";
 import type { ContentObject } from "~/server";
+import { getSessionData } from "~/session.server";
 
 export default function Toolbar(props: {
   item?: ContentObject;
 }) {
+  const session = createAsync(getSessionData);
+  const userId = createMemo(() => session()?.userId);
+
   return (
     <div class="text-right bg-blue-100">
-      {props.item && (
+      {props.item && userId() && (
         <>
           <a
             class="mr-4"
@@ -42,9 +48,15 @@ export default function Toolbar(props: {
       <a class="mr-4" href="/icons" title="View Icons">
         icons
       </a>
-      <a class="mr-4" href="/internalLink" title="View Internal Link">
-        internal link
-      </a>
+      {userId() ? (
+        <a class="mr-4" href="/logout" title="Logout">
+          logout
+        </a>
+      ) : (
+        <a class="mr-4" href="/login" title="Login">
+          login
+        </a>
+      )}
     </div>
   );
 }
