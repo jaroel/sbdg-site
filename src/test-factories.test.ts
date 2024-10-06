@@ -8,6 +8,15 @@ test("ran", () => {
   expect(true).toBeTruthy();
 });
 
+test("make mocks readonly", () => {
+  const schema = z.object({ title: z.string().readonly() });
+  const title1 = make(schema).title;
+  const title2 = make(schema).title;
+  expect(title1).not.toEqual(title2);
+  expect(title1).toBe;
+  expect(title2).toBe;
+});
+
 test("make override string", () => {
   const schema = z.object({ title: z.string() });
   const value = make(schema, { title: "override" });
