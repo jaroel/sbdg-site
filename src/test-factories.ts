@@ -16,7 +16,7 @@ export function make<T extends AnyZodObject>(
       continue;
     }
     if (typeof value === "string") {
-      stringMap[key] = () => value;
+      replacers[key] = value;
     } else if (typeof value === "object") {
       const subSchema = schema.shape[key];
       if (subSchema) {
