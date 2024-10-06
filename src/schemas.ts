@@ -75,7 +75,7 @@ export const contentObjectDeleteFormSchema = contentObjectDeleteSchema.extend({
 export const fullContentSchema = contentSchema.extend({
   parentPath: parentPath(),
   slug: slug(),
-  path: path(),
+  path: path().readonly(),
 });
 
 export const contentObjectSchema = z.object({
