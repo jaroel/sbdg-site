@@ -1,6 +1,6 @@
 import * as z from "zod";
-import { parentPath, slug } from "~/zod";
 import { pageBlockSchema } from "../components/blocks/schemas";
+import { parentPath, slug } from "../zod";
 
 export const contentObjectBlockSchema = z.discriminatedUnion("type", [
   pageBlockSchema,
