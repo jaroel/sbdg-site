@@ -1,12 +1,11 @@
-import type { z } from "zod";
+import type { AnyZodObject } from "zod";
 
-export type SomeZodObject = z.ZodObject<z.infer<z.ZodTypeAny>>;
-export type Override<S extends SomeZodObject> =
+export type Override<S extends AnyZodObject> =
   | string
   | (() => string)
   | Overrides<S>;
-export type Overrides<S extends SomeZodObject> = {
-  [k in keyof S["shape"]]?: Override<S["shape"]>;
+export type Overrides<S extends AnyZodObject> = {
+  [k in keyof S["shape"]]?: Override<S["shape"][k]>;
 };
 
 export type DeepPartial<T> = {

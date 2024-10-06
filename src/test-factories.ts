@@ -1,13 +1,13 @@
 import { type GenerateMockOptions, generateMock } from "@anatine/zod-mock";
-import type { z } from "zod";
-import type { Overrides, SomeZodObject } from "./types";
+import type { AnyZodObject, ZodReadonly, z } from "zod";
+import type { Overrides } from "./types";
 
-export function make<T extends SomeZodObject>(
+export function make<T extends AnyZodObject>(
   schema: T,
   overrides?: Overrides<T>,
   options?: GenerateMockOptions,
 ) {
-  const replacers: Record<string, any> = {};
+  const replacers: Overrides<T> = {};
   const stringMap: GenerateMockOptions["stringMap"] = {};
 
   for (const key in overrides) {
