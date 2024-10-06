@@ -1,6 +1,7 @@
 "use server";
 import { Readable } from "node:stream";
 import { redirect, reload } from "@solidjs/router";
+import { createError } from "vinxi/http";
 import { textBlockFactory } from "./components/blocks/factories";
 import { db } from "./db/db";
 import {
@@ -170,6 +171,10 @@ export const fetchContentObject = async (path: string) => {
   const index = path.lastIndexOf("/");
   const slug = path.slice(index + 1);
   const parentPath = path.slice(0, index + 1);
+
+  if (slug === "service-worker.js") {
+    throw createError({ statusMessage: "Not Found", statusCode: 404 });
+  }
 
   const content = await db.contentObjects
     .as("outer")
