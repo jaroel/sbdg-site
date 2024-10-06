@@ -232,6 +232,7 @@ export const fetchContentObject = async (path: string) => {
       "paths.id",
     )
     .select(...contentFieldnames.options, "path")
+    .order({ path: "ASC" })
     .all();
 
   const value = {
