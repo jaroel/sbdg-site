@@ -47,7 +47,7 @@ export const saveContentObject = async (formData: FormData) => {
     .find(data.id)
     .update({ ...data })
     .get("path");
-  if (data.routePrefix === "edit" && currentPath === data.slug) {
+  if (data.routePrefix === "edit" && currentPath === newPath) {
     throw reload();
   }
   throw redirect(routePrefixMapping[data.routePrefix] + newPath);
