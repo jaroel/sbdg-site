@@ -44,3 +44,8 @@ export async function logout() {
   // await session.clear();
   throw redirect("/");
 }
+
+export async function signup(formData: FormData) {
+  console.log({ formData }, [...formData]);
+  return "OK!";
+}
