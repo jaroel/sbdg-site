@@ -1,10 +1,10 @@
-import { change } from "../dbScript";
+import { change } from '../dbScript';
 
 change(async (db) => {
-  await db.createTable("users", (t) => ({
+  await db.createTable('passkeys', (t) => ({
     id: t.identity().primaryKey(),
+    userId: t.string().unique(),
     username: t.string().unique(),
-    password: t.string(),
     ...t.timestamps(),
   }));
 });

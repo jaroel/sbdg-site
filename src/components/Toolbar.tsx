@@ -49,12 +49,12 @@ export default function Toolbar(props: {
         icons
       </a>
       {userId() ? (
-        <a class="mr-4" href="/logout" title="Logout">
-          logout
+        <a class="mr-4" href="/signout" title="Sign out">
+          signout
         </a>
       ) : (
-        <a class="mr-4" href="/login" title="Login">
-          login
+        <a class="mr-4" href="/signin" title="Sign in">
+          signin
         </a>
       )}
     </div>

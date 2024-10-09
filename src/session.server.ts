@@ -1,5 +1,5 @@
 "use server";
-import { redirect } from "@solidjs/router";
+import { redirect, reload } from "@solidjs/router";
 import {
   type SessionConfig,
   clearSession,
@@ -7,13 +7,15 @@ import {
   useSession,
 } from "vinxi/http";
 import { db } from "./db/db";
+import { passkeySchema } from "./db/tables/passkeys.table";
+import { toRecord } from "./zod-web-api";
 
 const sessionConfig = {
   password: "my-secret  my-secret  my-secret  ",
 } as SessionConfig;
 
 type UserSession = {
-  userId: number;
+  userId: string;
 };
 
 export async function getSessionData() {
@@ -31,7 +33,7 @@ export async function login(formData: FormData) {
     const user = await db.users.findByOptional({ username });
     if (!user || password !== user.password) return new Error("Invalid login");
     const session = await useSession<UserSession>(sessionConfig);
-    await session.update({ userId: user?.id });
+    await session.update({ userId: user?.id.toString() });
   } catch (err) {
     return err as Error;
   }
@@ -40,12 +42,27 @@ export async function login(formData: FormData) {
 
 export async function logout() {
   await clearSession(sessionConfig);
-  // const session = await getSession();
-  // await session.clear();
   throw redirect("/");
 }
 
-export async function signup(formData: FormData) {
-  console.log({ formData }, [...formData]);
-  return "OK!";
-}
+export const signup = async (formData: FormData) => {
+  const result = passkeySchema.safeParse(toRecord(formData));
+  if (result.error) {
+    return result.error.format();
+  }
+  await db.passkeys.create(result.data);
+  throw redirect("/");
+};
+
+export const signin = async (formData: FormData) => {
+  const result = passkeySchema.safeParse(toRecord(formData));
+  if (result.error) {
+    return result.error.format();
+  }
+  await db.passkeys.where(result.data).take();
+
+  const session = await useSession<UserSession>(sessionConfig);
+  console.log("Updating session with userId: ", { userId: result.data.userId });
+  await session.update({ userId: result.data.userId });
+  throw redirect("/");
+};
