@@ -7,6 +7,6 @@
  https://github.com/ueberdosis/tiptap/issues/873
 */
 .ProseMirror * {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
