@@ -16,11 +16,6 @@ export default function EditTableBlock(props: {
   setStore: SetStoreFunction<TableBlock>;
   errors?: ZodFormattedError<TableBlock>;
 }) {
-  const oids = createAsync(() => listObjects(), {
-    initialValue: [],
-  });
-
-  const [open, setOpen] = createSignal(false);
   return (
     <>
       {props.errors?._errors && (
