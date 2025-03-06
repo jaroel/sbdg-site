@@ -201,9 +201,9 @@ export const fetchContentObject = async (path: string) => {
         parentId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
-        parentPath: "/",
-        slug: "some-error",
-        path: "/some-error",
+        parentPath: parentPath,
+        slug: slug,
+        path: path,
         object: {
           type: "page",
           status_code: 404,
