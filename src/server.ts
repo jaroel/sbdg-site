@@ -194,7 +194,7 @@ export const fetchContentObject = async (path: string) => {
     .select("path")
     .takeOptional();
 
-  if (content === undefined)
+  if (content === undefined) {
     return contentObjectSchema.parse({
       content: {
         id: -1,
@@ -202,7 +202,8 @@ export const fetchContentObject = async (path: string) => {
         createdAt: new Date(),
         updatedAt: new Date(),
         parentPath: "/",
-        path: "/",
+        slug: "some-error",
+        path: "/some-error",
         object: {
           type: "page",
           status_code: 404,
@@ -214,6 +215,7 @@ export const fetchContentObject = async (path: string) => {
       children: [],
       errors: undefined,
     });
+  }
 
   const parents = await db.contentObjects
     .as("paths")

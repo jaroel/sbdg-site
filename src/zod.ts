@@ -65,15 +65,17 @@ export const path = () => new ZodPathString({ typeName: "ZodPathString" });
 // ZodParentPathString
 const parentPathStringSchema = z
   .string()
-  .min(3)
+  .min(1)
   .startsWith("/")
   .endsWith("/")
   .superRefine((value, ctx) => {
-    for (const error of Array.from(
-      pathStringSchema.safeParse(value.slice(0, value.length - 2)).error
-        ?.issues || [],
-    )) {
-      ctx.addIssue(error);
+    if (value !== "/") {
+      for (const error of Array.from(
+        pathStringSchema.safeParse(value.slice(0, value.length - 1)).error
+          ?.issues || [],
+      )) {
+        ctx.addIssue(error);
+      }
     }
   });
 
