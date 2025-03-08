@@ -1,12 +1,11 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@kobalte/tailwindcss";
 
 /*
  Prevents white space being eaten.
  https://github.com/ueberdosis/tiptap/issues/873
 */
 .ProseMirror * {
-    white-space: pre-wrap;
-    word-wrap: break-word;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
