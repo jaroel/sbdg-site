@@ -1,5 +1,5 @@
 import { createAsync } from "@solidjs/router";
-import { type Accessor, For, type Setter, Show } from "solid-js";
+import { type Accessor, For, type Setter, Show, Suspense } from "solid-js";
 import { fetchDescendants } from "~/server";
 import "~/components/Tabs.css";
 import Dialog from "~/components/Dialog";
@@ -15,7 +15,7 @@ export default function InternalLink(props: {
   const descendants = createAsync(() => fetchDescendants(1));
 
   return (
-    <>
+    <Suspense>
       <Show when={descendants()} fallback={<p>nothing here</p>}>
         <div>
           <Dialog
@@ -60,6 +60,6 @@ export default function InternalLink(props: {
           </Dialog>
         </div>
       </Show>
-    </>
+    </Suspense>
   );
 }

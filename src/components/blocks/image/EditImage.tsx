@@ -1,5 +1,5 @@
 import { createAsync } from "@solidjs/router";
-import { ErrorBoundary, For, createSignal } from "solid-js";
+import { ErrorBoundary, For, Suspense, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import type { ZodFormattedError } from "zod";
 import { listObjects } from "~/largeobject";
@@ -21,7 +21,7 @@ export default function EditImageBlock(props: {
 
   const [open, setOpen] = createSignal(false);
   return (
-    <>
+    <Suspense>
       {props.errors?._errors && (
         <div class="text-red-500">{props.errors?._errors.join("\n")}</div>
       )}
@@ -105,6 +105,6 @@ export default function EditImageBlock(props: {
           <ViewImageBlock object={props.value} />
         </ErrorBoundary>
       </div>
-    </>
+    </Suspense>
   );
 }
