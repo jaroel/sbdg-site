@@ -11,11 +11,13 @@ export default function App() {
       class="h-screen divide-y divide-blue-400"
       style={{ "background-image": `url(${background})` }}
     >
-      <img
-        class="px-4 py-2"
-        src={logo}
-        alt="Logo van de Schietbond Dinxperlo-Gendringen"
-      />
+      <div>
+        <img
+          class="px-4 py-2"
+          src={logo}
+          alt="Logo van de Schietbond Dinxperlo-Gendringen"
+        />
+      </div>
 
       <Router root={(props) => <Suspense>{props.children}</Suspense>}>
         <FileRoutes />
