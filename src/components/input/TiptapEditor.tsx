@@ -144,7 +144,6 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
             setOpen(!open());
           }}
           title="Link"
-          isActive={() => false}
         >
           <LinkIcon title="Link" class="w-full h-full m-1" />
         </Control>
