@@ -57,12 +57,15 @@ function Control(props: ControlProps): JSX.Element {
       <ToggleButton
         defaultPressed={false}
         class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none ui-pressed:border ui-disabled:text-gray-300`}
+        classList={{
+          "cursor-pointer": !selection().empty,
+        }}
         pressed={flag()}
         title={props.title}
         onChange={props.onChange}
         disabled={selection().empty}
       >
-        {props.children} {flag()}
+        {props.children}
       </ToggleButton>
     </>
   );
@@ -153,6 +156,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
               .run();
           }}
           title="Unlink"
+          isActive={() => false}
         >
           <LinkSlashIcon title="Unlink" class="w-full h-full m-1" />
         </Control>
