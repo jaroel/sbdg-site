@@ -37,6 +37,7 @@ interface ControlProps {
   key: string;
   onChange: () => void;
   isActive?: (editor: Editor) => boolean;
+  isDisabled?: (editor: Editor) => boolean;
   children: JSX.Element;
 }
 
@@ -47,9 +48,12 @@ function Control(props: ControlProps): JSX.Element {
       props.isActive ? props.isActive(instance) : instance.isActive(props.key),
   );
 
-  const selection = createEditorTransaction(
+  const disabled = createEditorTransaction(
     () => props.editor,
-    (instance) => instance.view.state.selection,
+    (instance) =>
+      props.isDisabled
+        ? props.isDisabled(instance)
+        : instance.view.state.selection.empty,
   );
 
   return (
@@ -58,12 +62,12 @@ function Control(props: ControlProps): JSX.Element {
         defaultPressed={false}
         class={`${props.class} w-6 h-6 flex items-center justify-center rounded focus:outline-none ui-pressed:border ui-disabled:text-gray-300`}
         classList={{
-          "cursor-pointer": !selection().empty,
+          "cursor-pointer": !disabled(),
         }}
         pressed={flag()}
         title={props.title}
         onChange={props.onChange}
-        disabled={selection().empty}
+        disabled={disabled()}
       >
         {props.children}
       </ToggleButton>
@@ -140,11 +144,12 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
             setOpen(!open());
           }}
           title="Link"
+          isActive={() => false}
         >
           <LinkIcon title="Link" class="w-full h-full m-1" />
         </Control>
         <Control
-          key="link"
+          key="unlink"
           class="link"
           editor={props.editor}
           onChange={() => {
@@ -157,6 +162,12 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
           }}
           title="Unlink"
           isActive={() => false}
+          isDisabled={(instance) => {
+            const attrs = tiptapMarkLinkSchema.shape.attrs.safeParse(
+              props.editor.getAttributes("link"),
+            );
+            return instance.view.state.selection.empty || !attrs.data?.href;
+          }}
         >
           <LinkSlashIcon title="Unlink" class="w-full h-full m-1" />
         </Control>
