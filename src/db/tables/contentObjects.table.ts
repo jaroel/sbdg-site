@@ -42,6 +42,7 @@ export class ContentObjectsTable extends BaseTable {
 
 export const updateSchema = ContentObjectsTable.updateSchema();
 export const outputSchema = ContentObjectsTable.outputSchema();
+export const createSchema = ContentObjectsTable.createSchema();
 
 export const contentSchema = outputSchema.pick({
   id: true,

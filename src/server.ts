@@ -6,7 +6,9 @@ import { textBlockFactory } from "./components/blocks/factories";
 import { db } from "./db/db";
 import {
   contentFieldnames,
+  createSchema,
   outputSchema,
+  updateSchema,
 } from "./db/tables/contentObjects.table";
 import { createLargeObjectFromStream } from "./largeobject";
 import {
@@ -46,7 +48,7 @@ export const saveContentObject = async (formData: FormData) => {
     .take();
   const newPath = await db.contentObjects
     .find(data.id)
-    .update({ ...data })
+    .update(updateSchema.parse(data))
     .get("path");
   if (data.routePrefix === "edit" && currentPath === newPath) {
     throw reload();
@@ -84,7 +86,9 @@ export const addContentObject = async (formData: FormData) => {
     .find(parentId)
     .get("contentObjects.path");
   const newPath = await db.contentObjects
-    .create({ ...data, parentId: data.parentId, parentPath })
+    .create(
+      createSchema.parse({ ...data, parentId: data.parentId, parentPath }),
+    )
     .get("parentPath");
   throw redirect(routePrefixMapping[data.routePrefix] + newPath);
 };
