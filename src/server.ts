@@ -80,10 +80,9 @@ export const addContentObject = async (formData: FormData) => {
 
   const data = result.data;
   const parentId = data.parentId;
-  const parentPath = await db.contentObjects.find(parentId).get("parentPath");
-  const path = parentId
-    ? `${parentPath}/${data.slug}`.replaceAll("//", "/")
-    : "/";
+  const parentPath = await db.contentObjects
+    .find(parentId)
+    .get("contentObjects.path");
   const newPath = await db.contentObjects
     .create({ ...data, parentId: data.parentId, parentPath })
     .get("parentPath");
