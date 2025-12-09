@@ -334,7 +334,7 @@ export const zt = {
 
       if (!match) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Must match a value from the provided array.",
         });
         return z.NEVER;
@@ -372,7 +372,7 @@ export const zt = {
         return schema.parse(parsed);
       } catch (error) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message: "Must be a valid JSON string.",
         });
         return z.NEVER;

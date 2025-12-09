@@ -32,13 +32,11 @@ const tiptapMarkSchema = z.discriminatedUnion("type", [
 ]);
 
 export type TiptapText = z.infer<typeof tiptapTextSchema>;
-const tiptapTextSchema = z
-  .object({
+const tiptapTextSchema = z.strictObject({
     type: z.literal("text"),
     text: z.string().min(1),
     marks: z.array(tiptapMarkSchema).optional(),
-  })
-  .strict();
+  });
 
 export type TiptapParagraph = z.infer<typeof tiptapParagraphSchema>;
 const tiptapParagraphSchema = z.object({
