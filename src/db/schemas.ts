@@ -1,4 +1,5 @@
-import * as z from "zod";
+// import * as z from "zod";
+import * as z from "zod/v4";
 import { pageBlockSchema } from "../components/blocks/schemas";
 import { parentPath, slug } from "../zod";
 

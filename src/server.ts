@@ -21,6 +21,7 @@ import {
   fileAddSchema,
 } from "./schemas";
 import { toRecord } from "./zod-web-api";
+import * as z from "zod";
 
 export const getContentObjectBySubPath = (subpath: string) =>
   fetchContentObject(`/${subpath}`);
@@ -134,7 +135,7 @@ export const fetchDescendants = async (id: number) =>
     .as("paths")
     .select("id", "path")
     .join(
-      db.$queryBuilder
+      db.$qb
         .withRecursive(
           "children",
           db.contentObjects
@@ -224,7 +225,7 @@ export const fetchContentObject = async (path: string) => {
     .as("paths")
     .select("id", "path")
     .join(
-      db.$queryBuilder
+      db.$qb
         .withRecursive(
           "parents",
           db.contentObjects
@@ -249,11 +250,13 @@ export const fetchContentObject = async (path: string) => {
     .order({ path: "ASC" })
     .all();
 
+  const errors = outputSchema.safeParse(content).error;
+
   const value = {
     content,
     parents,
     children: content.children,
-    errors: outputSchema.safeParse(content).error?.format(),
+    errors: errors ? z.treeifyError(errors) : null,
   };
   return value;
 };

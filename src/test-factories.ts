@@ -1,13 +1,13 @@
 import { type GenerateMockOptions, generateMock } from "@anatine/zod-mock";
 import { faker } from "@faker-js/faker";
-import type { AnyZodObject, ZodReadonly, z } from "zod";
+import type { ZodObject, ZodReadonly, z } from "zod";
 import type { Overrides } from "./types";
 
 export const pathFaker = () => `/${faker.lorem.slug().split("-").join("/")}`;
 export const parentPathFaker = () => `${pathFaker()}/`;
 export const slugFaker = () => faker.lorem.slug();
 
-export function make<T extends AnyZodObject>(
+export function make<T extends ZodObject>(
   schema: T,
   overrides?: Overrides<T>,
   options?: GenerateMockOptions,
@@ -36,7 +36,7 @@ export function make<T extends AnyZodObject>(
   }
 
   const backupMocks = {
-    ZodReadonly: (zodRef: AnyZodObject, options?: GenerateMockOptions) => {
+    ZodReadonly: (zodRef: ZodObject, options?: GenerateMockOptions) => {
       const zodRef_ = zodRef as unknown as ZodReadonly<T>;
       return generateMock(zodRef_.unwrap(), options);
     },

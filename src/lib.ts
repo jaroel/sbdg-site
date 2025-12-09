@@ -1,5 +1,4 @@
-import type { AnyZodObject, ZodFormattedError } from "zod";
-import { Content } from "./db/tables/contentObjects.table";
+import type { ZodObject, ZodFormattedError } from "zod";
 
 export function isDeepStrictEqual(
   obj1: { [x: string]: any } | null,
@@ -37,7 +36,7 @@ export function isDeepStrictEqual(
   return false;
 }
 
-export function mergeErrors<T1 extends AnyZodObject, T2 extends AnyZodObject>(
+export function mergeErrors<T1 extends ZodObject, T2 extends ZodObject>(
   obj1?: ZodFormattedError<T1>,
   obj2?: ZodFormattedError<T2>,
 ) {

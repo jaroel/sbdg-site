@@ -1,5 +1,5 @@
 // import type { Insertable, Queryable, Updatable } from "orchid-orm";
-import type { z } from "zod";
+import type * as z from "zod";
 import { BaseTable, sql } from "../baseTable";
 import { contentObjectBlockSchema } from "../schemas";
 

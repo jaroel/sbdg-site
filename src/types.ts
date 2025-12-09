@@ -1,10 +1,10 @@
-import type { AnyZodObject } from "zod";
+import type { ZodObject } from "zod";
 
-export type Override<S extends AnyZodObject> =
+export type Override<S extends ZodObject> =
   | string
   | (() => string)
   | Overrides<S>;
-export type Overrides<S extends AnyZodObject> = {
+export type Overrides<S extends ZodObject> = {
   [k in keyof S["shape"]]?: Override<S["shape"][k]>;
 };
 

@@ -208,7 +208,7 @@ export async function parseRequestAsync<TSchema extends ZodTypeAny>(
 
 function containsFormData(request: Request) {
   const contentType = request.headers.get("Content-Type");
-  return contentType && contentType.includes("multipart/form-data");
+  return contentType?.includes("multipart/form-data");
 }
 
 export function toRecord(

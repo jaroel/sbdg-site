@@ -1,97 +1,67 @@
 import { faker } from "@faker-js/faker";
-import { ZodIssueCode, ZodType, type ZodTypeDef, z } from "zod";
+import { z } from "zod";
 
-// ZodSlugString
-const slugStringSchema = z
-  .string()
-  .min(1)
-  .superRefine((received, ctx) => {
-    const expected = faker.helpers.slugify(received);
-    if (received !== expected) {
-      ctx.addIssue({
-        code: ZodIssueCode.invalid_literal,
-        message: "String is not slugified",
-        received,
-        expected,
-      });
-    }
-  });
-
-interface ZodSlugStringDef extends ZodTypeDef {
-  typeName: "ZodSlugString";
-}
-
-export class ZodSlugString extends ZodType<string, ZodSlugStringDef, string> {
-  _parse(input: z.ParseInput): z.ParseReturnType<string> {
-    return slugStringSchema._parse(input);
-  }
-}
-
-export const slug = () => new ZodSlugString({ typeName: "ZodSlugString" });
-
-// ZodPathString
-const pathStringSchema = z
-  .string()
-  .min(2)
-  .startsWith("/")
-  .superRefine((value, ctx) =>
-    value
-      .slice(1)
-      .split("/")
-      .forEach((received, index) => {
-        for (const error of Array.from(
-          slugStringSchema.safeParse(received).error?.issues || [],
-        )) {
-          ctx.addIssue({
-            ...error,
-            message: `Path element ${index}: ${error.message}`,
-          });
-        }
-      }),
-  );
-
-interface ZodPathStringDef extends ZodTypeDef {
-  typeName: "ZodPathString";
-}
-
-export class ZodPathString extends ZodType<string, ZodPathStringDef, string> {
-  _parse(input: z.ParseInput): z.ParseReturnType<string> {
-    return pathStringSchema._parse(input);
-  }
-}
-
-export const path = () => new ZodPathString({ typeName: "ZodPathString" });
-
-// ZodParentPathString
-const parentPathStringSchema = z
-  .string()
-  .min(1)
-  .startsWith("/")
-  .endsWith("/")
-  .superRefine((value, ctx) => {
-    if (value !== "/") {
-      for (const error of Array.from(
-        pathStringSchema.safeParse(value.slice(0, value.length - 1)).error
-          ?.issues || [],
-      )) {
-        ctx.addIssue(error);
+/* ----------------------------------------------------
+ * slug()
+ * -------------------------------------------------- */
+export const slug = () =>
+  z
+    .string()
+    .min(1)
+    .superRefine((received, ctx) => {
+      const expected = faker.helpers.slugify(received);
+      if (received !== expected) {
+        ctx.addIssue("String is not slugified");
       }
-    }
-  });
+    })
+    .brand("ZodSlugString");
 
-interface ZodParentPathStringDef extends ZodTypeDef {
-  typeName: "ZodParentPathString";
-}
+/* ----------------------------------------------------
+ * path()
+ * -------------------------------------------------- */
+export const path = () =>
+  z
+    .string()
+    .min(2)
+    .startsWith("/")
+    .superRefine((value, ctx) => {
+      const parts = value.slice(1).split("/");
 
-export class ZodParentPathString extends ZodType<
-  string,
-  ZodParentPathStringDef,
-  string
-> {
-  _parse(input: z.ParseInput): z.ParseReturnType<string> {
-    return parentPathStringSchema._parse(input);
-  }
-}
+      parts.forEach((part, index) => {
+        const result = slug().safeParse(part);
+        if (!result.success) {
+          for (const error of result.error.issues) {
+            ctx.addIssue({
+              ...error,
+              // overwrite the message with context
+              message: `Path element ${index}: ${error.message}`,
+            });
+          }
+        }
+      });
+    })
+    .brand("ZodPathString");
 
+/* ----------------------------------------------------
+ * parentPath()
+ * -------------------------------------------------- */
 export const parentPath = () =>
-  new ZodParentPathString({ typeName: "ZodParentPathString" });
+  z
+    .string()
+    .min(1)
+    .startsWith("/")
+    .endsWith("/")
+    .superRefine((value, ctx) => {
+      // "/" is valid
+      if (value === "/") return;
+
+      const base = value.slice(0, -1); // remove trailing slash
+      const parsed = path().safeParse(base);
+
+      if (!parsed.success) {
+        for (const issue of parsed.error.issues) {
+          ctx.addIssue({...issue});
+        }
+      }
+    })
+    .brand("ZodParentPathString");

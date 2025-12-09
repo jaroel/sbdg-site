@@ -1,8 +1,8 @@
-import { rakeDb } from "orchid-orm/migrations";
+import { rakeDb } from 'orchid-orm/migrations/postgres-js';
 import { BaseTable } from "./baseTable";
 import { config } from "./config";
 
-export const change = rakeDb(config.allDatabases, {
+export const change = rakeDb(config.allDatabases[0], {
   baseTable: BaseTable,
   dbPath: "./db",
   migrationsPath: "./migrations",

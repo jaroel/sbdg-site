@@ -1,5 +1,5 @@
 import { createBaseTable } from "orchid-orm";
-import { zodSchemaConfig } from "orchid-orm-schema-to-zod";
+import { zodSchemaConfig } from 'orchid-orm-schema-to-zod';
 
 export const BaseTable = createBaseTable({
   schemaConfig: zodSchemaConfig,
