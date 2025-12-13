@@ -1,18 +1,19 @@
-// import * as z from "zod";
-import * as z from "zod/v4";
+import * as v from 'valibot';
 import { pageBlockSchema } from "../components/blocks/schemas";
-import { parentPath, slug } from "../zod";
+// import { parentPath, slug } from "../zod";
 
-export const contentObjectBlockSchema = z.discriminatedUnion("type", [
+export const contentObjectBlockSchema = v.variant("type", [
   pageBlockSchema,
 ]);
 
-export const contentObjectsTableSchema = z.object({
-  id: z.number().min(1),
-  parentPath: parentPath(),
-  slug: slug(),
-  parentId: z.number().nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+export const contentObjectsTableSchema = v.object({
+  id: v.pipe(v.number(), v.minValue(1)),
+  // parentPath: parentPath(),
+  parentPath: v.string(),
+  slug: v.string(),
+  // slug: slug(),
+  parentId: v.nullable(v.number()),
+  createdAt: v.date(),
+  updatedAt: v.date(),
   object: contentObjectBlockSchema,
 });

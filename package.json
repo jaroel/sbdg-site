@@ -28,14 +28,14 @@
     "@tiptap/pm": "^3.13.0",
     "imagetools-core": "^9.1.0",
     "orchid-orm": "^1.58.10",
-    "orchid-orm-schema-to-zod": "^1.0.36",
+    "orchid-orm-valibot": "^0.3.90",
     "pg-large-object": "^2.0.0",
     "postgres": "^3.4.7",
     "solid-js": "^1.9.10",
     "solid-tiptap": "^0.8.0",
     "tailwindcss": "^4.1.18",
+    "valibot": "^1.2.0",
     "vinxi": "^0.5.9",
-    "zod": "^4.1.13",
     "zod-form-data": "^3.0.1"
   },
   "devDependencies": {
@@ -77,8 +77,5 @@
     "vite-node": "^5.2.0",
     "vite-plugin-solid": "^2.11.10",
     "vitest": "^4.0.15"
-  },
-  "pnpm": {
-    "overrides": {"orchid-orm-schema-to-zod>zod": "$zod"}
   }
 }

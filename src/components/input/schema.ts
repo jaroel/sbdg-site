@@ -1,51 +1,51 @@
-import { z } from "zod";
+import * as v from 'valibot';
 
-export type TiptapMarkBold = z.infer<typeof tiptapMarkBoldSchema>;
-const tiptapMarkBoldSchema = z.object({
-  type: z.literal("bold"),
-  attrs: z.optional(z.object({})),
+export type TiptapMarkBold = v.InferInput<typeof tiptapMarkBoldSchema>;
+const tiptapMarkBoldSchema = v.object({
+  type: v.literal("bold"),
+  attrs: v.optional(v.object({})),
 });
 
-export type TiptapMarkItalic = z.infer<typeof tiptapMarkItalicSchema>;
-const tiptapMarkItalicSchema = z.object({
-  type: z.literal("italic"),
-  attrs: z.optional(z.object({})),
+export type TiptapMarkItalic = v.InferInput<typeof tiptapMarkItalicSchema>;
+const tiptapMarkItalicSchema = v.object({
+  type: v.literal("italic"),
+  attrs: v.optional(v.object({})),
 });
 
-export type TiptapMarkLink = z.infer<typeof tiptapMarkLinkSchema>;
-export const tiptapMarkLinkSchema = z.object({
-  type: z.literal("link"),
-  attrs: z.object({
-    href: z.string().trim().min(1),
-    target: z.literal("_self").or(z.literal("_blank")).optional(),
-    rel: z.string().trim().optional(),
-    class: z.string().trim().optional(),
+export type TiptapMarkLink = v.InferInput<typeof tiptapMarkLinkSchema>;
+export const tiptapMarkLinkSchema = v.object({
+  type: v.literal("link"),
+  attrs: v.object({
+    href: v.pipe(v.string(), v.trim(), v.minLength(1)),
+    target: v.optional(v.union([v.literal("_self"), v.literal("_blank")])),
+    rel: v.optional(v.pipe(v.string(), v.trim())),
+    class: v.optional(v.pipe(v.string(), v.trim())),
   }),
 });
 
-export type TiptapMarkType = z.infer<typeof tiptapMarkSchema>["type"];
-export type TiptapMark = z.infer<typeof tiptapMarkSchema>;
-const tiptapMarkSchema = z.discriminatedUnion("type", [
+export type TiptapMarkType = v.InferInput<typeof tiptapMarkSchema>["type"];
+export type TiptapMark = v.InferInput<typeof tiptapMarkSchema>;
+const tiptapMarkSchema = v.variant("type", [
   tiptapMarkBoldSchema,
   tiptapMarkItalicSchema,
   tiptapMarkLinkSchema,
 ]);
 
-export type TiptapText = z.infer<typeof tiptapTextSchema>;
-const tiptapTextSchema = z.strictObject({
-    type: z.literal("text"),
-    text: z.string().min(1),
-    marks: z.array(tiptapMarkSchema).optional(),
+export type TiptapText = v.InferInput<typeof tiptapTextSchema>;
+const tiptapTextSchema = v.strictObject({
+    type: v.literal("text"),
+    text: v.pipe(v.string(), v.trim(), v.minLength(1)),
+    marks: v.optional(v.array(tiptapMarkSchema)),
   });
 
-export type TiptapParagraph = z.infer<typeof tiptapParagraphSchema>;
-const tiptapParagraphSchema = z.object({
-  type: z.literal("paragraph"),
-  content: tiptapTextSchema.array(),
+export type TiptapParagraph = v.InferInput<typeof tiptapParagraphSchema>;
+const tiptapParagraphSchema = v.object({
+  type: v.literal("paragraph"),
+  content: v.array(tiptapTextSchema),
 });
 
-export type TiptapDoc = z.infer<typeof tiptapDocSchema>;
-export const tiptapDocSchema = z.object({
-  type: z.literal("doc"),
-  content: z.array(z.discriminatedUnion("type", [tiptapParagraphSchema])),
+export type TiptapDoc = v.InferInput<typeof tiptapDocSchema>;
+export const tiptapDocSchema = v.object({
+  type: v.literal("doc"),
+  content: v.array(v.variant("type", [tiptapParagraphSchema])),
 });

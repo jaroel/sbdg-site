@@ -1,53 +1,53 @@
-import { z } from "zod";
+import * as v from 'valibot';
 import { tiptapDocSchema } from "../input/schema";
 
-export type TextBlock = z.infer<typeof textBlockSchema>;
-export const textBlockSchema = z.object({
-  type: z.literal("text"),
+export type TextBlock = v.InferInput<typeof textBlockSchema>;
+export const textBlockSchema = v.object({
+  type: v.literal("text"),
   text: tiptapDocSchema,
 });
 
-export type NestedBlock = z.infer<typeof nestedBlockSchema>;
-export const nestedBlockSchema = z.object({
-  type: z.literal("nested"),
-  nestedTitle: z.string().trim().min(1),
-  texts: z.array(z.discriminatedUnion("type", [textBlockSchema])),
+export type NestedBlock = v.InferInput<typeof nestedBlockSchema>;
+export const nestedBlockSchema = v.object({
+  type: v.literal("nested"),
+  nestedTitle: v.pipe(v.string(), v.trim(), v.minLength(1)),
+  texts: v.array(v.variant("type", [textBlockSchema])),
 });
 
-export type ImageBlock = z.infer<typeof imageBlockSchema>;
-export const imageBlockSchema = z.object({
-  type: z.literal("image"),
-  label: z.string().trim().min(1),
-  fileId: z.string().trim().min(1),
+export type ImageBlock = v.InferInput<typeof imageBlockSchema>;
+export const imageBlockSchema = v.object({
+  type: v.literal("image"),
+  label: v.pipe(v.string(), v.trim(), v.minLength(1)),
+  fileId: v.pipe(v.string(), v.trim(), v.minLength(1)),
 });
 
-export type TableBlock = z.infer<typeof tableBlockSchema>;
-export const tableBlockSchema = z.object({
-  type: z.literal("table"),
-  label: z.string().trim().min(1),
-  content: z.array(z.string().trim().array().min(1)).min(1),
+export type TableBlock = v.InferInput<typeof tableBlockSchema>;
+export const tableBlockSchema = v.object({
+  type: v.literal("table"),
+  label: v.pipe(v.string(), v.trim(), v.minLength(1)),
+  content: v.array(v.pipe(v.array(v.pipe(v.string(), v.trim(), v.minLength(1))), v.minLength(1)))
 });
 
-export type PageBlockBlocks = z.infer<typeof pageBlockBlocksSchema>;
-const pageBlockBlocksSchema = z.discriminatedUnion("type", [
+export type PageBlockBlocks = v.InferInput<typeof pageBlockBlocksSchema>;
+const pageBlockBlocksSchema = v.variant("type", [
   textBlockSchema,
   nestedBlockSchema,
   imageBlockSchema,
   tableBlockSchema,
 ]);
 
-export type PageBlock = z.infer<typeof pageBlockSchema>;
-export const pageBlockSchema = z.object({
-  type: z.literal("page"),
-  status_code: z.literal(404).or(z.literal(500)).or(z.literal(200)).optional(),
-  title: z.string().trim().min(1),
-  description: z.optional(z.string().trim()),
-  blocks: pageBlockBlocksSchema.array(),
+export type PageBlock = v.InferInput<typeof pageBlockSchema>;
+export const pageBlockSchema = v.object({
+  type: v.literal("page"),
+  status_code: v.optional(v.union([v.literal(404), v.literal(500), v.literal(200)])),
+  title: v.pipe(v.string(), v.trim(), v.minLength(1)),
+  description: v.optional(v.pipe(v.string(), v.trim())),
+  blocks: v.array(pageBlockBlocksSchema),
 });
 
 export type BlockType = Block["type"];
-export type Block = z.infer<typeof blockSchema>;
-export const blockSchema = z.union([
+export type Block = v.InferInput<typeof blockSchema>;
+export const blockSchema = v.union([
   textBlockSchema,
   pageBlockSchema,
   nestedBlockSchema,

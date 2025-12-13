@@ -1,5 +1,6 @@
+import * as v from 'valibot';
 // import type { Insertable, Queryable, Updatable } from "orchid-orm";
-import type * as z from "zod";
+// import type * as z from "zod";
 import { BaseTable, sql } from "../baseTable";
 import { contentObjectBlockSchema } from "../schemas";
 
@@ -40,19 +41,12 @@ export class ContentObjectsTable extends BaseTable {
 // export type ContentObjectRowUpdate = Updatable<ContentObjectsTable>;
 // export type ContentObjectRowQueryable = Queryable<ContentObjectsTable>;
 
+export const insertSchema = ContentObjectsTable.inputSchema();
 export const updateSchema = ContentObjectsTable.updateSchema();
 export const outputSchema = ContentObjectsTable.outputSchema();
 export const createSchema = ContentObjectsTable.createSchema();
 
-export const contentSchema = outputSchema.pick({
-  id: true,
-  parentPath: true,
-  slug: true,
-  parentId: true,
-  createdAt: true,
-  updatedAt: true,
-  object: true,
-});
+export const contentSchema = insertSchema;
 
-export type Content = z.infer<typeof contentSchema>;
-export const contentFieldnames = contentSchema.keyof();
+export type Content = v.InferOutput<typeof insertSchema>;
+export const contentFieldnames = v.keyof(contentSchema);

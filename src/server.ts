@@ -1,4 +1,5 @@
 "use server";
+import * as v from 'valibot';
 import { Readable } from "node:stream";
 import { redirect, reload } from "@solidjs/router";
 import { createError } from "vinxi/http";
@@ -6,6 +7,7 @@ import { textBlockFactory } from "./components/blocks/factories";
 import { db } from "./db/db";
 import {
   contentFieldnames,
+  insertSchema,
   createSchema,
   outputSchema,
   updateSchema,
@@ -20,8 +22,8 @@ import {
   contentObjectSchema,
   fileAddSchema,
 } from "./schemas";
-import { toRecord } from "./zod-web-api";
-import * as z from "zod";
+// import { toRecord } from "./zod-web-api";
+// import * as z from "zod";
 
 export const getContentObjectBySubPath = (subpath: string) =>
   fetchContentObject(`/${subpath}`);
@@ -35,12 +37,12 @@ const routePrefixMapping: Record<ContentViews, string> = {
 
 export const saveContentObject = async (formData: FormData) => {
   // await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-  const result = contentObjectEditFormSchema.safeParse(toRecord(formData));
-  if (result.error) {
-    return result.error.format();
+  const result = v.safeParse(contentObjectEditFormSchema, toRecord(formData));
+  if (result.issues) {
+    return result.issues;
   }
 
-  const data = result.data;
+  const data = result.output;
   const { currentPath } = await db.contentObjects
     .find(data.id)
     .select({
@@ -58,12 +60,12 @@ export const saveContentObject = async (formData: FormData) => {
 };
 
 export const saveContentObjectRoot = async (formData: FormData) => {
-  const result = contentObjectEditRootFormSchema.safeParse(toRecord(formData));
-  if (result.error) {
-    return result.error.format();
+  const result = v.safeParse(contentObjectEditRootFormSchema, toRecord(formData));
+  if (result.issues) {
+    return result.issues;
   }
 
-  const data = result.data;
+  const data = result.output;
   const newPath = await db.contentObjects
     .find(data.id)
     .update({ ...data, parentPath: "/", slug: "" })
@@ -76,19 +78,19 @@ export const saveContentObjectRoot = async (formData: FormData) => {
 
 export const addContentObject = async (formData: FormData) => {
   // await new Promise((resolve, reject) => setTimeout(resolve, 100));
-  const result = contentObjectAddFormSchema.safeParse(toRecord(formData));
-  if (result.error) {
-    return result.error.format();
+  const result = v.safeParse(contentObjectAddFormSchema, toRecord(formData));
+  if (result.issues) {
+    return result.issues;
   }
 
-  const data = result.data;
+  const data = result.output;
   const parentId = data.parentId;
   const parentPath = await db.contentObjects
     .find(parentId)
     .get("contentObjects.path");
   const newPath = await db.contentObjects
     .create(
-      createSchema.parse({ ...data, parentId: data.parentId, parentPath }),
+      v.parse(createSchema, { ...data, parentId: data.parentId, parentPath }),
     )
     .get("parentPath");
   throw redirect(routePrefixMapping[data.routePrefix] + newPath);
@@ -118,12 +120,12 @@ function readableStreamToNodeReadable(readableStream: ReadableStream) {
 
 export const addFile = async (formData: FormData) => {
   // await new Promise((resolve, reject) => setTimeout(resolve, 2000));
-  const result = fileAddSchema.safeParse(toRecord(formData));
-  if (result.error) {
-    return result.error.format();
+  const result = v.safeParse(fileAddSchema, toRecord(formData));
+  if (result.issues) {
+    return result.issues;
   }
 
-  const data = result.data;
+  const data = result.output;
   await createLargeObjectFromStream(
     readableStreamToNodeReadable(data.someFile.stream()),
   );
@@ -161,12 +163,12 @@ export const fetchDescendants = async (id: number) =>
     .all();
 
 export const deleteContentObject = async (formData: FormData) => {
-  const result = contentObjectDeleteFormSchema.safeParse(toRecord(formData));
-  if (result.error) {
-    return result.error.format();
+  const result = v.safeParse(contentObjectDeleteFormSchema, toRecord(formData));
+  if (result.issues) {
+    return result.issues;
   }
 
-  const data = result.data;
+  const data = result.output;
   const parentId = await db.contentObjects
     .find(data.id)
     .delete()
@@ -199,7 +201,7 @@ export const fetchContentObject = async (path: string) => {
     .takeOptional();
 
   if (content === undefined) {
-    return contentObjectSchema.parse({
+    return v.parse(contentObjectSchema, {
       content: {
         id: -1,
         parentId: null,
@@ -250,13 +252,14 @@ export const fetchContentObject = async (path: string) => {
     .order({ path: "ASC" })
     .all();
 
-  const errors = outputSchema.safeParse(content).error;
+  const errors = v.safeParse(insertSchema, content).issues;
 
   const value = {
     content,
     parents,
     children: content.children,
-    errors: errors ? z.treeifyError(errors) : null,
+    // errors: errors ? z.treeifyError(errors) : null,
+    errors
   };
   return value;
 };

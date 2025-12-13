@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  orchid-orm-schema-to-zod>zod: ^4.1.13
-
 importers:
 
   .:
@@ -53,9 +50,9 @@ importers:
       orchid-orm:
         specifier: ^1.58.10
         version: 1.58.10(pg@8.16.3)(postgres@3.4.7)(typescript@5.9.3)
-      orchid-orm-schema-to-zod:
-        specifier: ^1.0.36
-        version: 1.0.36(pg@8.16.3)(postgres@3.4.7)
+      orchid-orm-valibot:
+        specifier: ^0.3.90
+        version: 0.3.90(pg@8.16.3)(postgres@3.4.7)
       pg-large-object:
         specifier: ^2.0.0
         version: 2.0.0(pg@8.16.3)
@@ -71,12 +68,12 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
+      valibot:
+        specifier: ^1.2.0
+        version: 1.2.0(typescript@5.9.3)
       vinxi:
         specifier: ^0.5.9
         version: 0.5.9(@types/node@25.0.1)(db0@0.3.4)(ioredis@5.8.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)
-      zod:
-        specifier: ^4.1.13
-        version: 4.1.13
       zod-form-data:
         specifier: ^3.0.1
         version: 3.0.1(zod@4.1.13)
@@ -2754,13 +2751,13 @@ packages:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
 
-  orchid-orm-schema-to-zod@1.0.36:
-    resolution: {integrity: sha512-V045awl6/s0Ix7EIIrHGFcCZSRZng4UKV06cKQCUKiLjXtQm7rUP6BBUZcUiatJdqN9yjMBrtVbMfKyr5Rpcmg==}
-
   orchid-orm-test-factory@1.0.79:
     resolution: {integrity: sha512-ftm9FioZwhqr2h7s8n93Mu3P3do4vOujSb/9RE+yNYx4oEppqn+KyxgfNFXcR+8DpRre6v/58FdnyDfcwt11MA==}
     peerDependencies:
       '@faker-js/faker': 9.x
+
+  orchid-orm-valibot@0.3.90:
+    resolution: {integrity: sha512-XgpQVmjcEfzqhIcF2btieE4ebOvL/iD/+MUV0bPSHuqNFHg2YQC7YL8KE8/Ag04/ZZ6LPRs+m2ddIHGqgQ5G6w==}
 
   orchid-orm@1.58.10:
     resolution: {integrity: sha512-fz54NVUTyjrQdvZoIJPPqSC8oa7jEEUHYwAU1B28Jb+w6BCjrS4Yv/ivRCbpjLEgUf3SmtxwckKWTqdnRvFdKw==}
@@ -3602,6 +3599,17 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  valibot@0.29.0:
+    resolution: {integrity: sha512-JhZn08lwZPhAamOCfBwBkv/btQt4KeQhekULPH8crH053zUCLSOGEF2zKExu3bFf245tsj6J1dY0ysd/jUiMIQ==}
+
+  valibot@1.2.0:
+    resolution: {integrity: sha512-mm1rxUsmOxzrwnX5arGS+U4T25RdvpPjPN4yR0u9pUBov9+zGVtO84tif1eY4r6zWxVxu3KzIyknJy3rxfRZZg==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   vfile-message@4.0.3:
     resolution: {integrity: sha512-QTHzsGd1EhbZs4AsQ20JX1rC3cOlt/IWJruk893DfLRr57lcnOeMaWG4K0JrRta4mIJZKth2Au3mM3u03/JWKw==}
@@ -6459,19 +6467,19 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  orchid-orm-schema-to-zod@1.0.36(pg@8.16.3)(postgres@3.4.7):
-    dependencies:
-      pqb: 0.57.7(pg@8.16.3)(postgres@3.4.7)
-      zod: 4.1.13
-    transitivePeerDependencies:
-      - pg
-      - postgres
-
   orchid-orm-test-factory@1.0.79(@faker-js/faker@10.1.0)(pg@8.16.3)(postgres@3.4.7):
     dependencies:
       '@faker-js/faker': 10.1.0
       pqb: 0.57.7(pg@8.16.3)(postgres@3.4.7)
       randexp: 0.5.3
+    transitivePeerDependencies:
+      - pg
+      - postgres
+
+  orchid-orm-valibot@0.3.90(pg@8.16.3)(postgres@3.4.7):
+    dependencies:
+      pqb: 0.57.7(pg@8.16.3)(postgres@3.4.7)
+      valibot: 0.29.0
     transitivePeerDependencies:
       - pg
       - postgres
@@ -7387,6 +7395,12 @@ snapshots:
   uqr@0.1.2: {}
 
   util-deprecate@1.0.2: {}
+
+  valibot@0.29.0: {}
+
+  valibot@1.2.0(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
 
   vfile-message@4.0.3:
     dependencies:
