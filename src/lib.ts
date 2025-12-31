@@ -1,4 +1,5 @@
-import type { ZodObject, ZodFormattedError } from "zod";
+import type { ZodObject } from "zod";
+import type { $ZodFormattedError } from "zod/v4/core";
 
 export function isDeepStrictEqual(
   obj1: { [x: string]: any } | null,
@@ -37,14 +38,14 @@ export function isDeepStrictEqual(
 }
 
 export function mergeErrors<T1 extends ZodObject, T2 extends ZodObject>(
-  obj1?: ZodFormattedError<T1>,
-  obj2?: ZodFormattedError<T2>,
+  obj1?: $ZodFormattedError<T1>,
+  obj2?: $ZodFormattedError<T2>,
 ) {
   const result = {
     _errors: Array.from(
       new Set([...(obj1?._errors || []), ...(obj2?._errors || [])]),
     ),
-  } as ZodFormattedError<T1 | T2>;
+  } as $ZodFormattedError<T1 | T2>;
 
   const keys = Array.from(
     new Set([...Object.keys(obj1 || {}), ...Object.keys(obj2 || {})]),

@@ -1,6 +1,6 @@
 import { TextField as Kobalte } from "@kobalte/core";
 import { type JSX, Show, splitProps } from "solid-js";
-import type { ZodFormattedError } from "zod";
+import type { $ZodFormattedError } from "zod/v4/core";
 
 type TextFieldProps = {
   name?: string;
@@ -8,7 +8,7 @@ type TextFieldProps = {
   label?: string | undefined;
   placeholder?: string | undefined;
   value: string | undefined;
-  error?: ZodFormattedError<any>;
+  error?: $ZodFormattedError<any>;
   multiline?: boolean | undefined;
   required?: boolean | undefined;
   disabled?: boolean | undefined;

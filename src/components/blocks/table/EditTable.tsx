@@ -1,7 +1,7 @@
 import { createAsync } from "@solidjs/router";
 import { ErrorBoundary, For, createSignal } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
-import type { ZodFormattedError } from "zod";
+import type { $ZodFormattedError } from "zod/v4/core";
 import { listObjects } from "~/largeobject";
 import { TextField } from "../../input/TextField";
 import type { TableBlock } from "../schemas";
@@ -14,7 +14,7 @@ function toContent(str: string) {
 export default function EditTableBlock(props: {
   value: TableBlock;
   setStore: SetStoreFunction<TableBlock>;
-  errors?: ZodFormattedError<TableBlock>;
+  errors?: $ZodFormattedError<TableBlock>;
 }) {
   return (
     <>

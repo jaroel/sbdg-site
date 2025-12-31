@@ -1,8 +1,8 @@
-import type { ZodFormattedError } from "zod";
+import type { $ZodFormattedError} from "zod/v4/core";
 import { z } from "zod";
 import { contentObjectsTableSchema } from "./db/schemas";
 import { contentSchema } from "./db/tables/contentObjects.table";
-import { path, parentPath, slug } from "./zod";
+import { parentPath, path, slug } from "./zod";
 export type ContentViews = z.infer<typeof contentViews>;
 export const contentViews = z.union([
   z.literal("default"),
@@ -82,5 +82,5 @@ export const contentObjectSchema = z.object({
   content: fullContentSchema,
   children: fullContentSchema.array(),
   parents: fullContentSchema.array(),
-  errors: z.custom<ZodFormattedError<typeof fullContentSchema>>().optional(),
+  errors: z.custom<$ZodFormattedError<typeof fullContentSchema>>().optional(),
 });

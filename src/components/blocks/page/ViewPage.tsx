@@ -1,6 +1,7 @@
 import { HttpStatusCode } from "@solidjs/start";
 import { ErrorBoundary, For, Show } from "solid-js";
-import type { ZodFormattedError, z } from "zod";
+import type { z } from "zod";
+import type {$ZodFormattedError} from "zod/v4/core";
 import type { contentObjectSchema } from "~/schemas";
 import ViewImageBlock from "../image/ViewImage";
 import ViewNestedBlock from "../nested/ViewNested";
@@ -10,7 +11,7 @@ import ViewTextBlock from "../text/ViewText";
 
 export default function ViewPage(props: {
   object: PageBlock;
-  errors?: ZodFormattedError<z.infer<typeof contentObjectSchema>>["content"];
+  errors?: $ZodFormattedError<z.infer<typeof contentObjectSchema>>["content"];
 }) {
   return (
     <div>

@@ -16,7 +16,7 @@ import {
   useEditorIsFocused,
   useEditorJSON,
 } from "solid-tiptap";
-import type { ZodFormattedError } from "zod";
+import type { $ZodFormattedError } from "zod/v4/core";
 import { isDeepStrictEqual } from "~/lib";
 import { BoldIcon, LinkIcon, LinkSlashIcon, ParagraphIcon } from "../Icons";
 import InternalLink from "./InternalLink";
@@ -178,7 +178,7 @@ function ToolbarContents(props: ToolbarProps): JSX.Element {
 export default function TiptapEditor(props: {
   value: TiptapDoc;
   setStore: SetStoreFunction<TiptapDoc>;
-  errors?: ZodFormattedError<TiptapDoc>;
+  errors?: $ZodFormattedError<TiptapDoc>;
 }) {
   const [container, setContainer] = createSignal<HTMLDivElement>();
 

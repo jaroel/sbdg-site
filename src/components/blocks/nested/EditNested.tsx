@@ -1,7 +1,7 @@
 import { Button } from "@kobalte/core/button";
 import { type Accessor, For } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
-import type { ZodFormattedError } from "zod";
+import type { $ZodFormattedError } from "zod/v4/core";
 import {
   ArchiveBoxXMarkIcon,
   ArrowDownIcon,
@@ -32,7 +32,7 @@ function BlockToolbar(props: {
   index: Accessor<number>;
   value: NestedBlock;
   setStore: SetStoreFunction<NestedBlock>;
-  errors?: ZodFormattedError<NestedBlock>;
+  errors?: $ZodFormattedError<NestedBlock>;
 }) {
   return (
     <div
@@ -87,7 +87,7 @@ function BlockToolbar(props: {
 export default function EditNestedBlock(props: {
   value: NestedBlock;
   setStore: SetStoreFunction<NestedBlock>;
-  errors?: ZodFormattedError<NestedBlock>;
+  errors?: $ZodFormattedError<NestedBlock>;
 }) {
   return (
     <>

@@ -1,7 +1,7 @@
 import { Button } from "@kobalte/core/button";
 import { type Accessor, ErrorBoundary, For } from "solid-js";
 import { type SetStoreFunction, createStore } from "solid-js/store";
-import type { ZodFormattedError } from "zod";
+import type { $ZodFormattedError } from "zod/v4/core";
 import {
   ArchiveBoxXMarkIcon,
   ArrowDownIcon,
@@ -42,7 +42,7 @@ function BlockToolbar(props: {
   index: Accessor<number>;
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
-  errors?: ZodFormattedError<PageBlock>;
+  errors?: $ZodFormattedError<PageBlock>;
 }) {
   return (
     <div
@@ -97,7 +97,7 @@ function BlockToolbar(props: {
 export default function EditPageBlock(props: {
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
-  errors?: ZodFormattedError<PageBlock>;
+  errors?: $ZodFormattedError<PageBlock>;
 }) {
   return (
     <>
@@ -297,7 +297,7 @@ function BlockItem(props: {
   value: PageBlock;
   setStore: SetStoreFunction<PageBlock>;
   index: Accessor<number>;
-  errors?: ZodFormattedError<PageBlock>;
+  errors?: $ZodFormattedError<PageBlock>;
   item: PageBlockBlocks;
 }) {
   const value = props.item;
