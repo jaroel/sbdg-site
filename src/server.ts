@@ -40,21 +40,25 @@ export const saveContentObject = async (formData: FormData) => {
     return result.error.format();
   }
 
-  const data = result.data;
+  
   const { currentPath } = await db.contentObjects
-    .find(data.id)
+    .find(result.data.id)
     .select({
       currentPath: "path",
     })
     .take();
+  const result2 = updateSchema.safeParse(result.data);
+  if (result2.error) {
+    return result2.error.format()
+  }
   const newPath = await db.contentObjects
-    .find(data.id)
-    .update(updateSchema.parse(data))
+    .find(result.data.id)
+    .update(result2.data)
     .get("path");
-  if (data.routePrefix === "edit" && currentPath === newPath) {
+  if (result.data.routePrefix === "edit" && currentPath === newPath) {
     throw reload();
   }
-  throw redirect(routePrefixMapping[data.routePrefix] + newPath);
+  throw redirect(routePrefixMapping[result.data.routePrefix] + newPath);
 };
 
 export const saveContentObjectRoot = async (formData: FormData) => {
@@ -62,16 +66,18 @@ export const saveContentObjectRoot = async (formData: FormData) => {
   if (result.error) {
     return result.error.format();
   }
-
-  const data = result.data;
+  const result2 = updateSchema.safeParse({ ...result.data, parentPath: "/", slug: "" });
+  if (result2.error) {
+    return result2.error.format()
+  }
   const newPath = await db.contentObjects
-    .find(data.id)
-    .update({ ...data, parentPath: "/", slug: "" })
+    .find(result.data.id)
+    .update(result2.data)
     .get("path");
-  if (data.routePrefix === "edit") {
+  if (result.data.routePrefix === "edit") {
     throw reload();
   }
-  throw redirect(routePrefixMapping[data.routePrefix] + newPath);
+  throw redirect(routePrefixMapping[result.data.routePrefix] + newPath);
 };
 
 export const addContentObject = async (formData: FormData) => {
@@ -80,17 +86,16 @@ export const addContentObject = async (formData: FormData) => {
   if (result.error) {
     return result.error.format();
   }
-
   const data = result.data;
-  const parentId = data.parentId;
+  const parentId = result.data.parentId;
   const parentPath = await db.contentObjects
     .find(parentId)
     .get("contentObjects.path");
-  const newPath = await db.contentObjects
-    .create(
-      createSchema.parse({ ...data, parentId: data.parentId, parentPath }),
-    )
-    .get("parentPath");
+  const result2 = createSchema.safeParse({ ...result.data, parentId, parentPath: `${parentPath}/` });
+  if (result2.error) {
+    return result2.error.format();
+  }
+  const newPath = await db.contentObjects.create(result2.data).get("parentPath");
   throw redirect(routePrefixMapping[data.routePrefix] + newPath);
 };
 
