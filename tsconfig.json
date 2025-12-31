@@ -14,7 +14,7 @@
     "isolatedModules": true,
     "strict": true,
     "types": [
-      "vinxi/client",
+      "vinxi/types/client",
       "vite/client",
       "@testing-library/jest-dom"
     ],
