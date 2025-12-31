@@ -31,8 +31,7 @@ export default function ContentObjectAddView(props: {
   const [slug, setSlug] = createSignal("a-new-page");
 
   return (
-    <>
-      <ContentObjectFormView
+    <ContentObjectFormView
         item={props.item}
         action={addContentObjectAction}
         pathPrefix="/add"
@@ -66,6 +65,5 @@ export default function ContentObjectAddView(props: {
           errors={formErrors()?.object}
         />
       </ContentObjectFormView>
-    </>
   );
 }

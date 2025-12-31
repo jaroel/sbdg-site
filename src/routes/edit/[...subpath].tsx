@@ -4,8 +4,7 @@ import ContentObjectRoute from "~/components/content/Route";
 
 export default function EditRoute() {
   return (
-    <>
-      <ContentObjectRoute
+    <ContentObjectRoute
         component={(props) => (
           <>
             {!props.item.content.parentId && (
@@ -17,6 +16,5 @@ export default function EditRoute() {
           </>
         )}
       />
-    </>
   );
 }

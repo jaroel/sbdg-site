@@ -8,8 +8,7 @@ export default function Navbar(props: {
   additionalTitle?: string;
 }) {
   return (
-    <>
-      <div class="px-4 flex space-x-1">
+    <div class="px-4 flex space-x-1">
         <span>U bent hier:</span>
         <ul class="inline-flex items-center space-x-1">
           <For each={props.item.parents}>
@@ -66,6 +65,5 @@ export default function Navbar(props: {
           )}
         </ul>
       </div>
-    </>
   );
 }

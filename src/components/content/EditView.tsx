@@ -24,16 +24,19 @@ export default function ContentObjectEditView(props: {
       }
     } catch {}
   });
-  const [value, setStore] = createStore(props.item);
+  const sub_store = createMemo(() => {
+    const [value, setStore] = createStore(props.item);
+    return {value, setStore};
+  });
+
   const errors = createMemo(() => mergeErrors(props.item.errors, formErrors()));
 
   return (
-    <>
-      <ContentObjectFormView
+    <ContentObjectFormView
         item={props.item}
         action={saveContentObjectAction}
         pathPrefix="/edit"
-        titleOverride={value.content.object.title}
+        titleOverride={sub_store().value.content.object.title}
         buttonA={{
           routePrefix: "edit",
           title: "Save and edit",
@@ -44,13 +47,11 @@ export default function ContentObjectEditView(props: {
         }}
       >
         <EditContentObject
-          value={value}
-          setStore={setStore}
+          {...sub_store()}
           errors={errors()}
           hideSlugField={false}
         />
       </ContentObjectFormView>
-    </>
   );
 }
 
@@ -60,7 +61,10 @@ export function EditContentObject(props: {
   hideSlugField: boolean;
   errors: Awaited<ReturnType<typeof saveContentObjectAction>>;
 }) {
-  const [value, setStore] = createStore(props.value.content.object);
+  const sub_store = createMemo(() => {
+    const [value, setStore] = createStore(props.value.content.object);
+    return {value, setStore};
+  });
   return (
     <div>
       <Show
@@ -83,10 +87,9 @@ export function EditContentObject(props: {
         </div>
       </Show>
       <input type="hidden" name="id" value={props.value.content.id} />
-      <input type="hidden" name="object" value={JSON.stringify(value)} />
+      <input type="hidden" name="object" value={JSON.stringify(sub_store().value)} />
       <EditPageBlock
-        value={value}
-        setStore={setStore}
+        {...sub_store()}
         errors={props.errors.object}
       />
     </div>

@@ -26,8 +26,7 @@ export default function ContentObjectEditRootView(props: {
   const errors = createMemo(() => mergeErrors(props.item.errors, formErrors()));
 
   return (
-    <>
-      <ContentObjectFormView
+    <ContentObjectFormView
         item={props.item}
         action={saveContentObjectRootAction}
         pathPrefix="/edit"
@@ -48,6 +47,5 @@ export default function ContentObjectEditRootView(props: {
           hideSlugField={true}
         />
       </ContentObjectFormView>
-    </>
   );
 }
