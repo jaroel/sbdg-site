@@ -60,7 +60,7 @@ export const parentPath = () =>
 
       if (!parsed.success) {
         for (const issue of parsed.error.issues) {
-          ctx.addIssue({...issue});
+          ctx.addIssue({ ...issue });
         }
       }
     })
