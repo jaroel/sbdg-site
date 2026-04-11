@@ -10,55 +10,52 @@ test("parentPath", () => {
 
   expect(() => field.parse("")).toThrowErrorMatchingInlineSnapshot(`[ZodError: [
   {
+    "origin": "string",
     "code": "too_small",
     "minimum": 1,
-    "type": "string",
     "inclusive": true,
-    "exact": false,
-    "message": "String must contain at least 1 character(s)",
-    "path": []
+    "path": [],
+    "message": "Too small: expected string to have >=1 characters"
   },
   {
-    "code": "invalid_string",
-    "validation": {
-      "startsWith": "/"
-    },
-    "message": "Invalid input: must start with \\"/\\"",
-    "path": []
+    "origin": "string",
+    "code": "invalid_format",
+    "format": "starts_with",
+    "prefix": "/",
+    "path": [],
+    "message": "Invalid string: must start with \\"/\\""
   },
   {
-    "code": "invalid_string",
-    "validation": {
-      "endsWith": "/"
-    },
-    "message": "Invalid input: must end with \\"/\\"",
-    "path": []
+    "origin": "string",
+    "code": "invalid_format",
+    "format": "ends_with",
+    "suffix": "/",
+    "path": [],
+    "message": "Invalid string: must end with \\"/\\""
   },
   {
+    "origin": "string",
     "code": "too_small",
     "minimum": 2,
-    "type": "string",
     "inclusive": true,
-    "exact": false,
-    "message": "String must contain at least 2 character(s)",
-    "path": []
+    "path": [],
+    "message": "Too small: expected string to have >=2 characters"
   },
   {
-    "code": "invalid_string",
-    "validation": {
-      "startsWith": "/"
-    },
-    "message": "Invalid input: must start with \\"/\\"",
-    "path": []
+    "origin": "string",
+    "code": "invalid_format",
+    "format": "starts_with",
+    "prefix": "/",
+    "path": [],
+    "message": "Invalid string: must start with \\"/\\""
   },
   {
+    "origin": "string",
     "code": "too_small",
     "minimum": 1,
-    "type": "string",
     "inclusive": true,
-    "exact": false,
-    "message": "Path element 0: String must contain at least 1 character(s)",
-    "path": []
+    "path": [],
+    "message": "Path element 0: Too small: expected string to have >=1 characters"
   }
 ]]`);
 });
@@ -72,13 +69,12 @@ test("path", () => {
     field.parse("/a/"),
   ).toThrowErrorMatchingInlineSnapshot(`[ZodError: [
   {
+    "origin": "string",
     "code": "too_small",
     "minimum": 1,
-    "type": "string",
     "inclusive": true,
-    "exact": false,
-    "message": "Path element 1: String must contain at least 1 character(s)",
-    "path": []
+    "path": [],
+    "message": "Path element 1: Too small: expected string to have >=1 characters"
   }
 ]]`);
 });

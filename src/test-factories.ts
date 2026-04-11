@@ -36,10 +36,10 @@ export function make<T extends ZodObject>(
   }
 
   const backupMocks = {
-    ZodReadonly: (zodRef: ZodObject, options?: GenerateMockOptions) => {
-      const zodRef_ = zodRef as unknown as ZodReadonly<T>;
-      return generateMock(zodRef_.unwrap(), options);
-    },
+    // ZodReadonly: (zodRef: ZodObject, options?: GenerateMockOptions) => {
+    //   const zodRef_ = zodRef as unknown as ZodReadonly<T>;
+    //   return generateMock(zodRef_.unwrap(), options);
+    // },
     ZodParentPathString: parentPathFaker,
     ZodPathString: pathFaker,
     ZodSlugString: slugFaker,

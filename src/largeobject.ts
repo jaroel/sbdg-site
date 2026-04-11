@@ -1,4 +1,3 @@
-"use server";
 import { LargeObjectManager, type ReadStream } from "pg-large-object";
 import { type HTTPEvent, sendStream, setResponseHeader } from "vinxi/server";
 
@@ -9,12 +8,13 @@ import { db } from "./db/db";
 const beginSql: SingleSqlItem = { text: "BEGIN" };
 
 export async function streamLargeObject(event: HTTPEvent) {
+  "use server";
   const largeObjectId = Number.parseInt(
     event.path.replace("/++file++/id:", ""),
     10,
   );
 
-  return await db.$adapter.transaction(beginSql, async (adapter) => {
+  return await db.$adapter.transaction(undefined, async (adapter) => {
     const loManager = new LargeObjectManager({
       pg: adapter.client,
     });
@@ -27,16 +27,21 @@ export async function streamLargeObject(event: HTTPEvent) {
 }
 
 export async function createLargeObjectFromStream(fileStream: ReadStream) {
+  "use server";
   const bufferSize = 16384;
+  console.log("A");
 
-  return await db.$adapter.transaction(beginSql, async (adapter) => {
+  return await db.$adapter.transaction("kekjo", async (adapter) => {
+    console.log("B");
     const loManager = new LargeObjectManager({
-      pg: adapter.client,
+      pg: adapter,
     });
 
+    console.log("C");
     return loManager
       .createAndWritableStreamAsync(bufferSize)
       .then(async ([oid, stream]) => {
+        console.log("D");
         // The server has generated an oid
         console.log("Creating a large object with the oid", oid);
 
@@ -51,6 +56,7 @@ export async function createLargeObjectFromStream(fileStream: ReadStream) {
 }
 
 export async function createLargeObject() {
+  "use server";
   const bufferSize = 16384;
 
   return await db.$adapter.transaction(beginSql, async (adapter) => {
@@ -77,6 +83,7 @@ export async function createLargeObject() {
 }
 
 export async function listObjects() {
+  "use server";
   const results = db.$query<{
     oid: number;
   }>`select distinct oid from pg_largeobject_metadata`;
