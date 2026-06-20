@@ -36,22 +36,21 @@ function renderMarks(element: TiptapText) {
   const markRenderers = element.marks
     ?.toSorted((a, b) => (a.type === "link" ? 1 : -1))
     ?.map(renderMark);
-  const renderMarks = markRenderers?.reduce(
+  if (!markRenderers || markRenderers.length === 0) {
+    return element.text;
+  }
+  const composed = markRenderers.reduce(
     (previousValue, currentValue) => (value) =>
       previousValue({ children: currentValue(value) }),
   );
-  return renderMarks ? renderMarks({ children: element.text }) : element.text;
+  return composed({ children: element.text });
 }
 
-function RenderText(props: {
-  element: TiptapText;
-}) {
+function RenderText(props: { element: TiptapText }) {
   return <>{renderMarks(props.element)}</>;
 }
 
-function RenderParagraph(props: {
-  element: TiptapParagraph;
-}) {
+function RenderParagraph(props: { element: TiptapParagraph }) {
   return (
     <p>
       <For each={props.element.content}>
@@ -61,9 +60,7 @@ function RenderParagraph(props: {
   );
 }
 
-function RenderDoc(props: {
-  element: TiptapDoc;
-}) {
+function RenderDoc(props: { element: TiptapDoc }) {
   return (
     <For each={props.element.content}>
       {(value) => <RenderParagraph element={value} />}
@@ -71,8 +68,6 @@ function RenderDoc(props: {
   );
 }
 
-export default function ViewTextBlock(props: {
-  value: TextBlock;
-}) {
+export default function ViewTextBlock(props: { value: TextBlock }) {
   return <RenderDoc element={props.value.text} />;
 }

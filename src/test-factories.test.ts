@@ -1,4 +1,3 @@
-import { type FakerFunction, generateMock } from "@anatine/zod-mock";
 import { faker } from "@faker-js/faker";
 import { expect, test } from "vitest";
 import { z } from "zod";
@@ -13,8 +12,6 @@ test("make mocks readonly", () => {
   const title1 = make(schema).title;
   const title2 = make(schema).title;
   expect(title1).not.toEqual(title2);
-  expect(title1).toBe;
-  expect(title2).toBe;
 });
 
 test("make override string", () => {
@@ -38,60 +35,24 @@ test("make takes overrides faker", () => {
   expect(data.title).toContain("-");
 });
 
-test("make GenerateMockOptions", () => {
+test("make overrides with function", () => {
   const schema = z.object({ title: z.string() });
-  function mockeryMapper(keyName: string): FakerFunction | undefined {
-    const keyToFnMap: Record<string, FakerFunction> = {
-      title: () => "override",
-    };
-    return keyName && keyName in keyToFnMap
-      ? keyToFnMap[keyName as never]
-      : undefined;
-  }
-  const value = make(schema, undefined, { mockeryMapper });
+  const value = make(schema, { title: () => "override" });
   const data = schema.parse(value);
   expect(data.title).toBe("override");
 });
 
-test("generateMock GenerateMockOptions", () => {
-  const schema = z.object({ title: z.string() });
-  function mockeryMapper(keyName: string): FakerFunction | undefined {
-    const keyToFnMap: Record<string, FakerFunction> = {
-      title: () => "override",
-    };
-    return keyName && keyName in keyToFnMap
-      ? keyToFnMap[keyName as never]
-      : undefined;
-  }
-  const value = generateMock(schema, { mockeryMapper });
-  const data = schema.parse(value);
-  expect(data.title).toBe("override");
-});
-
-test("make overrides + GenerateMockOptions", () => {
+test("make overrides combined", () => {
   const schema = z.object({
     title: z.string(),
     otherField: z.string(),
     anotherField: z.string(),
   });
-  function mockeryMapper(keyName: string): FakerFunction | undefined {
-    const keyToFnMap: Record<string, FakerFunction> = {
-      title: () => "override",
-    };
-    return keyName && keyName in keyToFnMap
-      ? keyToFnMap[keyName as never]
-      : undefined;
-  }
-  const value = make(
-    schema,
-    { otherField: "override2" },
-    {
-      mockeryMapper,
-      stringMap: {
-        anotherField: () => "override3",
-      },
-    },
-  );
+  const value = make(schema, {
+    title: () => "override",
+    otherField: "override2",
+    anotherField: () => "override3",
+  });
   const data = schema.parse(value);
   expect(data.title).toBe("override");
   expect(data.otherField).toBe("override2");

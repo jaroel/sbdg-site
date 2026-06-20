@@ -1,4 +1,6 @@
-import type { ZodObject } from "zod";
+import type { z } from "zod";
+
+type ZodObject = z.ZodObject;
 
 export type Override<S extends ZodObject> =
   | string
