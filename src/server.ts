@@ -20,8 +20,33 @@ import {
   contentObjectSchema,
   fileAddSchema,
 } from "./schemas";
-import { toRecord } from "./zod-web-api";
 import * as z from "zod";
+
+function toRecord(formData: FormData): Record<string, unknown> {
+  const record: Record<string, unknown> = {};
+  for (const [key, value] of formData.entries()) {
+    let next: FormDataEntryValue | undefined = value;
+    if (
+      typeof next === "string"
+        ? next === ""
+        : next.name === "" && next.size === 0
+    ) {
+      next = undefined;
+    }
+    if (typeof next === "string") {
+      try { next = JSON.parse(next); } catch { /* keep as string */ }
+    }
+    if (key in record) {
+      const prev = record[key];
+      if (next !== undefined) {
+        record[key] = Array.isArray(prev) ? [...prev, next] : [prev, next];
+      }
+    } else {
+      record[key] = next;
+    }
+  }
+  return record;
+}
 
 export const getContentObjectBySubPath = (subpath: string) =>
   fetchContentObject(`/${subpath}`);
